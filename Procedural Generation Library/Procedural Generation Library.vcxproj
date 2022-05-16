@@ -140,8 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CorridorFirstGenerator.cpp" />
+    <ClCompile Include="RandomWalkGenerator.cpp" />
     <ClCompile Include="DungeonGenerationAlgorithms.cpp" />
-    <ClCompile Include="DungeonGenerator.cpp" />
     <ClCompile Include="RoomFirstGenerator.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="WallGenerator.cpp" />
