@@ -139,6 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CorridorFirstGenerator.cpp" />
+    <ClCompile Include="DungeonGenerationAlgorithms.cpp" />
+    <ClCompile Include="DungeonGenerator.cpp" />
+    <ClCompile Include="RoomFirstGenerator.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="WallGenerator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Algorithms.h" />
+    <ClInclude Include="DungeonGenerator.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
