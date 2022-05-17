@@ -16,7 +16,7 @@ extern "C"
 
 int main()
 {
-	srand(time(NULL));
+	srand((unsigned int) time(NULL));
 	int size = 50;
 
 	ProceduralGeneration::DungeonGenerator* dungeon = 

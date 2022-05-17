@@ -68,7 +68,7 @@ struct Boundary
 
 typedef std::vector<Coord> CoordList;
 
-static class Direction2D
+class Direction2D
 {
 public:
 

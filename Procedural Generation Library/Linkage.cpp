@@ -5,7 +5,7 @@ using namespace ProceduralGeneration;
 extern "C" __declspec(dllexport)
 DungeonGenerator* CreateRandomWalkRoom(int size, int startX, int startY, int iterations, int walkLength, bool startRandomly)
 {
-	srand(time(NULL));
+	srand((unsigned int) time(NULL));
 	DungeonGenerator* dungeon = new RandomWalkDungeonGenerator(size, {startX, startY}, iterations, walkLength, startRandomly);
 	dungeon->Generate();
 

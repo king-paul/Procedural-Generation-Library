@@ -3,7 +3,7 @@
 
 namespace ProceduralGeneration
 {
-	static class Algorithms
+	class Algorithms
 	{
 		static CoordList m_path;
 
