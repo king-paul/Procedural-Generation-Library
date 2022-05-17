@@ -40,12 +40,6 @@ namespace ProceduralGeneration
 		/// <returns>A list of coordinates for the will tiles</returns>
 		static CoordList GetWalls(CoordList floorPositions);
 
-		// finds all the basic edge positions and adds them to the passed parameter
-		static void CreateEdgeWalls(CoordList& edgeWallPositions, CoordList floorPositions);
-
-		// Find all corner walls and adds them to the passed parameter
-		static void CreateCornerWalls(CoordList& cornerWallPositions, CoordList floorPositions);
-
 	private:
 
 		/// <summary>
@@ -63,12 +57,6 @@ namespace ProceduralGeneration
 		/// <param name="roomsQueue">The queue of bounding boxes to be split</param>
 		/// <param name="room">The room to be split</param>
 		static void SplitHorizontally(int minHeight, queue<Boundary> roomsQueue, Boundary room);
-
-		// Places walls around all the basic edge positions
-		static CoordList GetBasicWalls(CoordList edgeWallPositions, CoordList floorPositions);
-
-		// Places walls at each corner position next to floor
-		static CoordList GetCornerWalls(CoordList cornerWallPositions, CoordList floorPositions);
 
 		// Find all adjacent walls in specified directions
 		static CoordList FindWallsInDirection(CoordList floorPositions, CoordList directionList);

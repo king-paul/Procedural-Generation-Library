@@ -16,21 +16,17 @@ extern "C" {
 		//int** m_map;
 		std::vector<vector<int>> m_map;
 
-		//std::vector<int> m_floorCoords[2];
-		//std::vector<int> m_wallCoords[2];
-
 		int m_size;
 
 		DungeonGenerator(int size)
-		{		
-
+		{
 			m_size = size;
 			//m_map = new int*[m_size];	
 
 			//for(int i=0; i< size; i++)
 				//m_map[i] = new int(0);
-			InitMap();
-			
+
+			InitMap();			
 		}
 
 		~DungeonGenerator()
@@ -61,8 +57,6 @@ extern "C" {
 	public:
 		virtual void Generate() = 0; // abstract function		
 
-		//int* GetFloorCoords() { return m_floorCoords->data(); }
-		//int* GetWallCoords() { return m_wallCoords->data(); }
 		//int** GetMap() { return m_map; }
 
 		int GetSpaceValue(int x, int y)

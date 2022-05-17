@@ -35,8 +35,6 @@ void RandomWalkDungeonGenerator::Generate()
             {
                 if (position.x == x && position.y == y)
                 {
-                    //m_floorCoords[0].Add(x);
-                    //m_floorCoords[1].Add(y);
                     m_map[y][x] = 1;
                     //m_map[y].push_back(1);
                     //DrawMap();
@@ -48,18 +46,14 @@ void RandomWalkDungeonGenerator::Generate()
             {
                 if (position.x == x && position.y == y)
                 {
-                    //m_wallCoords[0].Add(x);
-                    //m_wallCoords[1].Add(y);
                     m_map[y][x] = -1;
                     continue;
                 }
             }
 
-            //m_map[y][x] = 0;
-            
+            //m_map[y][x] = 0;            
             //m_map[y].push_back(0);            
         }
-
     }
 
 }
@@ -72,10 +66,16 @@ CoordList RandomWalkDungeonGenerator::RunRandomWalk()
     for (int i = 0; i < m_iterations; i++)
     {
         // calls function recursively
-        CoordList newPositions = Algorithms::RandomWalk(currentPosition, m_walkLength);
+        CoordList walkedPositions = Algorithms::RandomWalk(currentPosition, m_walkLength);
 
-        floorPositions.insert(floorPositions.end(), newPositions.begin(), newPositions.end());
-        //floorPositions.push_back(); // joins two hashsets together
+        for (Coord position : walkedPositions)
+        {
+            // if the floor is not in the vector, add it
+            if (std::find(floorPositions.begin(), floorPositions.end(), position) == floorPositions.end())
+                floorPositions.push_back(position);
+        }
+
+        //floorPositions.insert(floorPositions.end(), newPositions.begin(), newPositions.end());        
 
         // starts new path at a random point on the existing one if this option is turned on
         if (m_startRandomly)
