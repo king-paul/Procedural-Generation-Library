@@ -4,11 +4,15 @@
 
 #include "DungeonGenerator.h"
 
-extern "C" __declspec(dllexport) int AddNumbers(int a, int b);
-
-int AddNumbers(int a, int b) {
-	return a + b;
+extern "C"
+{
+	__declspec(dllexport)
+	void TestFunction()
+	{
+		std::cout << "Test function is working." << std::endl;
+	}
 }
+
 
 int main()
 {
