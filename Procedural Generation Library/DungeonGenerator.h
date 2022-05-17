@@ -1,42 +1,96 @@
 #pragma once
 #include "Algorithms.h"
+#include <time.h>
+#include <iostream>
+
+#define MAX_COLS 100
 
 namespace ProceduralGeneration
 {
+
+extern "C" {
+
 	class DungeonGenerator
 	{
 	protected:
-		std::vector<int> m_map[2];
+		//int** m_map;
+		std::vector<vector<int>> m_map;
 
-		std::vector<int> m_floorCoords[2];
-		std::vector<int> m_wallCoords[2];
+		//std::vector<int> m_floorCoords[2];
+		//std::vector<int> m_wallCoords[2];
 
 		int m_size;
 
 		DungeonGenerator(int size)
 		{		
+
 			m_size = size;
-			//m_map = new int*[m_size];			
+			//m_map = new int*[m_size];	
+
+			//for(int i=0; i< size; i++)
+				//m_map[i] = new int(0);
+			InitMap();
+			
 		}
 
 		~DungeonGenerator()
 		{
-			
+
 		}
 
-		void ClearMap()
+		void InitMap()
 		{
 			//delete[] m_map;
 			//m_map = new int*[m_size];
-			m_map[0].clear();
-			m_map[1].clear();
+			//m_map[0].clear();
+			//m_map[1].clear();
+			m_map.clear();
+
+			// build the map with empty spaces
+			for (int y = 0; y < m_size; y++)
+			{
+				m_map.push_back(vector<int>());
+
+				for (int x = 0; x < m_size; x++)
+				{
+					m_map[y].push_back(0);
+				}
+			}
 		}
 
 	public:
 		virtual void Generate() = 0; // abstract function		
 
-		std::vector<int>* GetFloorCoords() { return m_floorCoords; }
-		std::vector<int>* GetWallCoords() { return m_wallCoords; }
+		//int* GetFloorCoords() { return m_floorCoords->data(); }
+		//int* GetWallCoords() { return m_wallCoords->data(); }
+		//int** GetMap() { return m_map; }
+
+		int GetSpaceValue(int x, int y)
+		{
+			return m_map[y][x];
+		}
+
+		void DrawMap()
+		{
+			system("cls");
+
+			for (int y = 0; y < m_size; y++)
+			{
+				for (int x = 0; x < m_size; x++)
+				{
+					int value = GetSpaceValue(x, y);
+
+					if (value == 0)
+						std::cout << " ";
+					else if (value == 1)
+						std::cout << "o";
+					else if (value == -1)
+						std::cout << "*";
+				}
+
+				std::cout << std::endl;
+			}
+		}
 
 	};
 
@@ -57,6 +111,7 @@ namespace ProceduralGeneration
 		int m_walkLength;
 		bool m_startRandomly;
 	};
+
 
 	// Subclass 2
 	class CorridorFirstGenerator : public RandomWalkDungeonGenerator
@@ -85,4 +140,6 @@ namespace ProceduralGeneration
 		CoordList CreateSimpleRooms(CoordList roomsList);
 		CoordList CreateRoomsRandomly(CoordList roomsList);
 	};
+}
+
 }
