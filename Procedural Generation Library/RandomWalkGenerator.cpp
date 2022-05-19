@@ -20,62 +20,33 @@ int iterations, int walkLength, bool startRandomly)  : DungeonGenerator(width, h
 
 void RandomWalkGenerator::Generate()
 {
-	InitMap();
+	InitDungeon();    
+
+	CoordList floorPositions = RunRandomWalk(m_position);   
+    AddToDungeon(&floorPositions, 1);
+
+    //CoordList wallPositions = Algorithms::GetWalls(floorPositions);
+    //AddToDungeon(&wallPositions, -1);
     //DrawMap();
-	CoordList floorPositions = RunRandomWalk();
-    CoordList wallPositions = Algorithms::GetWalls(floorPositions);
-
-    for (int y = 0; y < m_height; y++)
-    {
-        m_map.push_back(vector<int>());
-
-        for (int x = 0; x < m_width; x++)
-        {            
-            for (Coord position : floorPositions)
-            {
-                if (position.x == x && position.y == y)
-                {
-                    m_map[y][x] = 1;
-                    //m_map[y].push_back(1);
-                    //DrawMap();
-                    continue;
-                }
-            }            
-            
-            for (Coord position : wallPositions)
-            {
-                if (position.x == x && position.y == y)
-                {
-                    m_map[y][x] = -1;
-                    continue;
-                }
-            }
-
-            //m_map[y][x] = 0;            
-            //m_map[y].push_back(0);            
-        }
-    }
 
 }
 
-CoordList RandomWalkGenerator::RunRandomWalk()
+CoordList RandomWalkGenerator::RunRandomWalk(Coord startPosition)
 {
-    var currentPosition = m_position;
+    var currentPosition = startPosition;
     CoordList floorPositions;
 
     for (int i = 0; i < m_iterations; i++)
     {
         // calls function recursively
-        CoordList walkedPositions = Algorithms::RandomWalk(currentPosition, m_walkLength);
+        CoordList walkedPositions = Algorithms::RandomWalk(m_width, m_height, currentPosition, m_walkLength);
 
         for (Coord position : walkedPositions)
         {
             // if the floor is not in the vector, add it
-            if (std::find(floorPositions.begin(), floorPositions.end(), position) == floorPositions.end())
+            if (!CoordInList(&floorPositions, position))
                 floorPositions.push_back(position);
         }
-
-        //floorPositions.insert(floorPositions.end(), newPositions.begin(), newPositions.end());        
 
         // starts new path at a random point on the existing one if this option is turned on
         if (m_startRandomly)

@@ -2,19 +2,24 @@
 
 using namespace ProceduralGeneration;
 
-CoordList Algorithms::RandomWalk(Coord startPosition, int walkLength)
+CoordList Algorithms::RandomWalk(int dungeonWidth, int dungeonHeight, Coord startPosition, int walkLength)
 {
 	CoordList path;
 
 	path.Add(startPosition);
 	var previousPosition = startPosition;
+	var newPosition = previousPosition;
 
 	// for each step in the walk
 	for (int i = 0; i < walkLength; i++)
 	{
 		// adds a random position to the pevious position then add sit to the path
-		// then move to the new position
-		var newPosition = previousPosition + Direction2D::GetRandomCardinalDirection();
+		// then moves to the new position provided that it is not outofBounds
+		do
+		{
+			newPosition = previousPosition + Direction2D::GetRandomCardinalDirection();
+		} while (isOutOfBounds(dungeonWidth, dungeonHeight, newPosition));		
+
 		path.Add(newPosition);
 		previousPosition = newPosition;
 	}
@@ -152,8 +157,8 @@ void Algorithms::SplitHorizontally(int minHeight, queue<Boundary> roomsQueue, Bo
 
 bool Algorithms::isOutOfBounds(int dungeonWidth, int dungeonHeight, Coord position)
 {
-	if (position.x < 0 || position.x > dungeonWidth ||
-		position.y < 0 || position.y > dungeonHeight)
+	if (position.x < 0 || position.x >= dungeonWidth ||
+		position.y < 0 || position.y >= dungeonHeight)
 	{
 		return true;
 	}

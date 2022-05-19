@@ -13,7 +13,7 @@ namespace ProceduralGeneration
 		/// <param name="startPosition">The starting coordinate the algorithm will run from</param>
 		/// <param name="walkLength">How many steps will be walked before stopping</param>
 		/// <returns>Generated path</returns>
-		static CoordList RandomWalk(Coord startPosition, int walkLength);
+		static CoordList RandomWalk(int dungeonWidth, int dungeonHeight, Coord startPosition, int walkLength);
 
 		/// <summary>
 		/// Builds series of corridors in the dungeon based on the parameters provided
@@ -38,8 +38,12 @@ namespace ProceduralGeneration
 		/// Creates wall tiles using the tilemap visualizer by passing the floor positions
 		/// </summary>
 		/// <returns>A list of coordinates for the will tiles</returns>
-		static CoordList GetWalls(CoordList floorPositions);
+		static CoordList GetWalls(CoordList floorPositions, Coord boundary);
 
+		/// <summary>
+		/// checks if a specified position is withing the boundaries of the dungeon
+		/// </summary>
+		static bool isOutOfBounds(int dungeonWidth, int dungeonHeight, Coord position);
 	private:
 
 		/// <summary>
@@ -59,9 +63,9 @@ namespace ProceduralGeneration
 		static void SplitHorizontally(int minHeight, queue<Boundary> roomsQueue, Boundary room);
 
 		// Find all adjacent walls in specified directions
-		static CoordList FindWallsInDirection(CoordList floorPositions, CoordList directionList);
+		static CoordList FindWallsInDirection(CoordList floorPositions, CoordList directionList, Coord boundary);
 
-		static bool isOutOfBounds(int dungeonWidth, int dungeonHeight, Coord position);
+		
 		static Coord ChangeDirection(Coord& position, Coord& direction, int dungeonWidth, int dungeonHeight);
 	};
 

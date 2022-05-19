@@ -21,17 +21,31 @@ extern "C" {
 
 		// functions
 		DungeonGenerator(int width, int height, Coord startPosition);
-		void InitMap();
-		void BuildMap(CoordList* floorData, CoordList* wallData);
-		void BuildMap(CoordList* data, int type);
+		void InitDungeon();
+		void AddToDungeon(CoordList* floorData, CoordList* wallData);
+		void AddToDungeon(CoordList* data, int type);
 
 	public:
 		~DungeonGenerator()	{ }
 		virtual void Generate() = 0; // abstract function	
 		//int** GetMap() { return m_map; }
 		int GetSpaceValue(int x, int y)	{ return m_map[y][x]; }
-		void DrawMap();
+		void DrawDungeon();
 
+	};
+
+	struct RandomWalkParameters
+	{
+		RandomWalkParameters(int iterations, int walkLength, bool startRandomly)
+		{
+			this->iterations = iterations;
+			this->walkLength = walkLength;
+			this->startRandomly = startRandomly;
+		}
+
+		int iterations;
+		int walkLength;
+		bool startRandomly;
 	};
 
 	// Subclass 1
@@ -44,9 +58,7 @@ extern "C" {
 
 		void Generate() override;
 
-		CoordList RunRandomWalk();
-
-		Coord getPosition() { return m_position; }
+		CoordList RunRandomWalk(Coord startPosition);
 
 	protected:
 		Coord m_position;
@@ -57,21 +69,20 @@ extern "C" {
 
 
 	// Subclass 2
-	class CorridorFirstGenerator : public DungeonGenerator
+	class CorridorFirstGenerator : public RandomWalkGenerator
 	{
 		int m_corridorLength, m_TotalCorridors;
-		float m_roomPercent;
-
-		RandomWalkGenerator* randomWalk;
+		float m_roomPercent;		
 
 	public:		
 		CorridorFirstGenerator(int dungeonWidth, int dungeonHeight, Coord startPosition = {0, 0},
-							   int corridorLength = 30, int totalCorridors = 10, float roomPercent = 0.5f);
+							   int corridorLength = 30, int totalCorridors = 10, float roomPercent = 0.5f,
+							   RandomWalkParameters parameters = { 10, 10, true});
 
 		void Generate() override;
 
 	private:
-		void CreateRoomsAtDeadEnd(CoordList* deadEnds, CoordList* roomFloors);
+		void CreateRoomsAtDeadEnd(CoordList* deadEnds, CoordList& roomFloors);
 		CoordList FindAllDeadEnds(CoordList* floorPositions);
 		CoordList CreateRooms(CoordList* potentialRoomPositions);
 		void CreateCorridors(CoordList& floorPositions, CoordList& potentialRoomPositions);

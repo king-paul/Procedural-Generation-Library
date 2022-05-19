@@ -13,10 +13,10 @@ DungeonGenerator::DungeonGenerator(int width, int height, Coord startPosition)
 	//for(int i=0; i< size; i++)
 		//m_map[i] = new int(0);
 
-	InitMap();
+	InitDungeon();
 }
 
-void DungeonGenerator::InitMap()
+void DungeonGenerator::InitDungeon()
 {
 	m_map.clear();
 
@@ -30,64 +30,39 @@ void DungeonGenerator::InitMap()
 			m_map[y].push_back(0);
 		}
 	}
+
 }
 
-void DungeonGenerator::BuildMap(CoordList* floorData, CoordList* wallData)
+void DungeonGenerator::AddToDungeon(CoordList* floorData, CoordList* wallData)
 {
-	for (int y = 0; y < m_height; y++)
+	for (Coord position : *floorData)
 	{
-		m_map.push_back(vector<int>());
+		if (Algorithms::isOutOfBounds(m_width, m_height, position) == false)
+			m_map[position.y][position.x] = 1;
+	}
 
-		for (int x = 0; x < m_width; x++)
+	for (Coord position : *wallData)
+	{
+		if (Algorithms::isOutOfBounds(m_width, m_height, position) == false)
+			m_map[position.y][position.x] = -1;
+	}
+}
+
+void DungeonGenerator::AddToDungeon(CoordList* data, int type)
+{
+	for (Coord position : *data)
+	{
+		if (Algorithms::isOutOfBounds(m_width, m_height, position) == false)
 		{
-			for (Coord position : *floorData)
-			{
-				if (position.x == x && position.y == y)
-				{
-					m_map[y][x] = 1;
-					//m_map[y].push_back(1);
-					//DrawMap();
-					continue;
-				}
-			}
-
-			for (Coord position : *wallData)
-			{
-				if (position.x == x && position.y == y)
-				{
-					m_map[y][x] = -1;
-					continue;
-				}
-			}
-
-			//m_map[y][x] = 0;            
-			//m_map[y].push_back(0);            
+			//std::cout << "X: " << position.x << ", Y: " << position.y << std::endl;
+			m_map[position.x][position.y] = type;
 		}
+
 	}
 
 }
 
-void DungeonGenerator::BuildMap(CoordList* data, int type)
-{
-	for (int y = 0; y < m_height; y++)
-	{
-		m_map.push_back(vector<int>());
-
-		for (int x = 0; x < m_width; x++)
-		{
-			for (Coord position : *data)
-			{
-				if (position.x == x && position.y == y)
-				{
-					m_map[y][x] = type;
-					continue;
-				}
-			}
-		}
-	}
-}
-
-void DungeonGenerator::DrawMap()
+void DungeonGenerator::DrawDungeon()
 {
 	system("cls");
 
@@ -100,7 +75,7 @@ void DungeonGenerator::DrawMap()
 			if (value == 0)
 				std::cout << ".";
 			else if (value == 1)
-				std::cout << "o";
+				std::cout << " ";
 			else if (value == -1)
 				std::cout << "*";
 		}

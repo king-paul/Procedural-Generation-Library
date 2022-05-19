@@ -79,6 +79,16 @@ struct Boundary
 
 typedef std::vector<Coord> CoordList;
 
+static bool CoordInList(CoordList* list, Coord position)
+{
+	CoordList::iterator iterator = std::find(list->begin(), list->end(), position);
+
+	if (iterator != list->end())
+		return true;
+		
+	return false;
+}
+
 class Direction2D
 {
 public:
