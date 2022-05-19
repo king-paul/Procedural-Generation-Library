@@ -22,20 +22,36 @@ CoordList Algorithms::RandomWalk(Coord startPosition, int walkLength)
 	return path;
 }
 
-CoordList Algorithms::RandomWalkCorridor(Coord starPosition, int corridorLength)
+
+CoordList Algorithms::RandomWalkCorridor(int dungeonWidth, int dungeonHeight, Coord startPosition, int corridorLength)
 {
 	CoordList corridor;
-	var direction = Direction2D::GetRandomCardinalDirection();
-	var currentPosition = starPosition;
+	Coord direction;
+
+	var currentPosition = startPosition;
 	corridor.Add(currentPosition);
+
+	// pick a random direction and if it will lead out of bounds pick another one
+	do {
+		direction = Direction2D::GetRandomCardinalDirection();
+		//direction = Direction2D::GetRandomTurnDirection(m_lastDirection);
+	} while (isOutOfBounds(dungeonWidth, dungeonHeight, startPosition + (direction * corridorLength)));
 
 	for (int i = 0; i < corridorLength; i++)
 	{
+		// if we are out of bounds go back one step and change direction
+		// currently doesn't take corners or spaces already visited into account
+		if (isOutOfBounds(dungeonWidth, dungeonHeight, currentPosition + direction))
+		{
+			direction = Direction2D::GetRandomTurnDirection(direction);
+		}
+
 		currentPosition += direction;
 		corridor.Add(currentPosition);
 	}
-	return corridor;
 
+	//Algorithms::m_lastDirection = direction; // records current direction for next corridor
+	return corridor;
 }
 
 vector<Boundary> Algorithms::BinarySpacePartitioning(Boundary spaceToSplit, int minWidth, int minHeight)
@@ -134,3 +150,18 @@ void Algorithms::SplitHorizontally(int minHeight, queue<Boundary> roomsQueue, Bo
 	roomsQueue.push(room2);
 }
 
+bool Algorithms::isOutOfBounds(int dungeonWidth, int dungeonHeight, Coord position)
+{
+	if (position.x < 0 || position.x > dungeonWidth ||
+		position.y < 0 || position.y > dungeonHeight)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+Coord Algorithms::ChangeDirection(Coord& position, Coord& direction, int dungeonWidth, int dungeonHeight)
+{
+	return Direction2D::GetRandomTurnDirection(direction);
+}

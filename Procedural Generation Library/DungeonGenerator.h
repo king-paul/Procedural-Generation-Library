@@ -13,91 +13,40 @@ extern "C" {
 	class DungeonGenerator
 	{
 	protected:
-		//int** m_map;
+		
+		// member variables
 		std::vector<vector<int>> m_map;
+		int m_width, m_height;
+		Coord m_startPosition;
 
-		int m_size;
-
-		DungeonGenerator(int size)
-		{
-			m_size = size;
-			//m_map = new int*[m_size];	
-
-			//for(int i=0; i< size; i++)
-				//m_map[i] = new int(0);
-
-			InitMap();			
-		}
-
-		~DungeonGenerator()
-		{
-
-		}
-
-		void InitMap()
-		{
-			//delete[] m_map;
-			//m_map = new int*[m_size];
-			//m_map[0].clear();
-			//m_map[1].clear();
-			m_map.clear();
-
-			// build the map with empty spaces
-			for (int y = 0; y < m_size; y++)
-			{
-				m_map.push_back(vector<int>());
-
-				for (int x = 0; x < m_size; x++)
-				{
-					m_map[y].push_back(0);
-				}
-			}
-		}
+		// functions
+		DungeonGenerator(int width, int height, Coord startPosition);
+		void InitMap();
+		void BuildMap(CoordList* floorData, CoordList* wallData);
+		void BuildMap(CoordList* data, int type);
 
 	public:
-		virtual void Generate() = 0; // abstract function		
-
+		~DungeonGenerator()	{ }
+		virtual void Generate() = 0; // abstract function	
 		//int** GetMap() { return m_map; }
-
-		int GetSpaceValue(int x, int y)
-		{
-			return m_map[y][x];
-		}
-
-		void DrawMap()
-		{
-			system("cls");
-
-			for (int y = 0; y < m_size; y++)
-			{
-				for (int x = 0; x < m_size; x++)
-				{
-					int value = GetSpaceValue(x, y);
-
-					if (value == 0)
-						std::cout << " ";
-					else if (value == 1)
-						std::cout << "o";
-					else if (value == -1)
-						std::cout << "*";
-				}
-
-				std::cout << std::endl;
-			}
-		}
+		int GetSpaceValue(int x, int y)	{ return m_map[y][x]; }
+		void DrawMap();
 
 	};
 
 	// Subclass 1
-	class RandomWalkDungeonGenerator : public DungeonGenerator
+	class RandomWalkGenerator : public DungeonGenerator
 	{
 	public:
 
-		RandomWalkDungeonGenerator(int size, Coord position, int iterations = 10, int walkLength = 10, bool startRandomly = true);
+		RandomWalkGenerator(int width, int height, Coord position, int iterations = 10, int walkLength = 10, bool startRandomly = true);
+		~RandomWalkGenerator() {}
 
 		void Generate() override;
 
 		CoordList RunRandomWalk();
+
+		Coord getPosition() { return m_position; }
 
 	protected:
 		Coord m_position;
@@ -108,23 +57,41 @@ extern "C" {
 
 
 	// Subclass 2
-	class CorridorFirstGenerator : public RandomWalkDungeonGenerator
+	class CorridorFirstGenerator : public DungeonGenerator
 	{
+		int m_corridorLength, m_TotalCorridors;
+		float m_roomPercent;
 
-	public:
+		RandomWalkGenerator* randomWalk;
+
+	public:		
+		CorridorFirstGenerator(int dungeonWidth, int dungeonHeight, Coord startPosition = {0, 0},
+							   int corridorLength = 30, int totalCorridors = 10, float roomPercent = 0.5f);
+
 		void Generate() override;
 
 	private:
-		void CreateRoomsAtdeadEnd(CoordList deadEnds, CoordList roomFloors);
-		void FindAllDeadEnds(CoordList floorPositions);
-		void CreateRooms(CoordList potentialRoomPositions);
-		void CreateCorridors(CoordList floorPositions, CoordList potentialRoomPositions);
+		void CreateRoomsAtDeadEnd(CoordList* deadEnds, CoordList* roomFloors);
+		CoordList FindAllDeadEnds(CoordList* floorPositions);
+		CoordList CreateRooms(CoordList* potentialRoomPositions);
+		void CreateCorridors(CoordList& floorPositions, CoordList& potentialRoomPositions);
 	};
 
+
+
 	// Subclass 3
-	class RoomFirstDungeonGenerator
+	class RoomFirstGenerator : public RandomWalkGenerator
 	{
+		// member variables
+		int minRoomWidth, minRoomHeight;
+		int dungeonWidth, dungeonHeight;
+		int offset;
+		bool randomWalkRooms = false;
+
 	public:
+		RoomFirstGenerator(int minRoomWidth, int minRoomHeight, int dungeonWidth, int dungeonHeight, 
+						   Coord startPosition, bool randomWalkRooms);
+
 		void CreateRooms();
 
 	private:

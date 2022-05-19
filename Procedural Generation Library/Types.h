@@ -34,10 +34,21 @@ struct Coord
 		return { x - rhs.x, y - rhs.y };
 	}
 
+	Coord operator *(int rhs)
+	{
+		return { x * rhs, y * rhs };
+	}
+
 	void operator +=(Coord rhs)
 	{
 		x += rhs.x;
 		y += rhs.y;
+	}
+
+	void operator -=(Coord rhs)
+	{
+		x -= rhs.x;
+		y -= rhs.y;
 	}
 
 	bool operator ==(Coord rhs)
@@ -111,6 +122,30 @@ public:
 		CoordList cardinalDirections = CardinalDirections();
 
 		return cardinalDirections[rand() % cardinalDirections.size()];
+	}
+
+	static Coord GetRandomTurnDirection(Coord direction)
+	{		
+		Coord possibleDirections[2];
+
+		// Vertical directions
+		if (direction == Coord(0, 1) || direction == Coord(0, -1)) { 
+
+			// Left and right
+			possibleDirections[0] = { -1, 0 };
+			possibleDirections[1] = {1, 0}; 
+		}
+
+		// Horizontal directions
+		else if (direction == Coord(-1, 0) || direction == Coord(1, 0))
+		{
+			// Up and down
+			possibleDirections[0] = { 0, 1 };
+			possibleDirections[1] = { 0, -1 };
+		}
+
+		// randomly select one of the two possible directions and return the value
+		return possibleDirections[rand() % 2];
 	}
 
 };

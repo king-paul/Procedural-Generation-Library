@@ -2,32 +2,40 @@
 
 using namespace ProceduralGeneration;
 
-void RoomFirstDungeonGenerator::CreateRooms()
+RoomFirstGenerator::RoomFirstGenerator(int minRoomWidth = 10, int minRoomHeight = 10,
+	int dungeonWidth = 20, int dungeonHeight = 20, Coord startPosition = { 0, 0 }, bool randomWalkRooms = false) :
+	RandomWalkGenerator(dungeonWidth, dungeonHeight, startPosition)
+{
+	
+}
+
+
+void RoomFirstGenerator::CreateRooms()
 {
 
 }
 
-CoordList RoomFirstDungeonGenerator::ConnectRooms()
-{
-	return CoordList();
-}
-
-CoordList RoomFirstDungeonGenerator::CreateCorridor(CoordList roomCenters)
-{
-	return CoordList();
-}
-
-CoordList RoomFirstDungeonGenerator::FindClosestPointTo(CoordList currentRoomCenter, CoordList roomCenters)
+CoordList RoomFirstGenerator::ConnectRooms()
 {
 	return CoordList();
 }
 
-CoordList RoomFirstDungeonGenerator::CreateSimpleRooms(CoordList roomsList)
+CoordList RoomFirstGenerator::CreateCorridor(CoordList roomCenters)
 {
 	return CoordList();
 }
 
-CoordList RoomFirstDungeonGenerator::CreateRoomsRandomly(CoordList roomsList)
+CoordList RoomFirstGenerator::FindClosestPointTo(CoordList currentRoomCenter, CoordList roomCenters)
+{
+	return CoordList();
+}
+
+CoordList RoomFirstGenerator::CreateSimpleRooms(CoordList roomsList)
+{
+	return CoordList();
+}
+
+CoordList RoomFirstGenerator::CreateRoomsRandomly(CoordList roomsList)
 {
 	return CoordList();
 }

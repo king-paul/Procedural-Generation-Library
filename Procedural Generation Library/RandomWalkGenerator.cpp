@@ -2,8 +2,8 @@
 
 using namespace ProceduralGeneration;
 
-RandomWalkDungeonGenerator::RandomWalkDungeonGenerator(int size, Coord position, int iterations, int walkLength, bool startRandomly) 
-   : DungeonGenerator(size)
+RandomWalkGenerator::RandomWalkGenerator(int width, int height, Coord position, 
+int iterations, int walkLength, bool startRandomly)  : DungeonGenerator(width, height, position)
 {
     /*
     m_size = size;
@@ -18,18 +18,18 @@ RandomWalkDungeonGenerator::RandomWalkDungeonGenerator(int size, Coord position,
 	m_startRandomly = startRandomly;    
 }
 
-void RandomWalkDungeonGenerator::Generate()
+void RandomWalkGenerator::Generate()
 {
 	InitMap();
     //DrawMap();
 	CoordList floorPositions = RunRandomWalk();
     CoordList wallPositions = Algorithms::GetWalls(floorPositions);
 
-    for (int y = 0; y < m_size; y++)
+    for (int y = 0; y < m_height; y++)
     {
         m_map.push_back(vector<int>());
 
-        for (int x = 0; x < m_size; x++)
+        for (int x = 0; x < m_width; x++)
         {            
             for (Coord position : floorPositions)
             {
@@ -58,7 +58,7 @@ void RandomWalkDungeonGenerator::Generate()
 
 }
 
-CoordList RandomWalkDungeonGenerator::RunRandomWalk()
+CoordList RandomWalkGenerator::RunRandomWalk()
 {
     var currentPosition = m_position;
     CoordList floorPositions;

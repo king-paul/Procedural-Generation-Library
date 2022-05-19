@@ -5,10 +5,8 @@ namespace ProceduralGeneration
 {
 	class Algorithms
 	{
-		static CoordList m_path;
-
+		
 	public:
-
 		/// <summary>
 		/// Algorithm that walks in a random direction a set number of times
 		/// </summary>
@@ -18,12 +16,14 @@ namespace ProceduralGeneration
 		static CoordList RandomWalk(Coord startPosition, int walkLength);
 
 		/// <summary>
-		/// 
+		/// Builds series of corridors in the dungeon based on the parameters provided
 		/// </summary>
-		/// <param name="starPosition"></param>
-		/// <param name="corridorLength"></param>
-		/// <returns></returns>
-		static CoordList RandomWalkCorridor(Coord starPosition, int corridorLength);
+		/// <param name="dungeonWidth:">The total width of the map being drawn on</param>
+		/// <param name="dungeonHeight:">The total height of the map being drawn on</param>
+		/// <param name="startPosition:">The location where the first step in the algorithm takes place</param>
+		/// <param name="corridorLength:">The number of steps in a corridor before changing direction</param>
+		/// <returns>A list of x and y corrdinates for the floor spaces within the corridor</returns>
+		static CoordList RandomWalkCorridor(int dungeonWidth, int dungeonHeight, Coord starttPosition, int corridorLength);
 
 		/// <summary>
 		/// Splits a section of the dungeon into smaller sections using the binary space partitioning algorithm
@@ -60,6 +60,9 @@ namespace ProceduralGeneration
 
 		// Find all adjacent walls in specified directions
 		static CoordList FindWallsInDirection(CoordList floorPositions, CoordList directionList);
+
+		static bool isOutOfBounds(int dungeonWidth, int dungeonHeight, Coord position);
+		static Coord ChangeDirection(Coord& position, Coord& direction, int dungeonWidth, int dungeonHeight);
 	};
 
 }
