@@ -2,6 +2,7 @@
 
 using namespace ProceduralGeneration;
 
+// 
 RandomWalkGenerator::RandomWalkGenerator(int width, int height, Coord position, 
 int iterations, int walkLength, bool startRandomly)  : DungeonGenerator(width, height, position)
 {
@@ -18,19 +19,20 @@ int iterations, int walkLength, bool startRandomly)  : DungeonGenerator(width, h
 	m_startRandomly = startRandomly;    
 }
 
+// 
 void RandomWalkGenerator::Generate()
 {
 	InitDungeon();    
 
 	CoordList floorPositions = RunRandomWalk(m_position);   
-    AddToDungeon(&floorPositions, 1);
+    //AddToDungeon(&floorPositions, 1);
 
-    //CoordList wallPositions = Algorithms::GetWalls(floorPositions);
-    //AddToDungeon(&wallPositions, -1);
+    CoordList wallPositions = Algorithms::GetWalls(floorPositions, {m_width, m_height});
+    AddToDungeon(&floorPositions, &wallPositions);
     //DrawMap();
-
 }
 
+// 
 CoordList RandomWalkGenerator::RunRandomWalk(Coord startPosition)
 {
     var currentPosition = startPosition;

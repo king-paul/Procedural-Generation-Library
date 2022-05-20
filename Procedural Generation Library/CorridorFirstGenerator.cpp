@@ -2,6 +2,7 @@
 
 using namespace ProceduralGeneration;
 
+
 CorridorFirstGenerator::CorridorFirstGenerator(int dungeonWidth, int dungeonHeight, Coord startPosition, 
 	int corridorLength, int totalCorridors, float roomPercent, RandomWalkParameters parameters)
 	: RandomWalkGenerator(dungeonWidth, dungeonHeight, startPosition, 

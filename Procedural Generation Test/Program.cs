@@ -6,14 +6,15 @@ namespace ProceduralGeneration
     {
         static void Main(string[] args)
         {
-			int size = 50;
-
-            DungeonGenerator dungeon = new DungeonGenerator(size);
+			DungeonGenerator dungeon = new CorridorFirstDungeon(200, 200, 100, 100, 30, 10, 0.5f);
+									       //RandomWalkRoom();
 
             //Console.WriteLine("Dungeon generated successfully");
 
             var map = dungeon.GetMap();
 			PrintDungeon(map);
+
+			//Console.ReadKey();
 		}
 
 		static void PrintDungeon(int[,] map)
@@ -25,9 +26,9 @@ namespace ProceduralGeneration
 					int value = map[y, x];
 
 					if (value == 0)
-						Console.Write(" ");
+						Console.Write(".");
 					else if (value == 1)
-						Console.Write("o");
+						Console.Write(" ");
 					else if (value == -1)
 						Console.Write("*");
 				}

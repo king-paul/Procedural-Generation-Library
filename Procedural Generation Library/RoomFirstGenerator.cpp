@@ -2,8 +2,8 @@
 
 using namespace ProceduralGeneration;
 
-RoomFirstGenerator::RoomFirstGenerator(int minRoomWidth = 10, int minRoomHeight = 10,
-	int dungeonWidth = 20, int dungeonHeight = 20, Coord startPosition = { 0, 0 }, bool randomWalkRooms = false) :
+RoomFirstGenerator::RoomFirstGenerator(int minRoomWidth, int minRoomHeight, int dungeonWidth, int dungeonHeight,
+	Coord startPosition, bool randomWalkRooms, RandomWalkParameters paramaters) :
 	RandomWalkGenerator(dungeonWidth, dungeonHeight, startPosition)
 {
 	

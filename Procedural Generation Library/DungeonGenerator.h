@@ -56,7 +56,7 @@ extern "C" {
 		RandomWalkGenerator(int width, int height, Coord position, int iterations = 10, int walkLength = 10, bool startRandomly = true);
 		~RandomWalkGenerator() {}
 
-		void Generate() override;
+		virtual void Generate() override;
 
 		CoordList RunRandomWalk(Coord startPosition);
 
@@ -89,7 +89,6 @@ extern "C" {
 	};
 
 
-
 	// Subclass 3
 	class RoomFirstGenerator : public RandomWalkGenerator
 	{
@@ -100,8 +99,8 @@ extern "C" {
 		bool randomWalkRooms = false;
 
 	public:
-		RoomFirstGenerator(int minRoomWidth, int minRoomHeight, int dungeonWidth, int dungeonHeight, 
-						   Coord startPosition, bool randomWalkRooms);
+		RoomFirstGenerator(int minRoomWidth, int minRoomHeight, int dungeonWidth, int dungeonHeight,
+			Coord startPosition, bool randomWalkRooms, RandomWalkParameters paramater = { 0, 0, 0});
 
 		void CreateRooms();
 

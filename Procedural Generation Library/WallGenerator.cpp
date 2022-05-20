@@ -3,6 +3,7 @@
 
 using namespace ProceduralGeneration;
 
+// Creates wall tiles using the tilemap visualizer by passing the floor positions
 CoordList Algorithms::GetWalls(CoordList floorPositions, Coord boundary)
 {
 	CoordList walls = CoordList();
@@ -19,6 +20,7 @@ CoordList Algorithms::GetWalls(CoordList floorPositions, Coord boundary)
 	return walls;
 }
 
+// checks if a specified position is withing the boundaries of the dungeon
 CoordList Algorithms::FindWallsInDirection(CoordList floorPositions, CoordList directionList, Coord boundary)
 {
 	CoordList wallPositions;
