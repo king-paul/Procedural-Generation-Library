@@ -38,7 +38,7 @@ namespace ProceduralGeneration
 		/// Creates wall tiles using the tilemap visualizer by passing the floor positions
 		/// </summary>
 		/// <returns>A list of coordinates for the will tiles</returns>
-		static CoordList GetWalls(CoordList floorPositions, Coord boundary);
+		static vector<Wall> GetWalls(CoordList floorPositions, Coord boundary);
 
 		/// <summary>
 		/// checks if a specified position is withing the boundaries of the dungeon
@@ -62,11 +62,41 @@ namespace ProceduralGeneration
 		/// <param name="room">The room to be split</param>
 		static void SplitHorizontally(int minHeight, queue<Boundary> roomsQueue, Boundary room);
 
-		// Find all adjacent walls in specified directions
-		static CoordList FindWallsInDirection(CoordList floorPositions, CoordList directionList, Coord boundary);
-
+		/// <summary>
+		/// Find all adjacent walls in specified directions
+		/// </summary>
+		/// <param name="floorPositions:">All the floors to be searched around</param>
+		/// <param name="directionList:">Contains a list of spaces to move from the current position when searching</param>
+		/// <param name="boundary:">The width and height of the dungeon</param>
+		/// <returns>A lists of coordinates for the walls positions found</returns>
+		static CoordList FindWallsInDirection(CoordList &floorPositions, CoordList directionList, Coord boundary);
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="direction"></param>
+		/// <param name="dungeonWidth"></param>
+		/// <param name="dungeonHeight"></param>
+		/// <returns></returns>
 		static Coord ChangeDirection(Coord& position, Coord& direction, int dungeonWidth, int dungeonHeight);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="floorPositions"></param>
+		/// <param name="sideWallPositions"></param>
+		/// <param name="cornerWallPositions"></param>
+		/// <returns></returns>
+		static vector<Wall> GetWallTiles(CoordList &floorPositions, CoordList &sideWallPositions, CoordList &cornerWallPositions);
+
+		/// <summary>
+		/// Takes in a binary number and returns the appropriate wall tile for it's position on the map
+		/// </summary>
+		/// <param name="binaryString:">The binary number in string format to find the matching tile with</param>
+		/// <param name="eightDirection:">Specifes whether the tile type is a 4-bit value or 8-bit</param>
+		/// <returns>Enumarator value for type of tile</returns>
+		static TileType GetWallType(std::string binaryString, bool eightDirection);
 	};
 
 }

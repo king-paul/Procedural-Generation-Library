@@ -23,32 +23,34 @@ void DungeonGenerator::InitDungeon()
 	// build the map with empty spaces
 	for (int y = 0; y < m_height; y++)
 	{
-		m_map.push_back(vector<int>());
+		m_map.push_back(vector<TileType>());
 
 		for (int x = 0; x < m_width; x++)
 		{
-			m_map[y].push_back(0);
+			m_map[y].push_back(TileType::Empty);
 		}
 	}
 
 }
 
-void DungeonGenerator::AddToDungeon(CoordList* floorData, CoordList* wallData)
+void DungeonGenerator::AddToDungeon(CoordList* floorData, vector<Wall>* wallData)
 {
 	for (Coord position : *floorData)
 	{
 		if (Algorithms::isOutOfBounds(m_width, m_height, position) == false)
-			m_map[position.y][position.x] = 1;
+			m_map[position.y][position.x] = TileType::Floor;
 	}
 
-	for (Coord position : *wallData)
+	for (Wall wall : *wallData)
 	{
-		if (Algorithms::isOutOfBounds(m_width, m_height, position) == false)
-			m_map[position.y][position.x] = -1;
+		if (Algorithms::isOutOfBounds(m_width, m_height, wall.position) == false)
+		{
+			m_map[wall.position.y][wall.position.x] = wall.tile;
+		}			
 	}
 }
 
-void DungeonGenerator::AddToDungeon(CoordList* data, int type)
+void DungeonGenerator::AddToDungeon(CoordList* data, TileType type)
 {
 	for (Coord position : *data)
 	{
@@ -57,7 +59,6 @@ void DungeonGenerator::AddToDungeon(CoordList* data, int type)
 			//std::cout << "X: " << position.x << ", Y: " << position.y << std::endl;
 			m_map[position.x][position.y] = type;
 		}
-
 	}
 
 }
@@ -70,16 +71,53 @@ void DungeonGenerator::DrawDungeon()
 	{
 		for (int x = 0; x < m_width; x++)
 		{
-			int value = GetSpaceValue(x, y);
-
-			if (value == 0)
+			//TileType tile = GetSpaceValue(x, y);
+			//std::cout << (int)tile;
+			
+			/*
+			if (tile == TileType::Empty)
 				std::cout << ".";
-			else if (value == 1)
-				std::cout << " ";
-			else if (value == -1)
-				std::cout << "*";
+			else if (tile == TileType::Floor)
+				std::cout << "O";
+			else
+				std::cout << "*";*/
+
+			switch ((int)GetSpaceValue(x, y))
+			{
+				case 0:	cout << " ";
+					break;
+
+				case 1:	cout << " ";
+					break;
+
+				case 2:	cout << "*";
+					break;
+
+				case 3: cout << "_";
+					break;
+				
+				case 4: case 7:	cout << "-";
+					break;
+
+				case 5: case 6:	cout << "|";
+					break;
+
+				case 8:	cout << "<";
+					break;
+
+				case 9: cout << ">";
+					break;
+
+				case 10: case 13:
+					cout << "/";
+					break;
+
+				case 11: case 12:
+					cout << "\\";
+					break;
+			}
 		}
 
-		std::cout << std::endl;
+		cout << endl;
 	}
 }

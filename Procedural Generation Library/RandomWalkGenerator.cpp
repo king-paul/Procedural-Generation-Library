@@ -27,8 +27,9 @@ void RandomWalkGenerator::Generate()
 	CoordList floorPositions = RunRandomWalk(m_position);   
     //AddToDungeon(&floorPositions, 1);
 
-    CoordList wallPositions = Algorithms::GetWalls(floorPositions, {m_width, m_height});
+    std::vector<Wall> wallPositions = Algorithms::GetWalls(floorPositions, {m_width, m_height});
     AddToDungeon(&floorPositions, &wallPositions);
+
     //DrawMap();
 }
 

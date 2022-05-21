@@ -9,7 +9,6 @@ RoomFirstGenerator::RoomFirstGenerator(int minRoomWidth, int minRoomHeight, int 
 	
 }
 
-
 void RoomFirstGenerator::CreateRooms()
 {
 

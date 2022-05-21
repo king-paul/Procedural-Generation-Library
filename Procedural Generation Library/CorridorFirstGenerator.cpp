@@ -42,7 +42,7 @@ void CorridorFirstGenerator::Generate()
     floorPositions.insert(floorPositions.end(), roomPositions.begin(), roomPositions.end());
         
     // get wall tiles 
-    CoordList wallPositions = Algorithms::GetWalls(floorPositions, Coord(m_width, m_height));
+    var wallPositions = Algorithms::GetWalls(floorPositions, Coord(m_width, m_height));
     
     // add tiles to the map
     //AddToDungeon(&wallPositions, -1);    

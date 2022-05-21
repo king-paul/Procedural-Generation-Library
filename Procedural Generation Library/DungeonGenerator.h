@@ -15,21 +15,21 @@ extern "C" {
 	protected:
 		
 		// member variables
-		std::vector<vector<int>> m_map;
+		std::vector<vector<TileType>> m_map;
 		int m_width, m_height;
 		Coord m_startPosition;
 
 		// functions
 		DungeonGenerator(int width, int height, Coord startPosition);
 		void InitDungeon();
-		void AddToDungeon(CoordList* floorData, CoordList* wallData);
-		void AddToDungeon(CoordList* data, int type);
+		void AddToDungeon(CoordList* floorData, std::vector<Wall>* wallData);
+		void AddToDungeon(CoordList* data, TileType type);
 
 	public:
 		~DungeonGenerator()	{ }
 		virtual void Generate() = 0; // abstract function	
 		//int** GetMap() { return m_map; }
-		int GetSpaceValue(int x, int y)	{ return m_map[y][x]; }
+		TileType GetSpaceValue(int x, int y) { return m_map[y][x]; }
 		void DrawDungeon();
 
 	};

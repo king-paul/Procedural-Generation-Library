@@ -14,7 +14,7 @@ DungeonGenerator* CreateRandomWalkRoom(int width, int height, int startX, int st
 extern "C" __declspec(dllexport)
 int GetSpaceValue(DungeonGenerator* dungeonPtr, int x, int y)
 {
-	return dungeonPtr->GetSpaceValue(x, y);
+	return (int) dungeonPtr->GetSpaceValue(x, y);
 }
 
 extern "C" __declspec(dllexport)

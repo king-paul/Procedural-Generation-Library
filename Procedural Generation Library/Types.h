@@ -1,12 +1,34 @@
 #pragma once
 #include <vector>
 #include <queue>
+#include <string>
 
 #define Add push_back
 #define var auto
 
 using namespace std;
 
+enum class TileType
+{
+	Empty, // 0
+	Floor, // 1
+	WallFull, // 2
+	Top, // 3
+	Bottom, // 4
+	SideLeft, // 5
+	SideRight, // 6
+	SideBottom, // 7
+	InnerCornerDownLeft, // 8
+	InnerCornerDownRight, // 9
+	DiagonalCornerDownLeft, // 10
+	DiagonalCornerDownRight, // 11
+	DiagonalCornerUpLeft, // 12
+	DiagonalCornerUpRight // 13
+};
+
+/***********
+ * Structs *
+ ***********/
 struct Coord
 {
 	int x;
@@ -77,6 +99,17 @@ struct Boundary
 	}
 };
 
+struct Wall
+{
+	Wall(Coord position, TileType tile) { 
+		this->position = position; 
+		this->tile = tile;
+	}
+
+	Coord position;
+	TileType tile;
+};
+
 typedef std::vector<Coord> CoordList;
 
 static bool CoordInList(CoordList* list, Coord position)
@@ -89,6 +122,7 @@ static bool CoordInList(CoordList* list, Coord position)
 	return false;
 }
 
+// classes
 class Direction2D
 {
 public:
