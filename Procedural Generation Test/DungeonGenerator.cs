@@ -5,9 +5,27 @@ using System.Text;
 
 namespace ProceduralGeneration
 {
+	public enum Tile
+    {
+		Empty,
+		Floor,
+		WallFull,
+		Top,
+		Bottom,
+		SideLeft,
+		SideRight,
+		SideBottom,
+		InnerCornerDownLeft,
+		InnerCornerDownRight,
+		DiagonalCornerDownLeft,
+		DiagonalCornerDownRight,
+		DiagonalCornerUpLeft,
+		DiagonalCornerUpRight
+	}
+
 	public class DungeonGenerator
 	{		
-		protected int[,] map;
+		protected Tile[,] map;
 
 		[DllImport("Procedural Generation Library.dll")]
 		public static extern void TestFunction();
@@ -31,7 +49,7 @@ namespace ProceduralGeneration
 		protected DungeonGenerator(int width, int height)
 		{
 			//this.size = size;
-			map = new int[width, height];
+			map = new Tile[width, height];
 		}
 
 		protected void BuildMap(IntPtr dungeonPointer)
@@ -42,13 +60,13 @@ namespace ProceduralGeneration
 			{
 				for (int x = 0; x < map.GetLength(1); x++)
 				{
-					map[x, y] = GetSpaceValue(dungeonPointer, x, y);
+					map[y, x] = (Tile) GetSpaceValue(dungeonPointer, x, y);
 				}
 
 			}
 		}
 
-		public int[,] GetMap()
+		public Tile[,] GetMap()
 		{
 			return map;
 		}
