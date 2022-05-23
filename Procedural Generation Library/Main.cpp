@@ -27,7 +27,7 @@ int main()
 		//new ProceduralGeneration::RandomWalkGenerator(width, height, startPos, 50, 15, false);
 		//new ProceduralGeneration::CorridorFirstGenerator(width, height, startPos, 30, 10, 0.5f,
 			//{ 15, 50, false });
-		new ProceduralGeneration::RoomFirstGenerator(width, height, { 0, 0 }, 10, 10, 3, false);// , randomWalk);
+		new ProceduralGeneration::RoomFirstGenerator(width, height, { 0, 0 }, 10, 10, 3, true, randomWalk);
 
 	dungeon->Generate();
 	dungeon->DrawDungeon();

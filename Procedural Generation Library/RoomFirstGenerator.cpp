@@ -4,7 +4,7 @@ using namespace ProceduralGeneration;
 
 RoomFirstGenerator::RoomFirstGenerator(int dungeonWidth, int dungeonHeight, Coord startPosition, 
     int minRoomWidth, int minRoomHeight, int offset, bool randomWalkRooms, RandomWalkParameters paramaters) :
-	RandomWalkGenerator(dungeonWidth, dungeonHeight, startPosition),
+	RandomWalkGenerator(dungeonWidth, dungeonHeight, startPosition, paramaters.iterations, paramaters.walkLength, paramaters.startRandomly),
 	m_minRoomWidth(minRoomWidth), m_minRoomHeight(minRoomHeight), m_offset(offset), m_randomWalkRooms(randomWalkRooms)
 {
 	
@@ -86,8 +86,8 @@ CoordList RoomFirstGenerator::CreateRandomWalkRooms(vector<Boundary> rooms)
         for(var position : roomFloor)
         {
             // checks that the position is inside the boundary and if it is adds it to the floors
-            if (position.x >= (roomBounds.min.x + m_offset) && position.x <= (roomBounds.min.x - m_offset) &&
-                position.y >= (roomBounds.min.y - m_offset) && position.y <= (roomBounds.min.y - m_offset))
+            if (position.x >= (roomBounds.min.x + m_offset) && position.x <= (roomBounds.max.x - m_offset) &&
+                position.y >= (roomBounds.min.y - m_offset) && position.y <= (roomBounds.max.y - m_offset))
             {
                 floor.Add(position);
             }
