@@ -75,7 +75,7 @@ vector<Boundary> Algorithms::BinarySpacePartitioning(Boundary spaceToSplit, int 
 		if (room.Size().y >= minHeight && room.Size().x >= minWidth)
 		{
 			// generates a random value between 0 and 1
-			float value = ((float)rand() / (RAND_MAX)) + 1;
+			float value = ((float)rand() / (RAND_MAX));
 
 			// if the random value is less than 0 split the room horizontally
 			if (value < 0.5f)
@@ -125,10 +125,10 @@ vector<Boundary> Algorithms::BinarySpacePartitioning(Boundary spaceToSplit, int 
 	return roomsList;
 }
 
-void ProceduralGeneration::Algorithms::SplitVertically(int minWidth, queue<Boundary> roomsQueue, Boundary room)
+void ProceduralGeneration::Algorithms::SplitVertically(int minWidth, queue<Boundary> &roomsQueue, Boundary room)
 {
 	// generate a random number between 1 and the width of the room
-	int xSplit = (rand() % room.Size().x) + 1;
+	int xSplit = room.Size().x / 2; //(rand() % room.Size().x) + 1;
 
 	// creates the first room by passing in the start position and the size
 	Boundary room1(room.min, Coord(xSplit, room.Size().y));
@@ -141,11 +141,12 @@ void ProceduralGeneration::Algorithms::SplitVertically(int minWidth, queue<Bound
 	roomsQueue.push(room2);
 }
 
-void Algorithms::SplitHorizontally(int minHeight, queue<Boundary> roomsQueue, Boundary room)
+void Algorithms::SplitHorizontally(int minHeight, queue<Boundary> &roomsQueue, Boundary room)
 {
 	// generate a random number between 1 and the height of the room
-	int ySplit = (rand() % room.Size().y) + 1;
+	int ySplit = room.Size().y / 2; // (rand() % room.Size().y) + 1;
 	//(minHeight, room.Size().y - minHeight) : splits evenly to fit 2 rooms together
+
 	Boundary room1(room.min, Coord(room.Size().x, ySplit));
 	Boundary room2(Coord(room.min.x, room.min.y + ySplit),
 		Coord(room.Size().x, room.Size().y - ySplit));

@@ -38,7 +38,7 @@ namespace ProceduralGeneration
 		/// Creates wall tiles using the tilemap visualizer by passing the floor positions
 		/// </summary>
 		/// <returns>A list of coordinates for the will tiles</returns>
-		static vector<Wall> GetWalls(CoordList floorPositions, Coord boundary);
+		static vector<Wall> GetWalls(CoordList& floorPositions, Coord boundary);
 
 		/// <summary>
 		/// checks if a specified position is withing the boundaries of the dungeon
@@ -52,7 +52,7 @@ namespace ProceduralGeneration
 	    /// <param name="minWidth">Not currently used</param>
 	    /// <param name="roomsQueue">The queue of bounding boxes to be split</param>
 	    /// <param name="room">The room to be split</param>
-		static void SplitVertically(int minWidth, queue<Boundary> roomsQueue, Boundary room);
+		static void SplitVertically(int minWidth, queue<Boundary> &roomsQueue, Boundary room);
 
 		/// <summary>
 		///  splits a rooom across the middle into two rooms above and below
@@ -60,7 +60,7 @@ namespace ProceduralGeneration
 		/// <param name="minHeight">Not currently used</param>
 		/// <param name="roomsQueue">The queue of bounding boxes to be split</param>
 		/// <param name="room">The room to be split</param>
-		static void SplitHorizontally(int minHeight, queue<Boundary> roomsQueue, Boundary room);
+		static void SplitHorizontally(int minHeight, queue<Boundary> &roomsQueue, Boundary room);
 
 		/// <summary>
 		/// Find all adjacent walls in specified directions

@@ -93,23 +93,23 @@ extern "C" {
 	class RoomFirstGenerator : public RandomWalkGenerator
 	{
 		// member variables
-		int minRoomWidth, minRoomHeight;
-		int dungeonWidth, dungeonHeight;
-		int offset;
-		bool randomWalkRooms = false;
+		int m_minRoomWidth, m_minRoomHeight;
+		int m_offset;
+		bool m_randomWalkRooms = false;
 
 	public:
-		RoomFirstGenerator(int minRoomWidth, int minRoomHeight, int dungeonWidth, int dungeonHeight,
-			Coord startPosition, bool randomWalkRooms, RandomWalkParameters paramater = { 0, 0, 0});
+		RoomFirstGenerator(int dungeonWidth, int dungeonHeight,	Coord startPosition,
+			int minRoomWidth = 4, int minRoomHeight = 4, int offset = 1, bool randomWalkRooms = false, 
+			RandomWalkParameters paramater = { 0, 0, 0});
 
-		void CreateRooms();
+		void Generate() override;
 
 	private:
-		CoordList ConnectRooms();
-		CoordList CreateCorridor(CoordList roomCenters);
-		CoordList FindClosestPointTo(CoordList currentRoomCenter, CoordList roomCenters);
-		CoordList CreateSimpleRooms(CoordList roomsList);
-		CoordList CreateRoomsRandomly(CoordList roomsList);
+		CoordList ConnectRooms(CoordList roomCenters);
+		CoordList CreateCorridor(Coord currentRoomCenter, Coord destination);
+		Coord FindClosestPointTo(Coord currentRoomCenter, CoordList roomCenters);
+		CoordList CreateSimpleRooms(std::vector<Boundary> rooms);
+		CoordList CreateRandomWalkRooms(std::vector<Boundary> roomsList);
 	};
 }
 

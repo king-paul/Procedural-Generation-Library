@@ -18,15 +18,16 @@ int main()
 {
 	srand((unsigned int) time(NULL));
 
-	int width = 200;
-	int height = 200;
+	int width = 70;
+	int height = 70;
 	Coord startPos = { width/2, height/2 };
-	ProceduralGeneration::RandomWalkParameters(15, 50, false);
+	ProceduralGeneration::RandomWalkParameters randomWalk(15, 50, false);
 
 	ProceduralGeneration::DungeonGenerator* dungeon =
 		//new ProceduralGeneration::RandomWalkGenerator(width, height, startPos, 50, 15, false);
-		new ProceduralGeneration::CorridorFirstGenerator(width, height, startPos, 30, 10, 0.5f,
-			{ 15, 50, false });
+		//new ProceduralGeneration::CorridorFirstGenerator(width, height, startPos, 30, 10, 0.5f,
+			//{ 15, 50, false });
+		new ProceduralGeneration::RoomFirstGenerator(width, height, { 0, 0 }, 10, 10, 3, false);// , randomWalk);
 
 	dungeon->Generate();
 	dungeon->DrawDungeon();

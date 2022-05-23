@@ -80,6 +80,25 @@ struct Coord
 
 		return false;
 	}
+
+	static float DistanceBetween(Coord a, Coord b)
+	{
+		/*
+		Coord difference;
+		float aMagnitude = sqrt(a.x * a.x + a.y * a.y);
+		float bMagnitude = sqrt(b.x * b.x + b.y * b.y);
+
+		if (aMagnitude >= bMagnitude)
+			difference = a - b;
+		else
+			difference = b - a;
+
+		return sqrt(difference.x * difference.x + difference.y * difference.y);*/
+
+		float num = (float) (a.x - b.x);
+		float num2 = (float) (a.y - b.y);
+		return (float)sqrt(num * num + num2 * num2);
+	}
 };
 
 struct Boundary
@@ -87,16 +106,34 @@ struct Boundary
 	Coord min;
 	Coord max;
 
-	Boundary(Coord min, Coord max)
+	Coord size;
+
+	Boundary(Coord min, Coord size)
 	{
-		this->min = min;
-		this->max = max;
+		this->min = min;		
+		this->size = size;
+		this->max = min + size;
 	}
 
 	Coord Size()
 	{
-		return { max.x - min.x, max.y - min.y };
+		return size;
 	}
+
+	int GetWidth() { return max.x - min.x; }
+	int GetHeight() { return max.y - min.y; }
+
+	Coord Center()
+	{
+		int width = max.x - min.x;
+		int height = max.y - min.y;
+
+		int x = min.x + (width / 2);
+		int y = min.y + (height / 2);
+
+		return Coord(x, y);
+	}
+
 };
 
 struct Wall
@@ -126,6 +163,11 @@ static bool CoordInList(CoordList* list, Coord position)
 class Direction2D
 {
 public:
+
+	static Coord Up() { return { 0, 1 }; }
+	static Coord Down() { return { 0, -1 }; }
+	static Coord Left() { return { -1, 0 }; }
+	static Coord Right() { return { 1, 0 }; }
 
 	static CoordList CardinalDirections()
 	{

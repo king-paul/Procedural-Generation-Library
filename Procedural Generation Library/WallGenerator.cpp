@@ -5,7 +5,7 @@
 
 using namespace ProceduralGeneration;
 
-vector<Wall> Algorithms::GetWalls(CoordList floorPositions, Coord boundary)
+vector<Wall> Algorithms::GetWalls(CoordList& floorPositions, Coord boundary)
 {
 	//CoordList wallPositions = CoordList();
 
