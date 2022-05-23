@@ -6,7 +6,8 @@ namespace ProceduralGeneration
     {
         static void Main(string[] args)
         {
-			DungeonGenerator dungeon = new CorridorFirstDungeon(200, 200, 100, 100, 30, 10, 0.5f);
+			DungeonGenerator dungeon = new RoomFirstDungeon(70, 70, 0, 0, 10, 10, 3, false);
+				//new CorridorFirstDungeon(200, 200, 100, 100, 30, 10, 0.5f);
 									       //RandomWalkRoom();
 
             var map = dungeon.GetMap();

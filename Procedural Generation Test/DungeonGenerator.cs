@@ -40,6 +40,10 @@ namespace ProceduralGeneration
 								int roomWalkIterations = 15, int roomWalkLength = 10, bool startRandomlyEachWalk = false);
 
 		[DllImport("Procedural Generation Library.dll")]
+		protected static extern IntPtr CreateRoomFirstDungeon(int width, int height, int startX, int staryY, int minRoomWidth, int minRoomHeight, int offset, bool randomWalkRooms,
+										  int roomWalkIterations, int roomWalkLength, bool startRandomlyEachWalk);
+
+		[DllImport("Procedural Generation Library.dll")]
 		protected static extern void GenerateDungeon(IntPtr dungeonPtr);
  
 
@@ -91,7 +95,6 @@ namespace ProceduralGeneration
     // subclass 2
     public class CorridorFirstDungeon : DungeonGenerator
     {
-
 		private readonly IntPtr dungeonPointer;
 
 		public CorridorFirstDungeon(int dungeonWidth, int dungeonHeight, int startX, int staryY, int corridorLength, int totalCorridors, float roomPercent,
@@ -100,6 +103,20 @@ namespace ProceduralGeneration
         {
 			dungeonPointer = CreateCorridorFirstDungeon(dungeonWidth, dungeonHeight, startX, staryY, corridorLength, totalCorridors, roomPercent,
 								roomWalkIterations, roomWalkLength, startRandomlyEachWalk);
+			BuildMap(dungeonPointer);
+		}
+    }
+
+	// subclass 3
+	public class RoomFirstDungeon : DungeonGenerator
+    {
+		private readonly IntPtr dungeonPointer;
+
+        public RoomFirstDungeon(int width, int height, int startX, int staryY, int minRoomWidth, int minRoomHeight, int offset, bool randomWalkRooms,
+								   int roomWalkIterations = 15, int roomWalkLength = 10, bool startRandomlyEachWalk = false) 	: base(width, height)
+        {
+			dungeonPointer = CreateRoomFirstDungeon(width, height, startX, staryY, minRoomWidth, minRoomHeight, offset, randomWalkRooms, 
+												   roomWalkIterations, roomWalkLength, startRandomlyEachWalk);
 			BuildMap(dungeonPointer);
 		}
     }

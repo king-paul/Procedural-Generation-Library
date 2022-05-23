@@ -27,7 +27,7 @@ DungeonGenerator* CreateCorridorFirstDungeon(int width, int height, int startX, 
 
 extern "C" __declspec(dllexport)
 DungeonGenerator * CreateRoomFirstDungeon(int width, int height, int startX, int staryY, int minRoomWidth, int minRoomHeight, int offset, bool randomWalkRooms,
-											int roomWalkIterations = 15, int roomWalkLength = 10, bool startRandomlyEachWalk = false)
+										  int roomWalkIterations, int roomWalkLength, bool startRandomlyEachWalk)
 {
 	return new ProceduralGeneration::RoomFirstGenerator(width, height, { startX, staryY }, minRoomWidth, minRoomHeight, offset, randomWalkRooms,
 													   {roomWalkIterations, roomWalkLength, startRandomlyEachWalk});
