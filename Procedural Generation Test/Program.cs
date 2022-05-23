@@ -6,7 +6,7 @@ namespace ProceduralGeneration
     {
         static void Main(string[] args)
         {
-			DungeonGenerator dungeon = new RoomFirstDungeon(70, 70, 0, 0, 10, 10, 3, true, 50, 15, false);
+			DungeonGenerator dungeon = new RoomFirstDungeon(70, 70, 10, 10, 10, 10, 3, true, 50, 15, false);
 				//new CorridorFirstDungeon(200, 200, 100, 100, 30, 10, 0.5f);
 									       //RandomWalkRoom();
 
