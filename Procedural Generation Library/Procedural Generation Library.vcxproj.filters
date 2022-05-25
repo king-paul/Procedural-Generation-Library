@@ -13,31 +13,46 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Dungeon Generator">
+      <UniqueIdentifier>{ed898d5d-252a-4d2a-b58d-17311bc78f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cave Generator">
+      <UniqueIdentifier>{befdaf9b-c64b-4a59-8fc1-46863b8f7526}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Cave Ganeration">
+      <UniqueIdentifier>{dbafb28c-5825-470f-8cca-bfb60c43d838}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RandomWalkGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomFirstGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DungeonGenerationAlgorithms.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WallGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CorridorFirstGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Linkage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WallGenerator.cpp">
+      <Filter>Source Files\Dungeon Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomFirstGenerator.cpp">
+      <Filter>Source Files\Dungeon Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomWalkGenerator.cpp">
+      <Filter>Source Files\Dungeon Generator</Filter>
+    </ClCompile>
     <ClCompile Include="DungeonGenerator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Dungeon Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="DungeonGenerationAlgorithms.cpp">
+      <Filter>Source Files\Dungeon Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="CorridorFirstGenerator.cpp">
+      <Filter>Source Files\Dungeon Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="CaveGenerator.cpp">
+      <Filter>Source Files\Cave Generator</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGenerator.cpp">
+      <Filter>Source Files\Cave Generator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +67,21 @@
     </ClInclude>
     <ClInclude Include="WallTypes.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SquareGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CaveGenerator.h">
+      <Filter>Header Files\Cave Ganeration</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGenerator.h">
+      <Filter>Header Files\Cave Ganeration</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

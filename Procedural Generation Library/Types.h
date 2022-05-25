@@ -3,6 +3,8 @@
 #include <queue>
 #include <string>
 
+#include "Vector.h"
+
 #define Add push_back
 #define var auto
 
@@ -26,9 +28,100 @@ enum class TileType
 	DiagonalCornerUpRight // 13
 };
 
-/***********
- * Structs *
- ***********/
+template <class T>
+class Array2D
+{
+	T* data;
+
+	unsigned int rows;
+	unsigned int cols;
+
+public:
+	Array2D(unsigned int cols, unsigned int row)
+	{
+		data = new T[rows * cols];
+		
+		/*
+		for (int i = 0; i < rows * cols; i++)
+		{
+			data[i] = nullptr;
+		}*/
+
+		this->rows = rows;
+		this->cols = cols;
+	}
+
+	// copy constructor
+	Array2D(const Array2D& ref)
+	{
+		rows = ref.rows;
+		cols = ref.cols;
+
+		data = new T[rows * cols];
+		
+		for (int i = 0; i < rows * cols; i++)
+		{
+			data[i] = ref.data[i];
+		}
+
+	}
+
+	// assignment operator
+	Array2D& operator =(const Array2D& ref)
+	{
+		if (this == &ref)
+		{
+			return;
+		}
+
+		delete[] data;
+
+		rows = ref.rows;
+		cols = ref.cols;
+
+		data = new T[rows * cols];
+
+		for (int i = 0; i < rows * cols; i++)
+		{
+			data[i] = ref.data[i];
+		}
+	}
+
+	~Array2D()
+	{
+		delete[] data;
+	}
+
+	T& get(unsigned int col, unsigned int row)
+	{
+		return data[IndexOf(row, col)];
+	}
+
+	void set(unsigned int col, unsigned int row, T value)
+	{
+		data[IndexOf(row, col)] = value;
+	}
+
+	int getSize(int dimention)
+	{
+		if (dimention == 0)
+			return rows;
+		if (dimention == 1)
+			return cols;
+
+		return 0;
+	}
+
+private:
+	int IndexOf(unsigned int row, unsigned int col)
+	{
+		return col + row * cols;
+	}
+};
+
+/******************************
+ * Dungeon Generation Structs *
+ ******************************/
 struct Coord
 {
 	int x;
@@ -159,79 +252,91 @@ static bool CoordInList(CoordList* list, Coord position)
 	return false;
 }
 
-// classes
-class Direction2D
+/*********************
+ * Square Gird types *
+ *********************/
+struct Node
 {
-public:
+	Vector3 position;
+	int vertexIndex;
 
-	static Coord Up() { return { 0, 1 }; }
-	static Coord Down() { return { 0, -1 }; }
-	static Coord Left() { return { -1, 0 }; }
-	static Coord Right() { return { 1, 0 }; }
+	Node() {
 
-	static CoordList CardinalDirections()
+	}
+
+	Node(Vector3 pos)
 	{
-		return {
-			{0, 1 }, // UP
-			{1, 0 }, // RIGHT
-			{0, -1}, // DOWN
-			{-1, 0} //LEFT
-		};
+		position = pos;
+		vertexIndex = -1;
 	}
+};
 
-	static CoordList DiagonalDirections()
+struct ControlNode : Node
+{
+	bool active;
+	Node* above, * right; // The positions above and to the right of the control node
+
+	ControlNode()
 	{
-		return {
-			{1, 1}, // UP-RIGHT
-			{1, -1}, // RIGHT-DOWN
-			{-1, -1}, // DOWN-LEFT
-			{-1, 1} // LEFT-UP
-		};
+
 	}
 
-	static CoordList AllDirections()
+	ControlNode(Vector3 pos, bool active, float squareSize) : Node(pos), active(active)
 	{
-		return {
-			{0, 1 }, // UP
-			{1, 1}, // UP-RIGHT
-			{1, 0 }, // RIGHT
-			{1, -1}, // RIGHT-DOWN
-			{0, -1}, // DOWN						
-			{-1, -1}, // DOWN-LEFT
-			{-1, 0}, //LEFT	
-			{-1, 1} // LEFT-UP
-		};
+		Vector3 forwardVector = Vector3::Forward() * ((float)squareSize / 2.0f);
+		Vector3 rightVector = Vector3::Forward() * ((float) squareSize / 2.0f);
+
+		// set the position to the distance above
+		above = new Node(position + forwardVector);
+		// set the position to the distance to the right
+		right = new Node(position + rightVector);
 	}
 
-	static Coord GetRandomCardinalDirection()
+	~ControlNode()
 	{
-		CoordList cardinalDirections = CardinalDirections();
-
-		return cardinalDirections[rand() % cardinalDirections.size()];
+		delete above;
+		delete right;
 	}
 
-	static Coord GetRandomTurnDirection(Coord direction)
-	{		
-		Coord possibleDirections[2];
+};
 
-		// Vertical directions
-		if (direction == Coord(0, 1) || direction == Coord(0, -1)) { 
+struct Square
+{
+	ControlNode* topLeft, * topRight, * bottomRight, *bottomLeft;
+	Node* centreTop, * centreRight, * centreBottom, * centreLeft;
 
-			// Left and right
-			possibleDirections[0] = { -1, 0 };
-			possibleDirections[1] = {1, 0}; 
-		}
+	short configuration; // value is between 0000 and 1111
 
-		// Horizontal directions
-		else if (direction == Coord(-1, 0) || direction == Coord(1, 0))
-		{
-			// Up and down
-			possibleDirections[0] = { 0, 1 };
-			possibleDirections[1] = { 0, -1 };
-		}
+	Square()
+	{
 
-		// randomly select one of the two possible directions and return the value
-		return possibleDirections[rand() % 2];
 	}
 
+	Square(ControlNode* topLeft, ControlNode* topRight, ControlNode* bottomRight, ControlNode* bottomLeft)
+	{
+		// set the cornor nodes
+		this->topLeft = topLeft;
+		this->topRight = topRight;
+		this->bottomRight = bottomRight;
+		this->bottomLeft = bottomLeft;
+
+		// set center nodes to the nodes connected to the corner nodes
+		this->centreTop = topLeft->right;
+		this->centreRight = bottomRight->above;
+		this->centreBottom = bottomLeft->right;
+		this->centreLeft = bottomLeft->above;
+
+		configuration = 0;
+
+		// turns on the appropriate bit in the four bit number base on
+		// which control nodes are active
+		if (topLeft->active)
+			configuration += 8; // turns on the first bit
+		if (topRight->active)
+			configuration += 4; // turns on the second bit
+		if (bottomRight->active)
+			configuration += 2; // turns on the thrid bit
+		if (bottomLeft->active)
+			configuration += 1; // turns on the fourth bit			
+	}
 };

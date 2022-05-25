@@ -139,9 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CaveGenerator.cpp" />
     <ClCompile Include="CorridorFirstGenerator.cpp" />
     <ClCompile Include="DungeonGenerator.cpp" />
     <ClCompile Include="Linkage.cpp" />
+    <ClCompile Include="MeshGenerator.cpp" />
     <ClCompile Include="RandomWalkGenerator.cpp" />
     <ClCompile Include="DungeonGenerationAlgorithms.cpp" />
     <ClCompile Include="RoomFirstGenerator.cpp" />
@@ -150,8 +152,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h" />
+    <ClInclude Include="CaveGenerator.h" />
+    <ClInclude Include="MeshGenerator.h" />
+    <ClInclude Include="SquareGrid.h" />
+    <ClInclude Include="Direction2D.h" />
     <ClInclude Include="DungeonGenerator.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Vector.h" />
     <ClInclude Include="WallTypes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
