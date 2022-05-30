@@ -33,8 +33,8 @@ class Array2D
 {
 	T* data;
 
-	unsigned int rows;
-	unsigned int cols;
+	unsigned int rows = 0;
+	unsigned int cols = 0;
 
 public:
 	Array2D(unsigned int cols, unsigned int row)
@@ -176,18 +176,6 @@ struct Coord
 
 	static float DistanceBetween(Coord a, Coord b)
 	{
-		/*
-		Coord difference;
-		float aMagnitude = sqrt(a.x * a.x + a.y * a.y);
-		float bMagnitude = sqrt(b.x * b.x + b.y * b.y);
-
-		if (aMagnitude >= bMagnitude)
-			difference = a - b;
-		else
-			difference = b - a;
-
-		return sqrt(difference.x * difference.x + difference.y * difference.y);*/
-
 		float num = (float) (a.x - b.x);
 		float num2 = (float) (a.y - b.y);
 		return (float)sqrt(num * num + num2 * num2);
@@ -261,7 +249,8 @@ struct Node
 	int vertexIndex;
 
 	Node() {
-
+		position = Vector3::Zero();
+		vertexIndex = -1;
 	}
 
 	Node(Vector3 pos)
@@ -274,11 +263,14 @@ struct Node
 struct ControlNode : Node
 {
 	bool active;
-	Node* above, * right; // The positions above and to the right of the control node
+	Node *above, *right; // The positions above and to the right of the control node
 
+	
 	ControlNode()
 	{
-
+		active = false;
+		above = nullptr;
+		right = nullptr;
 	}
 
 	ControlNode(Vector3 pos, bool active, float squareSize) : Node(pos), active(active)
@@ -302,14 +294,24 @@ struct ControlNode : Node
 
 struct Square
 {
-	ControlNode* topLeft, * topRight, * bottomRight, *bottomLeft;
-	Node* centreTop, * centreRight, * centreBottom, * centreLeft;
+	ControlNode *topLeft, *topRight, *bottomRight, *bottomLeft;
+	Node *centreTop, *centreRight, *centreBottom, *centreLeft;
 
 	short configuration; // value is between 0000 and 1111
-
+	
 	Square()
 	{
+		topLeft = nullptr;
+		topRight = nullptr;
+		bottomLeft = nullptr;
+		bottomRight = nullptr;
 
+		centreTop = nullptr;
+		centreRight = nullptr;
+		centreBottom = nullptr;
+		centreLeft = nullptr;
+
+		configuration = 0000;
 	}
 
 	Square(ControlNode* topLeft, ControlNode* topRight, ControlNode* bottomRight, ControlNode* bottomLeft)

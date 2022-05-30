@@ -54,6 +54,9 @@
     <ClCompile Include="MeshGenerator.cpp">
       <Filter>Source Files\Cave Generator</Filter>
     </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source Files\Cave Generator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h">
@@ -68,9 +71,6 @@
     <ClInclude Include="WallTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SquareGrid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Direction2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -81,6 +81,12 @@
       <Filter>Header Files\Cave Ganeration</Filter>
     </ClInclude>
     <ClInclude Include="MeshGenerator.h">
+      <Filter>Header Files\Cave Ganeration</Filter>
+    </ClInclude>
+    <ClInclude Include="SquareGrid.h">
+      <Filter>Header Files\Cave Ganeration</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
       <Filter>Header Files\Cave Ganeration</Filter>
     </ClInclude>
   </ItemGroup>

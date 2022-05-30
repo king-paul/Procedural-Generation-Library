@@ -216,3 +216,25 @@ int CaveGenerator::GetSurroundingWallCount(int gridX, int gridY)
 
     return wallCount;
 }
+
+void CaveGenerator::ConnectRooms(vector<Room> allRooms, bool forceAccessFromMainRoom)
+{
+}
+
+void CaveGenerator::CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB)
+{
+}
+
+void CaveGenerator::DrawCircle(Coord coordinate, int radius)
+{
+}
+
+std::vector<Coord> CaveGenerator::GetLine(Coord from, Coord to)
+{
+    return std::vector<Coord>();
+}
+
+Vector3 CaveGenerator::CoordToWorldPoint(Coord tile)
+{
+    return Vector3();
+}

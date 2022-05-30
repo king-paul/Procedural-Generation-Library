@@ -1,5 +1,6 @@
 #pragma once
 #include "Types.h"
+#include "Room.h"
 
 class CaveGenerator
 {
@@ -72,4 +73,18 @@ private:
     /// <param name="gridY">The row on the grid</param>
     /// <returns>The total number of walls sorrounding the gird space</returns>
     int GetSurroundingWallCount(int gridX, int gridY);
+
+    // Connects all rooms in the cave that are closest distance from each other
+    void ConnectRooms(vector<Room> allRooms, bool forceAccessFromMainRoom = false);
+
+    // Creates floor tiles between two rooms
+    void CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB);
+
+    // calculates a straight line between two coordinate points
+    void DrawCircle(Coord coordinate, int radius);
+
+    // Gets a list of all of the regions containing a specified tile type
+    std::vector<Coord> GetLine(Coord from, Coord to);
+
+    Vector3 CoordToWorldPoint(Coord tile);
 };

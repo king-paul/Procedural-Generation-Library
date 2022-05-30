@@ -144,7 +144,7 @@ void ProceduralGeneration::MeshGenerator::AssignVertices(Node points[])
     {
         if (points[i].vertexIndex == -1)
         {
-            points[i].vertexIndex = m_vertices->size();
+            points[i].vertexIndex = (int) m_vertices->size();
             m_vertices->Add(points[i].position);
         }
     }
