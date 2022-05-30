@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Wave Function Collapse">
+      <UniqueIdentifier>{069586a7-d957-4beb-8ec5-03e8f0c5bf90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Wave Function Collapse\Patterns">
+      <UniqueIdentifier>{f4c07de5-415f-4343-a7fd-f7822f635f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Wave Function Collapse">
+      <UniqueIdentifier>{ecaa1605-8585-4cac-91b3-7487d9014d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Wave Function Collapse\Patterns">
+      <UniqueIdentifier>{87020a66-cea4-4019-8a94-ed9e6b3e306c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -39,6 +51,18 @@
     <ClCompile Include="DungeonGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Pattern.cpp">
+      <Filter>Source Files\Wave Function Collapse\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="PatternData.cpp">
+      <Filter>Source Files\Wave Function Collapse\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="PatternNeighbours.cpp">
+      <Filter>Source Files\Wave Function Collapse\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="PatternManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h">
@@ -51,6 +75,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WallTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pattern.h">
+      <Filter>Header Files\Wave Function Collapse\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternData.h">
+      <Filter>Header Files\Wave Function Collapse\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternNeighbours.h">
+      <Filter>Header Files\Wave Function Collapse\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

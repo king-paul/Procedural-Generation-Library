@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <map>
 
 #define Add push_back
 #define var auto
@@ -29,6 +30,38 @@ enum class TileType
 /***********
  * Structs *
  ***********/
+template <class T>
+struct Array2D
+{
+	T** data;
+
+	T get(int row, int col) {
+		data[row][col];
+	}
+
+	void set(int row, int col, T value)
+	{
+		data[row][col] = value;
+	}
+
+	int Length() 
+	{
+		return 0;
+	}
+
+};
+
+template <class T>
+struct JaggedArray : public Array2D<T>
+{
+
+	JaggedArray(int rows, int cols)
+	{
+
+	}
+
+};
+
 struct Coord
 {
 	int x;
@@ -159,6 +192,11 @@ static bool CoordInList(CoordList* list, Coord position)
 	return false;
 }
 
+enum class Direction
+{
+	Up, Down, Left, Right
+};
+
 // classes
 class Direction2D
 {
@@ -233,5 +271,23 @@ public:
 		// randomly select one of the two possible directions and return the value
 		return possibleDirections[rand() % 2];
 	}
+
+	static Direction GetOpposite(Direction direction)
+	{
+		switch (direction)
+		{
+			case Direction::Up:
+				return Direction::Down;
+			case Direction::Down:
+				return Direction::Up;
+			case Direction::Left:
+				return Direction::Right;
+			case Direction::Right:
+				return Direction::Left;
+			default:
+				return direction;
+		}
+	}
+		
 
 };
