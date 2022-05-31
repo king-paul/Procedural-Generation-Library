@@ -10,6 +10,16 @@
 
 using namespace std;
 
+template <typename T> int sign(T val) {
+
+	if (val < 0)
+		return -val;
+	else 
+		return val;
+
+	//return (T(0) < val) - (val < T(0));
+}
+
 enum class TileType
 {
 	Empty, // 0

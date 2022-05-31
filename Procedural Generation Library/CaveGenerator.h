@@ -12,11 +12,13 @@ class CaveGenerator
     bool m_useRandomSeed;
 
     int m_randomFillPercent;
-    int m_smoothingIterations = 5;
+    int m_smoothingIterations;
 
-    int m_borderSize = 1; // the size of the boarder around the map
-    int m_wallThresholdSize = 50; // the minimum size of a wall
-    int m_roomThresholdSize = 50; // the minimum size of a room
+    int m_borderSize; // the size of the boarder around the map
+    int m_wallThresholdSize; // the minimum size of a wall
+    int m_roomThresholdSize; // the minimum size of a room
+
+    int m_passageWidth; // how wide the passages connecting rooms is
 
     Array2D<int>* m_map;
 
@@ -24,7 +26,7 @@ public:
    
     // Creates a new instance of the caver generator
     CaveGenerator(int width = 70, int height = 40, int fillPercent = 50, int smoothingIterations = 5, int borderSize = 1,
-        int wallThresholdSize = 50, int roomThresholdSize = 50, bool useRandomSeed = true, string seed = "");
+        int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool useRandomSeed = true, string seed = "");
 
     ~CaveGenerator() { delete m_map; }
     
@@ -75,16 +77,17 @@ private:
     int GetSurroundingWallCount(int gridX, int gridY);
 
     // Connects all rooms in the cave that are closest distance from each other
-    void ConnectRooms(vector<Room> allRooms, bool forceAccessFromMainRoom = false);
+    void ConnectClosestRooms(vector<Room*> *allRooms, bool forceAccessFromMainRoom = false);
 
     // Creates floor tiles between two rooms
-    void CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB);
+    void CreatePassage(Room* roomA, Room* roomB, Coord tileA, Coord tileB);
 
     // calculates a straight line between two coordinate points
-    void DrawCircle(Coord coordinate, int radius);
+    void CreateCircle(Coord coordinate, int radius);
 
-    // Gets a list of all of the regions containing a specified tile type
-    std::vector<Coord> GetLine(Coord from, Coord to);
+    // creates a vector of all of the regions containing a specified tile type
+    std::vector<Coord> CreateLine(Coord from, Coord to);
 
+    // Converts a a grid position to world space
     Vector3 CoordToWorldPoint(Coord tile);
 };
