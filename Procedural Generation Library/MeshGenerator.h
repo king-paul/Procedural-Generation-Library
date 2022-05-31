@@ -72,10 +72,13 @@ public:
 
 	/*** Getters ***/	
 	// Returns all the vertices that make up the mesh
-	vector<Vector3>* GetVertices() { return m_vertices; }
+	vector<Vector3>* GetBaseVertices() { return m_vertices; }
 	// Returns all the triangles that make up the mesh
-	vector<int>* triangle() { return m_triangles; }
+	vector<int>* GetBaseTriangles() { return m_triangles; }
+	// walls
 
+	vector<Vector3>* GetWallVertices() { return m_wallVertices; }
+	vector<int>* GetWallTriangles() { return m_wallTriangles; }
 };
 
 }

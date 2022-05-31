@@ -3,24 +3,14 @@
 #include <comutil.h>
 
 #include "DungeonGenerator.h"
+#include "CaveGenerator.h"
+#include "MeshGenerator.h"
 
-extern "C"
+void GenerateDungeon()
 {
-	__declspec(dllexport)
-		void TestFunction()
-	{
-		std::cout << "Test function is working." << std::endl;
-	}
-
-}
-
-int main()
-{
-	srand((unsigned int) time(NULL));
-
 	int width = 70;
 	int height = 70;
-	Coord startPos = { width/2, height/2 };
+	Coord startPos = { width / 2, height / 2 };
 	ProceduralGeneration::RandomWalkParameters randomWalk(15, 50, false);
 
 	ProceduralGeneration::DungeonGenerator* dungeon =
@@ -33,6 +23,25 @@ int main()
 	dungeon->DrawDungeon();
 
 	delete dungeon;
+}
+
+void GenerateCave()
+{
+	CaveGenerator caveGenerator;// = new CaveGenerator();
+	caveGenerator.GenerateMap();
+
+	ProceduralGeneration::MeshGenerator meshGenerator;
+	//meshGenerator.GenerateMesh();
+
+	//delete caveGenerator;
+}
+
+int main()
+{
+	//srand((unsigned int) time(NULL));
+
+	//GenerateDungeon();
+	GenerateCave();
 
 	return 0;
 }

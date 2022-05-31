@@ -1,5 +1,8 @@
 #include "CaveGenerator.h"
 
+#include <random>
+#include <time.h>
+
 CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations, 
     int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool useRandomSeed, string seed)
 {
@@ -10,7 +13,7 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_useRandomSeed = useRandomSeed;
 
     if (m_useRandomSeed)
-        m_seed = rand();
+        srand(time(NULL));
     else
         m_seed = seed;
 
@@ -143,12 +146,7 @@ bool CaveGenerator::IsInMapRange(int x, int y)
 
 void CaveGenerator::RandomFillMap()
 {
-    if (m_useRandomSeed)
-    {
-        srand(time_t(NULL));
-        //m_seed = rand();
-        //seed = Timer.time.ToString();
-    }    
+    PseudoRandom randomGenerator(0, 100);
 
     // iterate through the graph creating cubes
     for (int x = 0; x < m_width; x++)
@@ -157,14 +155,18 @@ void CaveGenerator::RandomFillMap()
         {
             if (x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1)
             {
-                m_map->get(x, y) = 1;
+                m_map->set(x, y, 1);
             }
             else
             {
-                m_map->get(x, y) = ((rand() % 100) < m_randomFillPercent) ? 1 : 0;
+                int randomValue = randomGenerator.GetValue(); //rand() % 100;
+
+                if (randomValue < m_randomFillPercent)
+                    m_map->set(x, y, 1);// ? 1 : 0;
+                else
+                    m_map->set(x, y, 0);
             }
 
-            m_map->get(x, y) = ((rand() % 100) < m_randomFillPercent) ? 1 : 0;
         }
     }
 

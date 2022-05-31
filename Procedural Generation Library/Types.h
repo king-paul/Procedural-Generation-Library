@@ -3,6 +3,7 @@
 #include <queue>
 #include <string>
 #include <map>
+#include <random>
 
 #include "Vector.h"
 
@@ -118,6 +119,37 @@ private:
 	{
 		return col + row * cols;
 	}
+};
+
+//template<class T>
+class PseudoRandom
+{
+	std::default_random_engine theEngine;
+	std::uniform_real_distribution<float>* distribution;
+
+	float m_min, m_max;
+
+public:
+	PseudoRandom(float min, float max)
+	{		
+		m_min = min;
+		m_max = max;
+		//std::normal_distribution<float> normalDist(10, 1.0f);
+	}
+
+	~PseudoRandom()
+	{
+		delete distribution;
+	}
+
+	float GetValue() 
+	{
+		std::uniform_real_distribution<float> distribution(m_min, m_max);
+		return distribution(theEngine);
+		//return randomValue;
+		//float normallyDistributedNumber = normalDist(theEngine);
+	}
+
 };
 
 /******************************

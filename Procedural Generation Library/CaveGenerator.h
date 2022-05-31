@@ -29,13 +29,23 @@ public:
     CaveGenerator(int width = 70, int height = 40, int fillPercent = 50, int smoothingIterations = 5, int borderSize = 1,
         int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool useRandomSeed = true, string seed = "");
 
-    ~CaveGenerator() { delete m_map; }
+    ~CaveGenerator() { 
+        //delete m_map; 
+    }
     
     /// <summary>
     /// Generates a new random cave from the value passed to the constructor
+    /// </summary>    
+    void GenerateMap();
+
+    /// <summary>
+    /// Gets the generated cave from the cave generator
     /// </summary>
     /// <returns>A 2d array of integer values</returns>
-    Array2D<int>* GenerateMap();
+    Array2D<int>* GetMap()
+    {
+        return m_map;
+    }
 
 private:
 
