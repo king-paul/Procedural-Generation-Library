@@ -160,6 +160,7 @@
     <ClInclude Include="Direction2D.h" />
     <ClInclude Include="DungeonGenerator.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="Uitls.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="WallTypes.h" />
   </ItemGroup>

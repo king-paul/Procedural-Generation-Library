@@ -89,5 +89,8 @@
     <ClInclude Include="Room.h">
       <Filter>Header Files\Cave Ganeration</Filter>
     </ClInclude>
+    <ClInclude Include="Uitls.h">
+      <Filter>Header Files\Cave Ganeration</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

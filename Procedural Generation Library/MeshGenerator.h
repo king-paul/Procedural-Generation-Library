@@ -1,5 +1,6 @@
 #pragma once
 #include "SquareGrid.h"
+#include "Uitls.h"
 
 namespace ProceduralGeneration
 {
@@ -11,32 +12,28 @@ class MeshGenerator
 
 	// The grid to generate the mesh inside
 	SquareGrid* m_grid;
+	float m_wallHeight;
 
 	vector<Vector3>* m_vertices;
 	vector<int>* m_triangles;
+	vector<vector<int>>* m_outlines;
+	vector<Vector3>* m_wallVertices;
+	vector<int>* m_wallTriangles;
+
+	unordered_set<int>* m_checkedVertices;
+
+	std::map<int, vector<Triangle>>* m_triangleDictionary;
 
 public:
-
-	MeshGenerator() { 
-		m_vertices = new vector<Vector3>();
-		m_triangles = new vector<int>();
-	}
-	~MeshGenerator() 
-	{
-		delete m_vertices;
-
-		
-
-		delete m_triangles;
-		delete m_grid;
-	}
+	MeshGenerator();
+	~MeshGenerator();
 
 	/// <summary>
 	/// Generates a new mesh to go on the grid
 	/// </summary>
 	/// <param name="map">2D array of numbers for the procedully generated map</param>
 	/// <param name="squareSize">The scale of the space taken up by each square on the grid</param>
-	void GenerateMesh(Array2D<int>* map, float squareSize);
+	void GenerateMesh(Array2D<int>* map, float squareSize, float wallHeight);
 
 	/// <summary>
 	/// Produces different triangular shapes from a square based on the value passed in
@@ -58,6 +55,20 @@ public:
 
 	// cCeates a triangle out of 3 nodes
 	void CreateTriangle(Node a, Node b, Node c);
+
+	// Creates the walls of the caves based on generated layout
+	void CreateWallMesh();
+
+
+	void AddTriangleToDictionary(int vertexIndexKey, Triangle triangle);
+
+	void CalculateMeshOutlines();
+
+	void FollowOutline(int vertexIndex, int outlineIndex);
+
+	int GetConnectedOutlineVertex(int vertexIndex);
+
+	bool IsOutlineEdge(int vertexA, int vertexB);
 
 	/*** Getters ***/	
 	// Returns all the vertices that make up the mesh

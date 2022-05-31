@@ -1,6 +1,7 @@
 #pragma once
 #include "Types.h"
 #include "Room.h"
+#include "Uitls.h"
 
 class CaveGenerator
 {

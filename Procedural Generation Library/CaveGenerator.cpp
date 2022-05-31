@@ -19,7 +19,7 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_roomThresholdSize = 50;
 }
 
-Array2D<int>* CaveGenerator::GenerateMap()
+void CaveGenerator::GenerateMap()
 {
     m_map = new Array2D<int>(m_width, m_height);
     RandomFillMap();
@@ -30,7 +30,6 @@ Array2D<int>* CaveGenerator::GenerateMap()
         SmoothMap();
     }
 
-    return m_map;
 }
 
 void CaveGenerator::ProcessMap()
@@ -227,8 +226,8 @@ void CaveGenerator::ConnectClosestRooms(vector<Room*> *allRooms, bool forceAcces
     Coord closestPosA;
     Coord closestPosB;
     // the two rooms in the best distance
-    Room* closestRoomA;
-    Room* closestRoomB;
+    Room* closestRoomA = nullptr;
+    Room* closestRoomB = nullptr;
     bool connectionFound = false;
 
     // if we are forcing accessibility from the main room then the two

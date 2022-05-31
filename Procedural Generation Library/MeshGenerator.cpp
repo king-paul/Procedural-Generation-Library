@@ -2,20 +2,57 @@
 
 using namespace ProceduralGeneration;
 
-void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map, float squareSize)
+MeshGenerator::MeshGenerator()
+{
+    m_vertices = new vector<Vector3>();
+    m_triangles = new vector<int>();
+    m_outlines = new vector<vector<int>>();
+    m_wallVertices = new vector<Vector3>();
+    m_wallTriangles = new vector<int>();
+
+    m_checkedVertices = new unordered_set<int>();
+    m_triangleDictionary = new map<int, vector<Triangle>>();
+
+    m_grid = nullptr;
+}
+
+MeshGenerator::~MeshGenerator()
+{
+    // clear vectors
+    m_vertices->clear();
+    m_triangles->clear();
+
+    for (vector<int>& outline : *m_outlines)
+        outline.clear();
+
+    m_outlines->clear();
+    m_wallVertices->clear();
+    m_wallTriangles->clear();
+    m_checkedVertices->clear();
+    m_triangleDictionary->clear();
+
+    // delete memory from heap
+    delete m_vertices;
+    delete m_triangles;
+    delete m_outlines;
+    delete m_grid;
+    delete m_wallVertices;
+    delete m_wallTriangles;
+    delete m_checkedVertices;
+    delete m_triangleDictionary;
+}
+
+void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map, float squareSize, float wallHeight)
 {
     m_grid = new SquareGrid(map, squareSize);
     Array2D<Square>* squares = m_grid->GetSquares();
-
-    //m_vertices = new vector<Vector3>();
-    //m_triangles = new vector<int>();
+    m_wallHeight = wallHeight;
 
     for (int x = 0; x < squares->getSize(0); x++)
     {
         for (int y = 0; y < squares->getSize(1); y++)
         {
             TriangulateSquare(squares->get(x, y));
-
         }
 
     }
@@ -116,7 +153,7 @@ void ProceduralGeneration::MeshGenerator::TriangulateSquare(Square& square)
 
 void MeshGenerator::MeshFromPoints(Node points[])
 {
-    int size = sizeof(points) / sizeof(points[0]);
+    int size = (int)sizeof(points) / (int) sizeof(points[0]);
 
     AssignVertices(points); // turns points into vertices
 
@@ -138,7 +175,7 @@ void MeshGenerator::MeshFromPoints(Node points[])
 
 void ProceduralGeneration::MeshGenerator::AssignVertices(Node points[])
 {
-    int numPoints = sizeof(points) / sizeof(points[0]);
+    int numPoints = (int) sizeof(points) / (int) sizeof(points[0]);
 
     for (int i = 0; i < numPoints; i++)
     {
@@ -155,4 +192,126 @@ void ProceduralGeneration::MeshGenerator::CreateTriangle(Node a, Node b, Node c)
     m_triangles->Add(a.vertexIndex);
     m_triangles->Add(b.vertexIndex);
     m_triangles->Add(c.vertexIndex);
+}
+
+void ProceduralGeneration::MeshGenerator::CreateWallMesh()
+{
+    CalculateMeshOutlines();
+
+    // iterate through all the outlines adding each of the vertices
+    // to the wall vertices
+    for(vector<int> outline : *m_outlines) {
+        for (int i = 0; i < outline.size() - 1; i++)
+        {
+            int startIndex = (int) m_wallVertices->size();
+
+            m_wallVertices->Add((*m_vertices)[outline[i]]); // left vertex
+            m_wallVertices->Add((*m_vertices)[outline[i + 1]]); // right vertex
+            m_wallVertices->Add((*m_vertices)[outline[i]] - Vector3::Up() * m_wallHeight); // bottom left vertex
+            m_wallVertices->Add((*m_vertices)[outline[i + 1]] - Vector3::Up() * m_wallHeight); // bottom right vertex
+
+            // Add indices to wall trianges by winding anti-clockwise around walls
+
+            // first triangle in square
+            m_wallTriangles->Add(startIndex + 0);
+            m_wallTriangles->Add(startIndex + 2);
+            m_wallTriangles->Add(startIndex + 3);
+            // second triangle in square
+            m_wallTriangles->Add(startIndex + 3);
+            m_wallTriangles->Add(startIndex + 1);
+            m_wallTriangles->Add(startIndex + 0);
+
+        }
+    }
+}
+
+void ProceduralGeneration::MeshGenerator::AddTriangleToDictionary(int vertexIndexKey, Triangle triangle)
+{
+}
+
+void ProceduralGeneration::MeshGenerator::CalculateMeshOutlines()
+{
+    for (int vertexIndex = 0; vertexIndex < m_vertices->size(); vertexIndex++)
+    {
+        
+        if (!IsInSet(m_checkedVertices, vertexIndex))
+        {
+            int newOutLineVertex = GetConnectedOutlineVertex(vertexIndex);
+
+            if (newOutLineVertex != -1)
+            {
+                m_checkedVertices->insert(vertexIndex);
+
+                vector<int> newOutline;
+                newOutline.Add(vertexIndex);
+                m_outlines->Add(newOutline);
+
+                FollowOutline(newOutLineVertex, (int) m_outlines->size() - 1);
+                (&(*m_outlines)[m_outlines->size() - 1])->Add(vertexIndex);
+            }
+        }
+    }
+
+}
+
+void ProceduralGeneration::MeshGenerator::FollowOutline(int vertexIndex, int outlineIndex)
+{
+    (&(*m_outlines)[outlineIndex])->Add(vertexIndex);
+    m_checkedVertices->insert(vertexIndex);
+
+    int nextVertexIndex = GetConnectedOutlineVertex(vertexIndex);
+
+    if (nextVertexIndex != -1) {
+        FollowOutline(nextVertexIndex, outlineIndex);
+    }
+}
+
+int ProceduralGeneration::MeshGenerator::GetConnectedOutlineVertex(int vertexIndex)
+{
+    vector<Triangle> trianglesContainingVertex = m_triangleDictionary->at(vertexIndex);
+
+    // look through the vertices of each triangle connected to the vertex        
+    for (int i = 0; i < trianglesContainingVertex.size(); i++) {
+        Triangle triangle = trianglesContainingVertex[i];
+
+        for (int j = 0; j < 3; j++) {
+            int vertexB = triangle.get(j);
+
+            if (vertexB != vertexIndex && !IsInSet(m_checkedVertices, vertexB))
+            {
+                // if it has an outline edge connected to it return it
+                if (IsOutlineEdge(vertexIndex, vertexB))
+                {
+                    return vertexB;
+                }
+            }
+
+        }
+    }
+
+    return -1; // no outline edge was found
+}
+
+bool ProceduralGeneration::MeshGenerator::IsOutlineEdge(int vertexA, int vertexB)
+{
+    // Get a list of all triangles that vertex A belongs to
+    vector<Triangle>* trianglesContainingVertexA = &m_triangleDictionary->at(vertexA);
+
+    // Check how many of those triangles belong to vertex B
+    int sharedTriangleCount = 0;
+    for (int i = 0; i < trianglesContainingVertexA->size(); i++)
+    {
+        if ((*trianglesContainingVertexA)[i].Contains(vertexB))
+        {
+            sharedTriangleCount++;
+            if (sharedTriangleCount > 1)
+            {
+                break;
+            }
+        }
+    }
+
+    // If vertex A and vertex B only share one common triangle then
+    // it is an outline edge
+    return sharedTriangleCount == 1;
 }

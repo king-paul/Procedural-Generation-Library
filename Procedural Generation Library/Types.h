@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <map>
 
 #include "Vector.h"
 
@@ -9,16 +10,6 @@
 #define var auto
 
 using namespace std;
-
-template <typename T> int sign(T val) {
-
-	if (val < 0)
-		return -val;
-	else 
-		return val;
-
-	//return (T(0) < val) - (val < T(0));
-}
 
 enum class TileType
 {
@@ -350,5 +341,41 @@ struct Square
 			configuration += 2; // turns on the thrid bit
 		if (bottomLeft->active)
 			configuration += 1; // turns on the fourth bit			
+	}
+};
+
+// triangle structure to build mesh with that hold 3 integers for the vertex indicies
+struct Triangle
+{
+	int vertexIndexA;
+	int vertexIndexB;
+	int vertexIndexC;
+	int vertices[3];
+
+	Triangle(int a, int b, int c)
+	{
+		vertexIndexA = a;
+		vertexIndexB = b;
+		vertexIndexC = c;
+
+		vertices[0] = a;
+		vertices[1] = b;
+		vertices[2] = c;
+	}
+
+	// determins what value to return when object is used like an array
+	int get(int i) {
+
+		return vertices[i];
+	}
+
+	/// <summary>
+	/// Checkes whether a vertex is in a tiangle
+	/// </summary>
+	/// <param name="vertexIndex">The index to check</param>
+	/// <returns>return a true or false based on wehter the vertex is found</returns>
+	bool Contains(int vertexIndex)
+	{
+		return vertexIndex == vertexIndexA || vertexIndex == vertexIndexB || vertexIndex == vertexIndexC;
 	}
 };
