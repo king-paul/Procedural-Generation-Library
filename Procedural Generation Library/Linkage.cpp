@@ -1,7 +1,13 @@
 #include "DungeonGenerator.h"
+#include "CaveGenerator.h"
+#include "MeshGenerator.h"
+#include <wtypes.h>
 
 using namespace ProceduralGeneration;
 
+/*********************
+ * Dungeon Generator *
+ *********************/
 extern "C" __declspec(dllexport)
 DungeonGenerator* CreateRandomWalkRoom(int width, int height, int startX, int startY, int iterations, int walkLength, bool startRandomly)
 {
@@ -37,4 +43,66 @@ extern "C" __declspec(dllexport)
 void GenerateDungeon(DungeonGenerator* dungeonPtr)
 {
 	dungeonPtr->Generate();
+}
+
+/******************
+ * Cave Generator *
+ ******************/
+extern "C" __declspec(dllexport)
+CaveGenerator* GenerateCave(int width, int height, int fillPercent, int smoothingIterations, int borderSize,
+	int wallThresholdSize, int roomThresholdSize, int passageWidth)//, bool useRandomSeed, BSTR seed = (BSTR) rand())
+{
+	CaveGenerator* cave = new CaveGenerator(width, height, fillPercent, smoothingIterations, borderSize,
+											wallThresholdSize, roomThresholdSize, passageWidth, true);
+	cave->GenerateMap();
+	return cave;
+}
+
+extern "C" __declspec(dllexport)
+MeshGenerator* GenerateMesh(CaveGenerator* cave, float gridSize, float wallHeight)
+{
+	MeshGenerator* mesh = new MeshGenerator();
+	mesh->GenerateMesh(cave->GetMap(), gridSize, wallHeight);
+
+	return mesh;
+}
+
+int GetBaseTriangle(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetBaseTriangles())[index];
+}
+
+float GetBaseVertexX(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetBaseVertices())[index].x;
+}
+
+float GetBaseVertexY(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetBaseVertices())[index].y;
+}
+
+float GetBaseVertexZ(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetBaseVertices())[index].z;
+}
+
+int GetWallTriangle(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetWallTriangles())[index];
+}
+
+float GetWallVertexX(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetWallVertices())[index].x;
+}
+
+float GetWallVertexY(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetWallVertices())[index].y;
+}
+
+float GetWallVertexZ(MeshGenerator* mesh, int index)
+{
+	return (*mesh->GetWallVertices())[index].z;
 }
