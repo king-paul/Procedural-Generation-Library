@@ -178,10 +178,10 @@ void ProceduralGeneration::MeshGenerator::AssignVertices(std::vector<Node>* poin
 
     for (int i = 0; i < points->size(); i++)
     {
-        if ((*points)[i].vertexIndex == -1)
+        if (points->at(i).vertexIndex == -1)
         {
-            (*points)[i].vertexIndex = (int)m_vertices->size();
-                m_vertices->Add((*points)[i].position);
+            points->at(i).vertexIndex = (int)m_vertices->size();
+                m_vertices->Add(Vector3(points->at(i).position.x, 0, points->at(i).position.y));
         }
     }
 }

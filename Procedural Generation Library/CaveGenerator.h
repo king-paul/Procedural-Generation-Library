@@ -2,6 +2,7 @@
 #include "Types.h"
 #include "Room.h"
 #include "Uitls.h"
+#include "SquareGrid.h"
 
 namespace ProceduralGeneration
 {
@@ -24,7 +25,8 @@ class CaveGenerator
 
     int m_passageWidth; // how wide the passages connecting rooms is
 
-    Array2D<int>* m_map;
+    Array2D<int>* m_map; // a series of on and off values of either 1 or 0
+    SquareGrid* m_squareGrid; // marching squares build from map
 
 public:
 
@@ -34,6 +36,7 @@ public:
 
     ~CaveGenerator() {
         delete m_map; 
+        delete m_squareGrid;
     }
 
     /// <summary>
@@ -49,6 +52,8 @@ public:
     {
         return m_map;
     }
+
+    SquareGrid* GetSquareGrid() { return m_squareGrid; }
 
     // print contents of generated map array to the console
     void PrintMapToConsole();

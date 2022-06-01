@@ -40,6 +40,28 @@ void CaveGenerator::GenerateMap()
         //PrintMapToConsole();
     }
 
+    ProcessMap();
+
+    Array2D<int> borderedMap(m_width + m_borderSize * 2, m_height + m_borderSize * 2);
+
+    // iterate through the bordered map array
+    for (int x = 0; x < borderedMap.getSize(1); x++)
+    {
+        for (int y = 0; y < borderedMap.getSize(0); y++)
+        {
+            // if we are inside the borders then retrieve the values from the map at that position
+            if (x >= m_borderSize && x < m_width + m_borderSize && y >= m_borderSize && y < m_height + m_borderSize)
+            {
+                borderedMap.get(x, y) = m_map->get(x - m_borderSize, y - m_borderSize);
+            }
+            else // if we are outside the map set the value to a wall
+            {
+                borderedMap.get(x, y) = 1;
+            }
+        }
+    }
+
+    m_squareGrid = new SquareGrid(&borderedMap, 1);
 }
 
 void CaveGenerator::ProcessMap()

@@ -32,15 +32,15 @@ void GenerateCave()
 	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator();
 	///caveGenerator.PrintMapToConsole();
 	caveGenerator->GenerateMap();
-	//caveGenerator.PrintMapToConsole();
+	caveGenerator->PrintMapToConsole();
+	//caveGenerator->GetSquareGrid()->PrintConfigurations();
 
-	//Array2D<int>* caveMap = caveGenerator.GetMap();
 
-	ProceduralGeneration::MeshGenerator* meshGenerator = new ProceduralGeneration::MeshGenerator();
-	meshGenerator->GenerateMesh(caveGenerator->GetMap(), 32, 10);
+	//ProceduralGeneration::MeshGenerator* meshGenerator = new ProceduralGeneration::MeshGenerator();
+	//meshGenerator->GenerateMesh(caveGenerator->GetMap(), 1, 5);
 	
-	vector<int>* baseTriangles = meshGenerator->GetBaseTriangles();
-	vector<Vector3>* baseVertices = meshGenerator->GetBaseVertices();
+	//vector<int>* baseTriangles = meshGenerator->GetBaseTriangles();
+	//vector<Vector3>* baseVertices = meshGenerator->GetBaseVertices();
 	//meshGenerator->GetWallTriangles();
 	//meshGenerator->GetWallVertices();
 
@@ -52,14 +52,15 @@ void GenerateCave()
 	}
 	cout << endl;*/
 
+	/*
 	cout << "Printing vertex data:" << endl;
 	for (Vector3 point : *baseVertices)
 	{
 		cout << point.x << ", " << point.y << ", " << point.z << endl;
-	}
+	}*/
 
 	delete caveGenerator;
-	delete meshGenerator;
+	//delete meshGenerator;
 }
 
 int main()
