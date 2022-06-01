@@ -6,6 +6,8 @@
 #include "CaveGenerator.h"
 #include "MeshGenerator.h"
 
+using namespace std;
+
 void GenerateDungeon()
 {
 	int width = 70;
@@ -27,13 +29,37 @@ void GenerateDungeon()
 
 void GenerateCave()
 {
-	CaveGenerator caveGenerator;// = new CaveGenerator();
-	caveGenerator.GenerateMap();
+	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator();
+	///caveGenerator.PrintMapToConsole();
+	caveGenerator->GenerateMap();
+	//caveGenerator.PrintMapToConsole();
 
-	ProceduralGeneration::MeshGenerator meshGenerator;
-	//meshGenerator.GenerateMesh();
+	//Array2D<int>* caveMap = caveGenerator.GetMap();
 
-	//delete caveGenerator;
+	ProceduralGeneration::MeshGenerator* meshGenerator = new ProceduralGeneration::MeshGenerator();
+	meshGenerator->GenerateMesh(caveGenerator->GetMap(), 32, 10);
+	
+	vector<int>* baseTriangles = meshGenerator->GetBaseTriangles();
+	vector<Vector3>* baseVertices = meshGenerator->GetBaseVertices();
+	//meshGenerator->GetWallTriangles();
+	//meshGenerator->GetWallVertices();
+
+	/*
+	cout << "Printing triangle data:" << endl;
+	for (int triangle : *baseTriangles)
+	{
+		cout << triangle << ", ";
+	}
+	cout << endl;*/
+
+	cout << "Printing vertex data:" << endl;
+	for (Vector3 point : *baseVertices)
+	{
+		cout << point.x << ", " << point.y << ", " << point.z << endl;
+	}
+
+	delete caveGenerator;
+	delete meshGenerator;
 }
 
 int main()

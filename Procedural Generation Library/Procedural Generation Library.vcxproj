@@ -149,6 +149,7 @@
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomFirstGenerator.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="SquareGrid.cpp" />
     <ClCompile Include="WallGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>

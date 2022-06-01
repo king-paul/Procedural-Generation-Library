@@ -57,6 +57,9 @@
     <ClCompile Include="Room.cpp">
       <Filter>Source Files\Cave Generator</Filter>
     </ClCompile>
+    <ClCompile Include="SquareGrid.cpp">
+      <Filter>Source Files\Cave Generator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h">

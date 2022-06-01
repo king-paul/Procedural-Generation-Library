@@ -39,7 +39,7 @@ class Array2D
 	unsigned int cols = 0;
 
 public:
-	Array2D(unsigned int cols, unsigned int row)
+	Array2D(unsigned int cols, unsigned int rows)
 	{
 		data = new T[rows * cols];
 		
@@ -273,108 +273,6 @@ static bool CoordInList(CoordList* list, Coord position)
 	return false;
 }
 
-/*********************
- * Square Gird types *
- *********************/
-struct Node
-{
-	Vector3 position;
-	int vertexIndex;
-
-	Node() {
-		position = Vector3::Zero();
-		vertexIndex = -1;
-	}
-
-	Node(Vector3 pos)
-	{
-		position = pos;
-		vertexIndex = -1;
-	}
-};
-
-struct ControlNode : Node
-{
-	bool active;
-	Node *above, *right; // The positions above and to the right of the control node
-
-	
-	ControlNode()
-	{
-		active = false;
-		above = nullptr;
-		right = nullptr;
-	}
-
-	ControlNode(Vector3 pos, bool active, float squareSize) : Node(pos), active(active)
-	{
-		Vector3 forwardVector = Vector3::Forward() * ((float)squareSize / 2.0f);
-		Vector3 rightVector = Vector3::Forward() * ((float) squareSize / 2.0f);
-
-		// set the position to the distance above
-		above = new Node(position + forwardVector);
-		// set the position to the distance to the right
-		right = new Node(position + rightVector);
-	}
-
-	~ControlNode()
-	{
-		delete above;
-		delete right;
-	}
-
-};
-
-struct Square
-{
-	ControlNode *topLeft, *topRight, *bottomRight, *bottomLeft;
-	Node *centreTop, *centreRight, *centreBottom, *centreLeft;
-
-	short configuration; // value is between 0000 and 1111
-	
-	Square()
-	{
-		topLeft = nullptr;
-		topRight = nullptr;
-		bottomLeft = nullptr;
-		bottomRight = nullptr;
-
-		centreTop = nullptr;
-		centreRight = nullptr;
-		centreBottom = nullptr;
-		centreLeft = nullptr;
-
-		configuration = 0000;
-	}
-
-	Square(ControlNode* topLeft, ControlNode* topRight, ControlNode* bottomRight, ControlNode* bottomLeft)
-	{
-		// set the cornor nodes
-		this->topLeft = topLeft;
-		this->topRight = topRight;
-		this->bottomRight = bottomRight;
-		this->bottomLeft = bottomLeft;
-
-		// set center nodes to the nodes connected to the corner nodes
-		this->centreTop = topLeft->right;
-		this->centreRight = bottomRight->above;
-		this->centreBottom = bottomLeft->right;
-		this->centreLeft = bottomLeft->above;
-
-		configuration = 0;
-
-		// turns on the appropriate bit in the four bit number base on
-		// which control nodes are active
-		if (topLeft->active)
-			configuration += 8; // turns on the first bit
-		if (topRight->active)
-			configuration += 4; // turns on the second bit
-		if (bottomRight->active)
-			configuration += 2; // turns on the thrid bit
-		if (bottomLeft->active)
-			configuration += 1; // turns on the fourth bit			
-	}
-};
 
 // triangle structure to build mesh with that hold 3 integers for the vertex indicies
 struct Triangle

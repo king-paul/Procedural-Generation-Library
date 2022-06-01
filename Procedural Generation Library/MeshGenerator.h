@@ -22,7 +22,7 @@ class MeshGenerator
 
 	unordered_set<int>* m_checkedVertices;
 
-	std::map<int, vector<Triangle>>* m_triangleDictionary;
+	std::map<int, vector<Triangle>>* m_triangleMap;
 
 public:
 	MeshGenerator();
@@ -45,29 +45,27 @@ public:
 	/// Creates triangles from a series of points then builds a mesh out of them
 	/// </summary>
 	/// <param name="points">Takes in a node array of any size contining the points</param>
-	void MeshFromPoints(Node points[]);
+	void MeshFromPoints(std::vector<Node>* points);
 
 	/// <summary>
 	/// Turns points passed in into vertices
 	/// </summary>
 	/// <param name="points">Takes in a node array of any size contining the points</param>
-	void AssignVertices(Node points[]);
+	void AssignVertices(std::vector<Node>* points);
 
-	// cCeates a triangle out of 3 nodes
+	// Ceates a triangle out of 3 nodes
 	void CreateTriangle(Node a, Node b, Node c);
-
 	// Creates the walls of the caves based on generated layout
 	void CreateWallMesh();
-
-
+	// 
 	void AddTriangleToDictionary(int vertexIndexKey, Triangle triangle);
-
+	// 
 	void CalculateMeshOutlines();
-
+	// 
 	void FollowOutline(int vertexIndex, int outlineIndex);
-
+	// 
 	int GetConnectedOutlineVertex(int vertexIndex);
-
+	// 
 	bool IsOutlineEdge(int vertexA, int vertexB);
 
 	/*** Getters ***/	

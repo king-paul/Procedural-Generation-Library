@@ -3,6 +3,9 @@
 #include "Room.h"
 #include "Uitls.h"
 
+namespace ProceduralGeneration
+{
+
 class CaveGenerator
 {
     // variable declartaion
@@ -24,15 +27,15 @@ class CaveGenerator
     Array2D<int>* m_map;
 
 public:
-   
+
     // Creates a new instance of the caver generator
     CaveGenerator(int width = 70, int height = 40, int fillPercent = 50, int smoothingIterations = 5, int borderSize = 1,
         int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool useRandomSeed = true, string seed = "");
 
-    ~CaveGenerator() { 
-        //delete m_map; 
+    ~CaveGenerator() {
+        delete m_map; 
     }
-    
+
     /// <summary>
     /// Generates a new random cave from the value passed to the constructor
     /// </summary>    
@@ -46,6 +49,9 @@ public:
     {
         return m_map;
     }
+
+    // print contents of generated map array to the console
+    void PrintMapToConsole();
 
 private:
 
@@ -88,7 +94,7 @@ private:
     int GetSurroundingWallCount(int gridX, int gridY);
 
     // Connects all rooms in the cave that are closest distance from each other
-    void ConnectClosestRooms(vector<Room*> *allRooms, bool forceAccessFromMainRoom = false);
+    void ConnectClosestRooms(vector<Room*>* allRooms, bool forceAccessFromMainRoom = false);
 
     // Creates floor tiles between two rooms
     void CreatePassage(Room* roomA, Room* roomB, Coord tileA, Coord tileB);
@@ -102,3 +108,5 @@ private:
     // Converts a a grid position to world space
     Vector3 CoordToWorldPoint(Coord tile);
 };
+
+}

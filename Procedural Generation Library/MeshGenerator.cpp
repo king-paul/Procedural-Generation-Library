@@ -11,7 +11,7 @@ MeshGenerator::MeshGenerator()
     m_wallTriangles = new vector<int>();
 
     m_checkedVertices = new unordered_set<int>();
-    m_triangleDictionary = new map<int, vector<Triangle>>();
+    m_triangleMap = new map<int, vector<Triangle>>();
 
     m_grid = nullptr;
 }
@@ -29,7 +29,7 @@ MeshGenerator::~MeshGenerator()
     m_wallVertices->clear();
     m_wallTriangles->clear();
     m_checkedVertices->clear();
-    m_triangleDictionary->clear();
+    m_triangleMap->clear();
 
     // delete memory from heap
     delete m_vertices;
@@ -39,7 +39,7 @@ MeshGenerator::~MeshGenerator()
     delete m_wallVertices;
     delete m_wallTriangles;
     delete m_checkedVertices;
-    delete m_triangleDictionary;
+    delete m_triangleMap;
 }
 
 void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map, float squareSize, float wallHeight)
@@ -60,129 +60,128 @@ void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map, float 
 
 void ProceduralGeneration::MeshGenerator::TriangulateSquare(Square& square)
 {
-    Node* points;
+    std::vector<Node> points;
 
     switch (square.configuration)
     {
-    case 0: // if no points are selected then we don't have a mesh
-        break;
+        case 0: // if no points are selected then we don't have a mesh
+            break;
 
         // 1 point selections
-    case 1: // 0001
-        points = new Node[3]{ *square.centreBottom, *square.bottomLeft, *square.centreLeft };
-        MeshFromPoints(points);
-        break;
+        case 1: // 0001
 
-    case 2: // 0010
-        points = new Node[3]{ *square.centreRight, *square.bottomRight, *square.centreBottom };
-        MeshFromPoints(points);
-        break;
+            //points.push_back( (square.centreBottom);
+            points = { square.centreBottom, square.bottomLeft, square.centreLeft};
+            MeshFromPoints(&points);
+            break;
 
-    case 4: // 0100
-        points= new Node[3]{ *square.centreTop, *square.topRight, *square.centreRight};
-        MeshFromPoints(points);
-        break;
+        case 2: // 0010
+            points = { square.centreRight, square.bottomRight, square.centreBottom };
+            MeshFromPoints(&points);
+            break;
 
-    case 8: // 1000
-        points = new Node[3]{*square.topLeft, *square.centreTop, *square.centreLeft};
-        MeshFromPoints(points);
-        break;
+        case 4: // 0100
+            points= {square.centreTop, square.topRight, square.centreRight};
+            MeshFromPoints(&points);
+            break;
+
+        case 8: // 1000
+            points = {square.topLeft, square.centreTop, square.centreLeft};
+            MeshFromPoints(&points);
+            break;
 
         // 2 point selections
-    case 3: // 0011
-        points = new Node[4]{*square.centreRight, *square.bottomRight, *square.bottomLeft, *square.centreLeft};
-        MeshFromPoints(points);
-        break;
+        case 3: // 0011
+            points = {square.centreRight, square.bottomRight, square.bottomLeft, square.centreLeft};
+            MeshFromPoints(&points);
+            break;
 
-    case 6: // 0110
+        case 6: // 0110
+            points = {square.centreTop, square.topRight, square.bottomRight, square.centreBottom };
+            MeshFromPoints(&points);
+            break;
 
-        points = new Node[4]{ *square.centreTop, *square.topRight, *square.bottomRight, *square.centreBottom };
-        MeshFromPoints(points);
-        break;
+         case 9: // 1001
+             points = {square.topLeft, square.centreTop, square.centreBottom, square.bottomLeft};
+             MeshFromPoints(&points);
+             break;
 
-     case 9: // 1001
-         points = new Node[4]{*square.topLeft, *square.centreTop, *square.centreBottom, *square.bottomLeft};
-         MeshFromPoints(points);
-         break;
+         case 12: // 1100
+             points = {square.topLeft, square.topRight, square.centreRight, square.centreLeft};
+             MeshFromPoints(&points);
+             break;
 
-     case 12: // 1100
-         points = new Node[4]{*square.topLeft, *square.topRight, *square.centreRight, *square.centreLeft};
-         MeshFromPoints(points);
-         break;
+         case 5: // 0101
+             points = {square.centreTop, square.topRight, square.centreRight, square.centreBottom,
+                 square.bottomLeft, square.centreLeft};
+             MeshFromPoints(&points);
+             break;
 
-     case 5: // 0101
-         points = new Node[6]{*square.centreTop, *square.topRight, *square.centreRight, *square.centreBottom,
-             *square.bottomLeft, *square.centreLeft};
-         MeshFromPoints(points);
-         break;
-
-     case 10: // 1010
-         points = new Node[6]{*square.topLeft, *square.centreTop, *square.centreRight, *square.bottomRight,
-             *square.centreBottom, *square.centreLeft};
-         MeshFromPoints(points);
-         break;
+         case 10: // 1010
+             points ={square.topLeft, square.centreTop, square.centreRight, square.bottomRight,
+                 square.centreBottom, square.centreLeft};
+             MeshFromPoints(&points);
+             break;
 
          // 3 point selections
-     case 7: // 0111
-         points = new Node[5]{*square.centreTop, *square.topRight, *square.bottomRight, *square.bottomLeft, *square.centreLeft};
-         MeshFromPoints(points);
-         break;
+         case 7: // 0111
+             points = {square.centreTop, square.topRight, square.bottomRight, square.bottomLeft, square.centreLeft};
+             MeshFromPoints(&points);
+             break;
 
-     case 11: // 1011
-         points = new Node[5]{*square.topLeft, *square.centreTop, *square.centreRight, *square.bottomRight, *square.bottomLeft};
-         MeshFromPoints(points);
-         break;
+         case 11: // 1011
+             points = {square.topLeft, square.centreTop, square.centreRight, square.bottomRight, square.bottomLeft};
+             MeshFromPoints(&points);
+             break;
 
-     case 13: // 1101
-         points = new Node[5]{*square.topLeft, *square.topRight, *square.centreRight, *square.centreBottom, *square.bottomLeft};
-         MeshFromPoints(points);
-         break;
+         case 13: // 1101
+             points = {square.topLeft, square.topRight, square.centreRight, square.centreBottom, square.bottomLeft};
+             MeshFromPoints(&points);
+             break;
 
-     case 14: // 1110
-         points = new Node[5]{*square.topLeft, *square.topRight, *square.bottomRight, *square.centreBottom, *square.centreLeft};
-         MeshFromPoints(points);
-         break;
+         case 14: // 1110
+             points = {square.topLeft, square.topRight, square.bottomRight, square.centreBottom, square.centreLeft};
+             MeshFromPoints(&points);
+             break;
 
          // 4 point selection:
-     case 15: // 1111
-         points = new Node[4]{*square.topLeft, *square.topRight, *square.bottomRight, *square.bottomLeft};
-         MeshFromPoints(points);
-         break;
+         case 15: // 1111
+             points = {square.topLeft, square.topRight, square.bottomRight, square.bottomLeft};
+             MeshFromPoints(&points);
+             break;
     }
 }
 
-void MeshGenerator::MeshFromPoints(Node points[])
+void MeshGenerator::MeshFromPoints(std::vector<Node>* points)
 {
-    int size = (int)sizeof(points) / (int) sizeof(points[0]);
+    int size = points->size();// (int)sizeof(points) / (int)sizeof(points[0]);
 
     AssignVertices(points); // turns points into vertices
 
-    // if there are 3 or more vertices create a triangle      
+    // if there are 3 or more vertices create a triangle
     if (size >= 3)
-        CreateTriangle(points[0], points[1], points[2]);
+        CreateTriangle(((*points))[0], (*points)[1], ( *points)[2]);
     // if there are 4 vertices create a second triangles
     if (size >= 4)
-        CreateTriangle(points[0], points[2], points[3]);
+        CreateTriangle((*points)[0], (*points)[2], (*points)[3]);
     // if there are 5 vertices create third triangles
     if (size >= 5)
-        CreateTriangle(points[0], points[3], points[4]);
+        CreateTriangle((*points)[0], (*points)[3], (*points)[4]);
     // if there are 6 vertices create fourth triangles
     if (size >= 6)
-        CreateTriangle(points[0], points[3], points[4]);
-
-    delete points;
+        CreateTriangle((*points)[0], (*points)[3], (*points)[4]);    
 }
 
-void ProceduralGeneration::MeshGenerator::AssignVertices(Node points[])
+void ProceduralGeneration::MeshGenerator::AssignVertices(std::vector<Node>* points)
 {
-    int numPoints = (int) sizeof(points) / (int) sizeof(points[0]);
+    //int numPoints = (int) sizeof(points) / (int) sizeof(points[0]);
 
-    for (int i = 0; i < numPoints; i++)
+    for (int i = 0; i < points->size(); i++)
     {
-        if (points[i].vertexIndex == -1)
+        if ((*points)[i].vertexIndex == -1)
         {
-            points[i].vertexIndex = (int) m_vertices->size();
-            m_vertices->Add(points[i].position);
+            (*points)[i].vertexIndex = (int)m_vertices->size();
+                m_vertices->Add((*points)[i].position);
         }
     }
 }
@@ -227,6 +226,23 @@ void ProceduralGeneration::MeshGenerator::CreateWallMesh()
 
 void ProceduralGeneration::MeshGenerator::AddTriangleToDictionary(int vertexIndexKey, Triangle triangle)
 {
+    // checks if the triangle already contains the key        
+    if (m_triangleMap->find(vertexIndexKey) != m_triangleMap->end())
+    {
+        // if it does then add the triangle to the list
+        m_triangleMap->at(vertexIndexKey).push_back(triangle);
+    }
+    else
+    {
+        // otherwise create a new list of triangles and add
+        // the triangle to the list
+        vector<Triangle> triangleList;
+        triangleList.Add(triangle);
+
+        std::pair<int, vector<Triangle>> pair(vertexIndexKey, triangleList);
+
+        m_triangleMap->insert(pair);
+    }
 }
 
 void ProceduralGeneration::MeshGenerator::CalculateMeshOutlines()
@@ -268,7 +284,7 @@ void ProceduralGeneration::MeshGenerator::FollowOutline(int vertexIndex, int out
 
 int ProceduralGeneration::MeshGenerator::GetConnectedOutlineVertex(int vertexIndex)
 {
-    vector<Triangle> trianglesContainingVertex = m_triangleDictionary->at(vertexIndex);
+    vector<Triangle> trianglesContainingVertex = m_triangleMap->at(vertexIndex);
 
     // look through the vertices of each triangle connected to the vertex        
     for (int i = 0; i < trianglesContainingVertex.size(); i++) {
@@ -295,7 +311,7 @@ int ProceduralGeneration::MeshGenerator::GetConnectedOutlineVertex(int vertexInd
 bool ProceduralGeneration::MeshGenerator::IsOutlineEdge(int vertexA, int vertexB)
 {
     // Get a list of all triangles that vertex A belongs to
-    vector<Triangle>* trianglesContainingVertexA = &m_triangleDictionary->at(vertexA);
+    vector<Triangle>* trianglesContainingVertexA = &m_triangleMap->at(vertexA);
 
     // Check how many of those triangles belong to vertex B
     int sharedTriangleCount = 0;

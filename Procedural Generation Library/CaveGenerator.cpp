@@ -2,6 +2,10 @@
 
 #include <random>
 #include <time.h>
+#include <iostream>
+
+using namespace std;
+using namespace ProceduralGeneration;
 
 CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations, 
     int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool useRandomSeed, string seed)
@@ -20,17 +24,20 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_borderSize = 1;
     m_wallThresholdSize = 50;
     m_roomThresholdSize = 50;
+
+    m_map = new Array2D<int>(m_width, m_height);
 }
 
 void CaveGenerator::GenerateMap()
-{
-    m_map = new Array2D<int>(m_width, m_height);
+{    
     RandomFillMap();
+    //PrintMapToConsole();
 
     // smooth iterations
     for (int i = 0; i < m_smoothingIterations; i++)
     {
         SmoothMap();
+        //PrintMapToConsole();
     }
 
 }
@@ -159,7 +166,7 @@ void CaveGenerator::RandomFillMap()
             }
             else
             {
-                int randomValue = randomGenerator.GetValue(); //rand() % 100;
+                float randomValue = randomGenerator.GetValue(); //rand() % 100;
 
                 if (randomValue < m_randomFillPercent)
                     m_map->set(x, y, 1);// ? 1 : 0;
@@ -185,6 +192,8 @@ void CaveGenerator::SmoothMap()
             else if (neighboutWallTiles < 4)
                 m_map->get(x, y) = 0;
         }
+
+        //PrintMapToConsole();
     }
 
 }
@@ -425,4 +434,28 @@ std::vector<Coord> CaveGenerator::CreateLine(Coord fromPoint, Coord toPoint)
 Vector3 CaveGenerator::CoordToWorldPoint(Coord tile)
 {
     return Vector3(-m_width / 2 + .5f + tile.x, 2, -m_height / 2 + .5f + tile.y);
+}
+
+void CaveGenerator::PrintMapToConsole()
+{
+    //system("cls");
+    cout << endl << endl;
+
+    for (int y = 0; y < m_map->getSize(0); y++)
+    {
+        for (int x = 0; x < m_map->getSize(1); x++)
+        {
+            int value = m_map->get(x, y);
+
+            if (value == 0)
+                cout << ' ';
+            else if (value == 1)
+                cout << '*';
+            else
+                cout << '.';
+                //cout << "Error at: " << x << ", " << y << endl;            
+        }
+
+        cout << endl;
+    }
 }
