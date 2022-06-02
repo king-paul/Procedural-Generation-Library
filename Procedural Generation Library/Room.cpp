@@ -3,7 +3,7 @@
 Room::Room(vector<Coord> roomTiles, Array2D<int>* map)
 {
 	m_tiles = roomTiles;
-	m_roomSize = m_tiles.size();
+	m_roomSize = (int) m_tiles.size();
 	//m_connectedRooms = new List<Room>();
 
 	//m_edgeTiles = new List<Coord>();
@@ -79,4 +79,5 @@ void Room::SetAccessible()
 			connectedRoom->SetAccessible();
 		}
 	}
+	
 }

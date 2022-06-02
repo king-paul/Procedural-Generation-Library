@@ -28,6 +28,8 @@ class CaveGenerator
     Array2D<int>* m_map; // a series of on and off values of either 1 or 0
     SquareGrid* m_squareGrid; // marching squares build from map
 
+    vector<Room*> m_rooms; // the rooms in the cave to be connected by paths
+
 public:
 
     // Creates a new instance of the caver generator
@@ -37,6 +39,10 @@ public:
     ~CaveGenerator() {
         delete m_map; 
         delete m_squareGrid;
+
+        for (Room* room : m_rooms)
+            delete room;
+        m_rooms.clear();
     }
 
     /// <summary>
@@ -55,8 +61,15 @@ public:
 
     SquareGrid* GetSquareGrid() { return m_squareGrid; }
 
+    // Drawing Functions
+
     // print contents of generated map array to the console
     void PrintMapToConsole();
+    void PrintMapToConsole(queue<Coord> coords);
+    void PrintMapToConsole(vector<Coord> allTiles, Coord currenTile, int x, int y);
+    void PrintRoomOnMap(vector<Coord> coords);
+    void DrawCheckedPositions(Array2D<int>* flags);
+    //void DrawRegionsPositions(vector<Coord> region);    
 
 private:
 
@@ -64,11 +77,16 @@ private:
     void ProcessMap();
 
     /// <summary>
+    /// 
+    /// </summary>
+    Array2D<int> CreateBorderedMap();
+
+    /// <summary>
     /// Gets a list of all of the regions containing a specified tile type
     /// </summary>
     /// <param name="tileType">The type of tile. 0 = vacant, 1 = wall</param>
-    /// <returns></returns>
-    vector<vector<Coord>> GetRegions(int tileType);
+    /// <returns>2D vector of coordinates for each tile</returns>
+    vector<vector<Coord>> GetAllRegions(int tileType);
 
     /// <summary>
     /// Gets the coordinates of all tiles in a specified region using the flood fill algorithm
@@ -76,7 +94,7 @@ private:
     /// <param name="startX">The starting coordinate on the x axis</param>
     /// <param name="startY">The starting coordinate on the y axis</param>
     /// <returns>Returns all of the tiles as a list of coordinates</returns>
-    vector<Coord> GetRegionTiles(int startX, int startY);
+    vector<Coord> GetRegionCoords(int startX, int startY);
 
     /// <summary>
     /// Checkes if specified coordinates are in the range of the map and

@@ -29,7 +29,7 @@ void GenerateDungeon()
 
 void GenerateCave()
 {
-	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator();
+	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator();// 70, 40, 50, 5, 1, 50, 1);
 	///caveGenerator.PrintMapToConsole();
 	caveGenerator->GenerateMap();
 	caveGenerator->PrintMapToConsole();

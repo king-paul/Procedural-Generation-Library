@@ -1,6 +1,7 @@
 #pragma once
 #include "SquareGrid.h"
 #include "Uitls.h"
+#include "Types.h"
 
 namespace ProceduralGeneration
 {

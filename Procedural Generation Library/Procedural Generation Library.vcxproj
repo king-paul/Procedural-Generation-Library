@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CaveGenerator.cpp" />
+    <ClCompile Include="CavePrinter.cpp" />
     <ClCompile Include="CorridorFirstGenerator.cpp" />
     <ClCompile Include="DungeonGenerator.cpp" />
     <ClCompile Include="Linkage.cpp" />

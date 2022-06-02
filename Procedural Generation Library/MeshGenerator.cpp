@@ -52,7 +52,7 @@ void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map, float 
     {
         for (int y = 0; y < squares->getSize(1); y++)
         {
-            TriangulateSquare(squares->get(x, y));
+            TriangulateSquare(squares->at(x, y));
         }
 
     }
@@ -154,7 +154,7 @@ void ProceduralGeneration::MeshGenerator::TriangulateSquare(Square& square)
 
 void MeshGenerator::MeshFromPoints(std::vector<Node>* points)
 {
-    int size = points->size();// (int)sizeof(points) / (int)sizeof(points[0]);
+    int size = (int) points->size();// (int)sizeof(points) / (int)sizeof(points[0]);
 
     AssignVertices(points); // turns points into vertices
 

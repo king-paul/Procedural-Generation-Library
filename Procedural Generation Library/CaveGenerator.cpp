@@ -7,6 +7,7 @@
 using namespace std;
 using namespace ProceduralGeneration;
 
+
 CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations, 
     int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool useRandomSeed, string seed)
 {
@@ -17,13 +18,14 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_useRandomSeed = useRandomSeed;
 
     if (m_useRandomSeed)
-        srand(time(NULL));
+        srand((unsigned int) time(NULL));
     else
         m_seed = seed;
 
     m_borderSize = 1;
     m_wallThresholdSize = 50;
     m_roomThresholdSize = 50;
+    m_passageWidth = passageWidth;
 
     m_map = new Array2D<int>(m_width, m_height);
 }
@@ -44,123 +46,175 @@ void CaveGenerator::GenerateMap()
 
     Array2D<int> borderedMap(m_width + m_borderSize * 2, m_height + m_borderSize * 2);
 
-    // iterate through the bordered map array
-    for (int x = 0; x < borderedMap.getSize(1); x++)
-    {
-        for (int y = 0; y < borderedMap.getSize(0); y++)
-        {
-            // if we are inside the borders then retrieve the values from the map at that position
-            if (x >= m_borderSize && x < m_width + m_borderSize && y >= m_borderSize && y < m_height + m_borderSize)
-            {
-                borderedMap.get(x, y) = m_map->get(x - m_borderSize, y - m_borderSize);
-            }
-            else // if we are outside the map set the value to a wall
-            {
-                borderedMap.get(x, y) = 1;
-            }
-        }
-    }
-
     m_squareGrid = new SquareGrid(&borderedMap, 1);
 }
 
 void CaveGenerator::ProcessMap()
 {
-    vector<vector<Coord>> wallRegions = GetRegions(1);
+    vector<vector<Coord>> isolatedWalls = GetAllRegions(1);
 
     // remove walls within treshold from the map
-    for(vector<Coord> wallRegion : wallRegions)
+    for(vector<Coord> isolatedWall : isolatedWalls)
     {
-        if (wallRegion.size() < m_wallThresholdSize)
+        if (isolatedWall.size() < m_wallThresholdSize)
         {
-            for(Coord tile : wallRegion)
+            for(Coord tile : isolatedWall)
             {
-                m_map->get(tile.x, tile.y) = 0;
+                m_map->at(tile.x, tile.y) = 0;
             }
         }
     }
 
-    vector<vector<Coord>> roomRegions = GetRegions(0);
+    //PrintMapToConsole();
+    // Find rooms in the cave and add them
+    vector<vector<Coord>> roomSections = GetAllRegions(0);    
 
     // remove rooms within regions from the map
-    for(vector<Coord> roomRegion : roomRegions)
+    for(vector<Coord> room : roomSections)
     {
+        //PrintRoomOnMap(room);
+
         // if the region is less than the treshold change the space to a wall
-        if (roomRegion.size() < m_roomThresholdSize)
+        if (room.size() < m_roomThresholdSize)
         {
-            for(Coord tile : roomRegion)
+            for(Coord tile : room)
             {
-                m_map->get(tile.x, tile.y) = 1;
+                m_map->set(tile.x, tile.y, 1);
             }
+            //PrintMapToConsole();
+
+        } // otherwise add a new room
+        else
+        {
+            m_rooms.Add(new Room(room, m_map));
         }
+
+    }
+
+    PrintMapToConsole();
+
+    
+    // sort the rooms from largest to smallest so that the largest room is at the start
+    std::sort(m_rooms.begin(), m_rooms.end(), [](const Room* a, const Room* b) {
+            return a > b;
+        }
+    );
+
+    if (m_rooms.size() > 0)
+    {
+        // sets the larget room to be the main room
+        m_rooms[0]->SetAsMainRoom();
+
+        ConnectClosestRooms(&m_rooms);
     }
 }
 
-vector<vector<Coord>> CaveGenerator::GetRegions(int tileType)
+Array2D<int> CaveGenerator::CreateBorderedMap()
 {
-    vector<vector<Coord>> regions;
-    Array2D<int> mapFlags(m_width, m_height);
+    int newWidth = m_width + m_borderSize * 2;
+    int newHeight = m_height + m_borderSize * 2;
+
+    Array2D<int> newMap(newWidth, newHeight);
+
+    // iterate through the bordered map array
+    for (int x = 0; x < newWidth; x++)
+    {
+        for (int y = 0; y < newHeight; y++)
+        {
+            // if we are inside the borders then retrieve the values from the map at that position
+            if (x >= m_borderSize && x < m_width + m_borderSize && y >= m_borderSize && y < m_height + m_borderSize)
+            {
+                newMap.at(x, y) = m_map->at(x - m_borderSize, y - m_borderSize);
+            }
+            else // if we are outside the map set the value to a wall
+            {
+                newMap.at(x, y) = 1;
+            }
+        }
+    }
+
+    return newMap;
+}
+
+vector<vector<Coord>> CaveGenerator::GetAllRegions(int type)
+{
+    vector<vector<Coord>> isolatedRegions;
+    Array2D<bool> checkedTiles(m_width, m_height, false);
 
     // iterates through the map finding all tiles that match the type
     for (int x = 0; x < m_width; x++)
     {
         for (int y = 0; y < m_height; y++)
         {
-            if (mapFlags.get(x, y) == 0 && mapFlags.get(x, y) == tileType)
+            if (checkedTiles.at(x, y) == false && m_map->at(x, y) == type)
             {
-                // gets all tiles within the region and add them to the vector
-                vector<Coord> newRegion = GetRegionTiles(x, y);
-                regions.Add(newRegion);
+                // gets all tiles within one region and add them to the vector
+                vector<Coord> newRegion = GetRegionCoords(x, y);
+                isolatedRegions.Add(newRegion);
 
-                // mark all tiles in the flags as being looked at
+                //if (type == 0)
+                    //PrintRoomOnMap(newRegion);
+
+                // mark all tiles in the the new region as being looked at
                 for(Coord tile : newRegion)
                 {
-                    mapFlags.get(tile.x, tile.y) = 1;
+                    checkedTiles.set(tile.x, tile.y, 1);                    
                 }
             }
         }
     }
 
-    return regions;
+    return isolatedRegions;
 }
 
-vector<Coord> CaveGenerator::GetRegionTiles(int startX, int startY)
+vector<Coord> CaveGenerator::GetRegionCoords(int startX, int startY)
 {
     vector<Coord> tiles;
     // determines if a tile has been chacked or not
     // 1 is it has, 0 if it hasn't
-    Array2D<int> mapFlags(m_width, m_height);
+    Array2D<int> checkedTiles(m_width, m_height, NULL);
+    //DrawCheckedPositions(&mapFlags);
 
-    int tileType = m_map->get(startX, startY); // the type of tile being stored in the map
+    int tileType = m_map->at(startX, startY); // the type of tile being stored in the map
 
     // create a queue of coordinates and add the starting one to it
     queue<Coord> queue;
     queue.push(Coord(startX, startY));
-    mapFlags.get(startX, startY) = 1;
+    checkedTiles.set(startX, startY, 1);
+    //DrawCheckedPositions(&mapFlags);
 
     // while there are still tiles in the queue
     // get the first tile in the queue and remove it
     while (queue.size() > 0)
     {
-        Coord tile = queue.back();
+        //PrintMapToConsole(queue);
+        Coord tile = queue.front();
         queue.pop();
 
         tiles.Add(tile);
+        //PrintMapToConsole(tiles, tile, x, y);
+        //PrintRoomOnMap(tiles);     
 
-        // looks at all the adjacent tiles
+        // looks at all the adjacent tiles by by searching a square grid
         for (int x = tile.x - 1; x <= tile.x + 1; x++)
         {
             for (int y = tile.y - 1; y <= tile.y + 1; y++)
             {
+                //PrintMapToConsole(tiles, tile, x, y);
+
                 // ensure that the tile is in the range of the map and that it is no a diagonal
                 if (IsInMapRange(x, y) && (y == tile.y || x == tile.x))
                 {
-                    if (mapFlags.get(x, y) == 0 && m_map->get(x, y) == tileType)
-                    {
-                        mapFlags.get(x, y) = 1; // marks the tile as checked
+                    // check that the space hase not already been processed and
+                    // the tile at the grid position matches the type
+                    if (checkedTiles.at(x, y) == 0 && m_map->at(x, y) == tileType)
+                    {                       
+                        checkedTiles.set(x, y, 1); // marks the tile as checked
                         queue.push(Coord(x, y));
                     }
                 }
+
+                //DrawCheckedPositions(&mapFlags);
             }
         }
     }
@@ -210,9 +264,9 @@ void CaveGenerator::SmoothMap()
             int neighboutWallTiles = GetSurroundingWallCount(x, y);
 
             if (neighboutWallTiles > 4)
-                m_map->get(x, y) = 1;
+                m_map->at(x, y) = 1;
             else if (neighboutWallTiles < 4)
-                m_map->get(x, y) = 0;
+                m_map->at(x, y) = 0;
         }
 
         //PrintMapToConsole();
@@ -235,7 +289,7 @@ int CaveGenerator::GetSurroundingWallCount(int gridX, int gridY)
                 // make sure that it is not the current tile
                 if (neighbourX != gridX || neighbourY != gridY)
                 {
-                    wallCount += m_map->get(neighbourX, neighbourY); // add to walls
+                    wallCount += m_map->at(neighbourX, neighbourY); // add to walls
                 }
             }
             else
@@ -456,28 +510,4 @@ std::vector<Coord> CaveGenerator::CreateLine(Coord fromPoint, Coord toPoint)
 Vector3 CaveGenerator::CoordToWorldPoint(Coord tile)
 {
     return Vector3(-m_width / 2 + .5f + tile.x, 2, -m_height / 2 + .5f + tile.y);
-}
-
-void CaveGenerator::PrintMapToConsole()
-{
-    //system("cls");
-    cout << endl << endl;
-
-    for (int y = 0; y < m_map->getSize(0); y++)
-    {
-        for (int x = 0; x < m_map->getSize(1); x++)
-        {
-            int value = m_map->get(x, y);
-
-            if (value == 0)
-                cout << ' ';
-            else if (value == 1)
-                cout << '*';
-            else
-                cout << '.';
-                //cout << "Error at: " << x << ", " << y << endl;            
-        }
-
-        cout << endl;
-    }
 }

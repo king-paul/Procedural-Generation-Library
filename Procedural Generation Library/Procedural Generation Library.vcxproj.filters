@@ -60,6 +60,9 @@
     <ClCompile Include="SquareGrid.cpp">
       <Filter>Source Files\Cave Generator</Filter>
     </ClCompile>
+    <ClCompile Include="CavePrinter.cpp">
+      <Filter>Source Files\Cave Generator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h">

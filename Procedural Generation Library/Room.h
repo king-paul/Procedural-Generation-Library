@@ -30,7 +30,13 @@ public:
 	bool HasConnections() { return m_connectedRooms.size() > 0; }
 	int GetEdgeCount() { return (int) m_edgeTiles.size(); }
 	Coord GetEdgeTile(int index) { return m_edgeTiles[index]; }
+	vector<Coord> GetTiles() { return m_tiles; }
 
+	// turns on boolean variables to mark this room as the main one
+	void SetAsMainRoom() { 
+		m_mainRoom = true; 
+		m_accessFromMain = true;
+	}
 
 	//vector<Room>* GetConnections() { return &m_connectedRooms; }
 	//int GetTotalConnections() { return m_connectedRooms.size(); }
@@ -52,9 +58,26 @@ public:
 	// Joins two rooms together by adding them to the list of connected rooms
 	static void ConnectRooms(Room* roomA, Room* roomB);
 
-	bool operator ==(Room* other)
+	// operator overloads
+	bool operator ==(const Room* other) const
 	{
 		return this == other;
+	}
+
+	bool operator < (const Room& other) const
+	{
+		if (m_roomSize < other.m_roomSize)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator > (const Room& other) const
+	{
+		if (m_roomSize > other.m_roomSize)
+			return true;
+		else
+			return false;
 	}
 	
 };

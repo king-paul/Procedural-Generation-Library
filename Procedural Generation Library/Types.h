@@ -43,15 +43,22 @@ public:
 	Array2D(unsigned int cols, unsigned int rows)
 	{
 		data = new T[rows * cols];
-		
-		/*
-		for (int i = 0; i < rows * cols; i++)
-		{
-			data[i] = nullptr;
-		}*/
 
 		this->rows = rows;
 		this->cols = cols;
+	}
+
+	Array2D(unsigned int cols, unsigned int rows, T value)
+	{
+		data = new T[rows * cols];
+
+		this->rows = rows;
+		this->cols = cols;
+
+		for (unsigned int i = 0; i < (rows * cols); i++)
+		{
+			data[i] = value;
+		}
 	}
 
 	// copy constructor
@@ -62,7 +69,7 @@ public:
 
 		data = new T[rows * cols];
 		
-		for (int i = 0; i < rows * cols; i++)
+		for (unsigned int i = 0; i < rows * cols; i++)
 		{
 			data[i] = ref.data[i];
 		}
@@ -95,7 +102,12 @@ public:
 		delete[] data;
 	}
 
-	T& get(unsigned int col, unsigned int row)
+	T& at(unsigned int col, unsigned int row)
+	{
+		return data[IndexOf(row, col)];
+	}
+
+	T get(unsigned int col, unsigned int row)
 	{
 		return data[IndexOf(row, col)];
 	}
