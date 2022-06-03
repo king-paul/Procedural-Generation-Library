@@ -1,15 +1,14 @@
 #include "CaveGenerator.h"
 
-#include <random>
-#include <time.h>
 #include <iostream>
+#include <chrono>
 
 using namespace std;
 using namespace ProceduralGeneration;
 
 CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations, 
     int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain,
-    bool useRandomSeed, string seed)
+    bool useRandomSeed, int seed)
 {
     m_width = width;
     m_height = height;
@@ -18,7 +17,7 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_useRandomSeed = useRandomSeed;
 
     if (m_useRandomSeed)
-        srand((unsigned int) time(NULL));
+        m_seed = chrono::steady_clock::now().time_since_epoch().count();
     else
         m_seed = seed;
 
@@ -29,12 +28,18 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_forceAccessToMain = forceAccessToMain;
 
     m_map = new Array2D<int>(m_width, m_height);
+
+    m_randomGenerator = new PseudoRandom(0, 100, m_seed);
 }
 
 void CaveGenerator::GenerateMap()
-{    
-    RandomFillMap();
-    //PrintCave();
+{   
+    m_map->clear();
+    for (Room* room : m_rooms)
+        delete room;
+    m_rooms.clear();
+
+    RandomFillMap();  
 
     // smooth iterations
     for (int i = 0; i < m_smoothingIterations; i++)
@@ -42,13 +47,10 @@ void CaveGenerator::GenerateMap()
         SmoothMap();
     }
 
-    //PrintCave();
     ProcessMap();
-    //DrawAtPos(m_width, m_height, '\n', "\033[0;0m");
 
     //Array2D<int> borderedMap(m_width + m_borderSize * 2, m_height + m_borderSize * 2);
     //m_squareGrid = new SquareGrid(&borderedMap, 1);
-
 }
 
 void CaveGenerator::ProcessMap()
@@ -60,15 +62,17 @@ void CaveGenerator::ProcessMap()
     {
         if (isolatedWall.size() < m_wallThresholdSize)
         {
+            for (Coord tile : isolatedWall)
+                DrawAtPos(tile.x, tile.y, '*', RED);
+
             for(Coord tile : isolatedWall)
             {
                 m_map->at(tile.x, tile.y) = 0;
-                //DrawAtPos(tile.x, tile.y, '.', "\033[0;36m");
+                DrawAtPos(tile.x, tile.y, '.', CYAN);
             }
         }
     }
 
-    //PrintCave();
     // Find rooms in the cave and add them
     vector<vector<Coord>> roomSections = GetAllRegions(0);   
 
@@ -80,12 +84,14 @@ void CaveGenerator::ProcessMap()
         // if the region is less than the treshold change the space to a wall
         if (room.size() < m_roomThresholdSize)
         {
+            for (Coord tile : room)
+                DrawAtPos(tile.x, tile.y, '.', RED);
+
             for(Coord tile : room)
             {
                 m_map->set(tile.x, tile.y, 1);
-                //DrawAtPos(tile.x, tile.y, '*', "\033[0;33m");
-            }
-            //PrintCave();
+                DrawAtPos(tile.x, tile.y, '*', BROWN);
+            }            
 
         } // otherwise add a new room
         else
@@ -94,8 +100,6 @@ void CaveGenerator::ProcessMap()
         }
 
     }
-
-    PrintCave();
     
     // sort the rooms from largest to smallest so that the largest room is at the start
     std::sort(m_rooms.begin(), m_rooms.end(), [](const Room* a, const Room* b) {
@@ -154,15 +158,18 @@ vector<vector<Coord>> CaveGenerator::GetAllRegions(int type)
             {
                 // gets all tiles within one region and add them to the vector
                 vector<Coord> newRegion = GetRegionCoords(x, y);
-                isolatedRegions.Add(newRegion);
-
-                //if (type == 0)
-                    //PrintRoomOnMap(newRegion);
+                isolatedRegions.Add(newRegion);               
 
                 // mark all tiles in the the new region as being looked at
                 for(Coord tile : newRegion)
                 {
-                    checkedTiles.set(tile.x, tile.y, 1);                    
+                    checkedTiles.set(tile.x, tile.y, 1);
+                    
+                    /*
+                    if (type == 0)
+                        DrawAtPos(tile.x, tile.y, '.', RED);
+                    else if (type == 1)
+                        DrawAtPos(tile.x, tile.y, '*', RED);*/
                 }
             }
         }
@@ -203,22 +210,27 @@ vector<Coord> CaveGenerator::GetRegionCoords(int startX, int startY)
         for (int x = tile.x - 1; x <= tile.x + 1; x++)
         {
             for (int y = tile.y - 1; y <= tile.y + 1; y++)
-            {
-                //PrintCave(tiles, tile, x, y);
+            {                
+                //PrintCaveWithGrid(tiles, tile, x, y);
 
                 // ensure that the tile is in the range of the map and that it is no a diagonal
                 if (IsInMapRange(x, y) && (y == tile.y || x == tile.x))
                 {
+                    //DrawAtPos(x, y, 'o');
                     // check that the space hase not already been processed and
                     // the tile at the grid position matches the type
                     if (checkedTiles.at(x, y) == 0 && m_map->at(x, y) == tileType)
                     {                       
                         checkedTiles.set(x, y, 1); // marks the tile as checked
                         queue.push(Coord(x, y));
+                        //DrawAtPos(x, y, '+');
                     }
+
+                    //DrawAtPos(x, y, '*');
                 }
 
                 //DrawCheckedPositions(&mapFlags);
+                
             }
         }
     }
@@ -233,25 +245,29 @@ bool CaveGenerator::IsInMapRange(int x, int y)
 
 void CaveGenerator::RandomFillMap()
 {
-    PseudoRandom randomGenerator(0, 100);
-
-    // iterate through the graph creating cubes
-    for (int x = 0; x < m_width; x++)
+    // iterate through the graph creating noise
+    for (int y = 0; y < m_height; y++)      
     {
-        for (int y = 0; y < m_height; y++)
+        for (int x = 0; x < m_width; x++)
         {
             if (x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1)
             {
                 m_map->set(x, y, 1);
+                DrawAtPos(x, y, '*', BROWN);
             }
             else
             {
-                float randomValue = randomGenerator.GetValue(); //rand() % 100;
+                float randomValue = m_randomGenerator->GetValue(); //rand() % 100;
 
-                if (randomValue < m_randomFillPercent)
+                if (randomValue < m_randomFillPercent) {
                     m_map->set(x, y, 1);// ? 1 : 0;
-                else
+                    DrawAtPos(x, y, '*', BROWN);
+                }
+                else {
                     m_map->set(x, y, 0);
+                    DrawAtPos(x, y, '.', CYAN);
+                }
+
             }
 
         }
@@ -270,12 +286,12 @@ void CaveGenerator::SmoothMap()
             if (neighboutWallTiles > 4)
             {
                 m_map->at(x, y) = 1;                
-                //DrawAtPos(x, y, '*', "\033[0;33m");
+                DrawAtPos(x, y, '*', BROWN);
             }
             else if (neighboutWallTiles < 4)
             {
                 m_map->at(x, y) = 0;                
-                //DrawAtPos(x, y, '.', "\033[0;36m");
+                DrawAtPos(x, y, '.', CYAN);
             }
         }
         
@@ -288,9 +304,9 @@ int CaveGenerator::GetSurroundingWallCount(int gridX, int gridY)
     int wallCount = 0;
 
     // loops trough 3x3 grid
-    for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX++)
+    for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++)    
     {
-        for (int neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++)
+        for (int neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX++)
         {
             // make sure we are inside the map
             if (IsInMapRange(neighbourX, neighbourY))

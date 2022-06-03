@@ -11,6 +11,16 @@
 #define Add push_back
 #define var auto
 
+// console colors
+#define BLACK 30
+#define RED 31
+#define GREEN 32
+#define BROWN 33
+#define BLUE 34
+#define MAGENTA 35
+#define CYAN 36
+#define WHITE 37
+
 using namespace std;
 
 enum class TileType
@@ -127,6 +137,14 @@ public:
 		return 0;
 	}
 
+	void clear()
+	{
+		for (int i = 0; i < (int) (rows * cols); i++)
+		{
+			data[i] = NULL;
+		}
+	}
+
 private:
 	int IndexOf(unsigned int row, unsigned int col)
 	{
@@ -147,7 +165,18 @@ public:
 	{		
 		m_min = min;
 		m_max = max;
-		//std::normal_distribution<float> normalDist(10, 1.0f);
+		//theEngine = std::default_random_engine();
+
+		//std::normal_distribution<float> normalDist(10, 1.0f);		
+	}
+
+	PseudoRandom(float min, float max, unsigned int m_seed)
+	{
+		m_min = min;
+		m_max = max;
+		theEngine = std::default_random_engine(m_seed);
+
+		//std::normal_distribution<float> normalDist(10, 1.0f);		
 	}
 
 	~PseudoRandom()

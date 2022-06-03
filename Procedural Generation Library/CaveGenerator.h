@@ -13,7 +13,7 @@ class CaveGenerator
     int m_width;
     int m_height;
 
-    string m_seed;
+    int m_seed;
     bool m_useRandomSeed;
 
     int m_randomFillPercent;
@@ -31,11 +31,16 @@ class CaveGenerator
 
     vector<Room*> m_rooms; // the rooms in the cave to be connected by paths
 
+    PseudoRandom* m_randomGenerator;
+
+    bool debugDraw = false;
+
 public:
 
     // Creates a new instance of the caver generator
     CaveGenerator(int width = 70, int height = 40, int fillPercent = 50, int smoothingIterations = 5, int borderSize = 1,
-        int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool forceAccessToMain = true, bool useRandomSeed = true, string seed = "");
+        int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool forceAccessToMain = true,
+        bool useRandomSeed = true, int seed = 0);
 
     ~CaveGenerator() {
         delete m_map; 
@@ -44,6 +49,8 @@ public:
         for (Room* room : m_rooms)
             delete room;
         m_rooms.clear();
+
+        delete m_randomGenerator;
     }
 
     /// <summary>

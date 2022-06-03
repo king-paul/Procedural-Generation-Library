@@ -38,12 +38,20 @@ void GenerateCave()
 	int roomThresholdSize = 50;
 	int passageWidth = 1;
 	bool forceAccessToMain = false;
+	bool useRandomSeed = true;
+	int seed = 1;
 
 	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator(
-		width, height, fillPercent, smoothingIterations, borderSize, wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain);
+		width, height, fillPercent, smoothingIterations, borderSize, wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain,
+		useRandomSeed, seed);
 
-	caveGenerator->GenerateMap();
-	caveGenerator->PrintCave();
+	for (int i = 0; i < 10; i++)
+	{
+		caveGenerator->GenerateMap();
+		caveGenerator->PrintCave();
+		system("Pause");
+	}
+
 	//caveGenerator->PrintCaveWithGrid();
 	//caveGenerator->GetSquareGrid()->PrintConfigurations();
 

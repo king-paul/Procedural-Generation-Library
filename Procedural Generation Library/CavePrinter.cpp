@@ -5,8 +5,6 @@ using namespace ProceduralGeneration;
 
 void CaveGenerator::PrintCave()
 {
-    bool printGrid;
-
     system("cls");
     //system("Color 02"); // green
     //cout << endl << endl;
@@ -43,9 +41,7 @@ void CaveGenerator::PrintCave()
 }
 
 void CaveGenerator::PrintCaveWithGrid()
-{
-    bool printGrid;
-
+{   
     system("cls");
     //cout << endl << endl;
 
@@ -279,6 +275,9 @@ void CaveGenerator::DrawCheckedPositions(Array2D<int>* flags)
 
 void CaveGenerator::DrawAtPos(int x, int y, char character, unsigned int color, bool usingGrid)
 {
+    if (!debugDraw)
+        return;
+
     COORD cursorPos;
     if (usingGrid)
     {
@@ -298,9 +297,11 @@ void CaveGenerator::DrawAtPos(int x, int y, char character, unsigned int color, 
 
 void CaveGenerator::HighlightRoom(Room* room, unsigned int color)
 {
+    if (!debugDraw)
+        return;
+
     auto roomCoords = room->GetTiles();
 
     for (Coord tile : roomCoords)
         DrawAtPos(tile.x, tile.y, '.', color);
-
 }
