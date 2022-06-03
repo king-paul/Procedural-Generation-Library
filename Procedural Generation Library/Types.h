@@ -220,6 +220,15 @@ struct Coord
 		return false;
 	}
 
+
+	bool operator !=(Coord rhs)
+	{
+		if (x == rhs.x && y == rhs.y)
+			return false;
+
+		return true;
+	}
+
 	static float DistanceBetween(Coord a, Coord b)
 	{
 		float num = (float) (a.x - b.x);

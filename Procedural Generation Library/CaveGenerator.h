@@ -24,6 +24,7 @@ class CaveGenerator
     int m_roomThresholdSize; // the minimum size of a room
 
     int m_passageWidth; // how wide the passages connecting rooms is
+    bool m_forceAccessToMain; // ensures that all rooms are connected to the main room
 
     Array2D<int>* m_map; // a series of on and off values of either 1 or 0
     SquareGrid* m_squareGrid; // marching squares build from map
@@ -34,7 +35,7 @@ public:
 
     // Creates a new instance of the caver generator
     CaveGenerator(int width = 70, int height = 40, int fillPercent = 50, int smoothingIterations = 5, int borderSize = 1,
-        int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool useRandomSeed = true, string seed = "");
+        int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool forceAccessToMain = true, bool useRandomSeed = true, string seed = "");
 
     ~CaveGenerator() {
         delete m_map; 
@@ -64,12 +65,8 @@ public:
     // Drawing Functions
 
     // print contents of generated map array to the console
-    void PrintMapToConsole();
-    void PrintMapToConsole(queue<Coord> coords);
-    void PrintMapToConsole(vector<Coord> allTiles, Coord currenTile, int x, int y);
-    void PrintRoomOnMap(vector<Coord> coords);
-    void DrawCheckedPositions(Array2D<int>* flags);
-    //void DrawRegionsPositions(vector<Coord> region);    
+    void PrintCave();
+    void PrintCaveWithGrid();      
 
 private:
 
@@ -117,7 +114,7 @@ private:
     int GetSurroundingWallCount(int gridX, int gridY);
 
     // Connects all rooms in the cave that are closest distance from each other
-    void ConnectClosestRooms(vector<Room*>* allRooms, bool forceAccessFromMainRoom = false);
+    void ConnectClosestRooms(vector<Room*>* allRooms, bool forceAccess = false);
 
     // Creates floor tiles between two rooms
     void CreatePassage(Room* roomA, Room* roomB, Coord tileA, Coord tileB);
@@ -130,6 +127,14 @@ private:
 
     // Converts a a grid position to world space
     Vector3 CoordToWorldPoint(Coord tile);
+
+    // printing functions
+    void PrintCaveWithGrid(queue<Coord> coords);
+    void PrintCaveWithGrid(vector<Coord> allTiles, Coord currenTile, int x, int y);
+    void PrintRoomOnMap(vector<Coord> coords);
+    void DrawCheckedPositions(Array2D<int>* flags);
+    void DrawAtPos(int x, int y, char character, unsigned int color = 0, bool usingGrid = false);
+    void HighlightRoom(Room* room, unsigned int color);
 };
 
 }

@@ -1,10 +1,51 @@
 #include "CaveGenerator.h"
-//#include <consoleapi2.h>
+#include <windows.h>
 
 using namespace ProceduralGeneration;
 
-void CaveGenerator::PrintMapToConsole()
+void CaveGenerator::PrintCave()
 {
+    bool printGrid;
+
+    system("cls");
+    //system("Color 02"); // green
+    //cout << endl << endl;
+
+    for (int y = 0; y < m_map->getSize(0); y++)
+    {
+        for (int x = 0; x < m_map->getSize(1); x++)
+        {
+            int value = m_map->at(x, y);
+
+            if (value == 0)
+            {
+                //cout << "\u001b[42m";
+                cout << "\033[0;36m"; // 
+                cout << ".";          
+                //cout << "\u001b[0m";
+            }
+            else if (value == 1)
+            {
+                //cout << "\u001b[44m";
+                cout << "\033[0;33m"; // 
+                cout << "*";
+                //cout << "\u001b[0m";
+            }
+            else
+                cout << " ";
+            //cout << "Error at: " << x << ", " << y << endl;            
+        }
+
+        cout << "\033[0;0m" << endl;
+        //cout << "\u001b[40m" << endl;
+    }
+
+}
+
+void CaveGenerator::PrintCaveWithGrid()
+{
+    bool printGrid;
+
     system("cls");
     //cout << endl << endl;
 
@@ -42,6 +83,7 @@ void CaveGenerator::PrintMapToConsole()
                 cout << "|**";
             else
                 cout << "|. ";
+
             //cout << "Error at: " << x << ", " << y << endl;            
         }
 
@@ -56,7 +98,8 @@ void CaveGenerator::PrintMapToConsole()
 
 }
 
-void CaveGenerator::PrintMapToConsole(queue<Coord> coords)
+
+void CaveGenerator::PrintCaveWithGrid(queue<Coord> coords)
 {
 
     Coord nextCoord = coords.front();
@@ -132,7 +175,7 @@ void CaveGenerator::PrintMapToConsole(queue<Coord> coords)
 
 }
 
-void CaveGenerator::PrintMapToConsole(vector<Coord> allTiles, Coord currentTile, int searchX, int searchY)
+void CaveGenerator::PrintCaveWithGrid(vector<Coord> allTiles, Coord currentTile, int searchX, int searchY)
 {
     system("cls");
    
@@ -234,24 +277,30 @@ void CaveGenerator::DrawCheckedPositions(Array2D<int>* flags)
     }
 }
 
-/*
-void ProceduralGeneration::CaveGenerator::DrawRegionsPositions(vector<Coord> region)
+void CaveGenerator::DrawAtPos(int x, int y, char character, unsigned int color, bool usingGrid)
 {
-    system("cls");
-    //cout << endl << endl;
-
-    for (int y = 0; y < m_map->getSize(0); y++)
+    COORD cursorPos;
+    if (usingGrid)
     {
-        for (int x = 0; x < m_map->getSize(1); x++)
-        {
-            if (Helpers::CoordsInList(region, x, y))
-                cout << '.';
-            else
-                cout << ' ';
-        }
-
-        cout << endl;
+        cursorPos.X = 2 + (short)x * 3;
+        cursorPos.Y = (short)y + 3;
+    }
+    else
+    {
+        cursorPos.X = (short)x;
+        cursorPos.Y = (short)y;
     }
 
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPos);
+    cout << "\033[0;" << color << "m";
+    cout << character;
 }
-*/
+
+void CaveGenerator::HighlightRoom(Room* room, unsigned int color)
+{
+    auto roomCoords = room->GetTiles();
+
+    for (Coord tile : roomCoords)
+        DrawAtPos(tile.x, tile.y, '.', color);
+
+}

@@ -29,12 +29,23 @@ void GenerateDungeon()
 
 void GenerateCave()
 {
-	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator();// 70, 40, 50, 5, 1, 50, 1);
-	///caveGenerator.PrintMapToConsole();
-	caveGenerator->GenerateMap();
-	caveGenerator->PrintMapToConsole();
-	//caveGenerator->GetSquareGrid()->PrintConfigurations();
+	int width = 128;
+	int height = 72;
+	int smoothingIterations = 5;
+	int borderSize = 1;
+	int fillPercent = 50;
+	int wallThresholdSize = 50;
+	int roomThresholdSize = 50;
+	int passageWidth = 1;
+	bool forceAccessToMain = false;
 
+	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator(
+		width, height, fillPercent, smoothingIterations, borderSize, wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain);
+
+	caveGenerator->GenerateMap();
+	caveGenerator->PrintCave();
+	//caveGenerator->PrintCaveWithGrid();
+	//caveGenerator->GetSquareGrid()->PrintConfigurations();
 
 	//ProceduralGeneration::MeshGenerator* meshGenerator = new ProceduralGeneration::MeshGenerator();
 	//meshGenerator->GenerateMesh(caveGenerator->GetMap(), 1, 5);

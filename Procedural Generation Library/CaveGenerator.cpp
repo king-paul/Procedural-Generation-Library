@@ -7,9 +7,9 @@
 using namespace std;
 using namespace ProceduralGeneration;
 
-
 CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations, 
-    int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool useRandomSeed, string seed)
+    int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain,
+    bool useRandomSeed, string seed)
 {
     m_width = width;
     m_height = height;
@@ -26,6 +26,7 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_wallThresholdSize = 50;
     m_roomThresholdSize = 50;
     m_passageWidth = passageWidth;
+    m_forceAccessToMain = forceAccessToMain;
 
     m_map = new Array2D<int>(m_width, m_height);
 }
@@ -33,20 +34,21 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
 void CaveGenerator::GenerateMap()
 {    
     RandomFillMap();
-    //PrintMapToConsole();
+    //PrintCave();
 
     // smooth iterations
     for (int i = 0; i < m_smoothingIterations; i++)
     {
         SmoothMap();
-        //PrintMapToConsole();
     }
 
+    //PrintCave();
     ProcessMap();
+    //DrawAtPos(m_width, m_height, '\n', "\033[0;0m");
 
-    Array2D<int> borderedMap(m_width + m_borderSize * 2, m_height + m_borderSize * 2);
+    //Array2D<int> borderedMap(m_width + m_borderSize * 2, m_height + m_borderSize * 2);
+    //m_squareGrid = new SquareGrid(&borderedMap, 1);
 
-    m_squareGrid = new SquareGrid(&borderedMap, 1);
 }
 
 void CaveGenerator::ProcessMap()
@@ -61,13 +63,14 @@ void CaveGenerator::ProcessMap()
             for(Coord tile : isolatedWall)
             {
                 m_map->at(tile.x, tile.y) = 0;
+                //DrawAtPos(tile.x, tile.y, '.', "\033[0;36m");
             }
         }
     }
 
-    //PrintMapToConsole();
+    //PrintCave();
     // Find rooms in the cave and add them
-    vector<vector<Coord>> roomSections = GetAllRegions(0);    
+    vector<vector<Coord>> roomSections = GetAllRegions(0);   
 
     // remove rooms within regions from the map
     for(vector<Coord> room : roomSections)
@@ -80,8 +83,9 @@ void CaveGenerator::ProcessMap()
             for(Coord tile : room)
             {
                 m_map->set(tile.x, tile.y, 1);
+                //DrawAtPos(tile.x, tile.y, '*', "\033[0;33m");
             }
-            //PrintMapToConsole();
+            //PrintCave();
 
         } // otherwise add a new room
         else
@@ -91,12 +95,11 @@ void CaveGenerator::ProcessMap()
 
     }
 
-    PrintMapToConsole();
-
+    PrintCave();
     
     // sort the rooms from largest to smallest so that the largest room is at the start
     std::sort(m_rooms.begin(), m_rooms.end(), [](const Room* a, const Room* b) {
-            return a > b;
+            return *a > *b;
         }
     );
 
@@ -107,6 +110,7 @@ void CaveGenerator::ProcessMap()
 
         ConnectClosestRooms(&m_rooms);
     }
+    
 }
 
 Array2D<int> CaveGenerator::CreateBorderedMap()
@@ -187,12 +191,12 @@ vector<Coord> CaveGenerator::GetRegionCoords(int startX, int startY)
     // get the first tile in the queue and remove it
     while (queue.size() > 0)
     {
-        //PrintMapToConsole(queue);
+        //PrintCave(queue);
         Coord tile = queue.front();
         queue.pop();
 
         tiles.Add(tile);
-        //PrintMapToConsole(tiles, tile, x, y);
+        //PrintCave(tiles, tile, x, y);
         //PrintRoomOnMap(tiles);     
 
         // looks at all the adjacent tiles by by searching a square grid
@@ -200,7 +204,7 @@ vector<Coord> CaveGenerator::GetRegionCoords(int startX, int startY)
         {
             for (int y = tile.y - 1; y <= tile.y + 1; y++)
             {
-                //PrintMapToConsole(tiles, tile, x, y);
+                //PrintCave(tiles, tile, x, y);
 
                 // ensure that the tile is in the range of the map and that it is no a diagonal
                 if (IsInMapRange(x, y) && (y == tile.y || x == tile.x))
@@ -257,19 +261,24 @@ void CaveGenerator::RandomFillMap()
 
 void CaveGenerator::SmoothMap()
 {
-    for (int x = 0; x < m_width; x++)
+    for (int y = 0; y < m_height; y++)    
     {
-        for (int y = 0; y < m_height; y++)
+        for (int x = 0; x < m_width; x++)
         {
             int neighboutWallTiles = GetSurroundingWallCount(x, y);
 
             if (neighboutWallTiles > 4)
-                m_map->at(x, y) = 1;
+            {
+                m_map->at(x, y) = 1;                
+                //DrawAtPos(x, y, '*', "\033[0;33m");
+            }
             else if (neighboutWallTiles < 4)
-                m_map->at(x, y) = 0;
+            {
+                m_map->at(x, y) = 0;                
+                //DrawAtPos(x, y, '.', "\033[0;36m");
+            }
         }
-
-        //PrintMapToConsole();
+        
     }
 
 }
@@ -341,22 +350,35 @@ void CaveGenerator::ConnectClosestRooms(vector<Room*> *allRooms, bool forceAcces
     // compares them with all other rooms
     for (Room* roomA : roomsConnected)
     {
+        HighlightRoom(roomA, 31);
+
         // if we are not forcing accessibity then the
         // next room is not connected yet
         if (!forceAccess) {
             connectionFound = false;
 
             // if another room is connected to this room then go to next one
-            if (roomA->HasConnections()) 
-                continue;            
+            if (roomA->HasConnections())
+            {
+                HighlightRoom(roomA, 36);
+                continue;
+            }
         }
 
         for (Room* roomB : roomsDisconnected)
-        {
+        {       
             // if both rooms are the same or A is already connected to B then
             // skip to next room on list   
             if (roomA == roomB || roomA->IsConnectedTo(roomB))
                 continue;
+
+            if (connectionFound)
+            {
+                DrawAtPos(closestPosA.x, closestPosA.y, '.', 36);
+                DrawAtPos(closestPosB.x, closestPosB.y, '.', 36);
+            }
+
+            HighlightRoom(roomB, 32);
 
             // iterates through all indexes up until the total number of edge tiles has
             // been reached
@@ -376,26 +398,45 @@ void CaveGenerator::ConnectClosestRooms(vector<Room*> *allRooms, bool forceAcces
                     // update all the short distance variables
                     if (distanceBetweenRooms < shortestDistance || !connectionFound)
                     {
+                        //if (connectionFound)
+                        //{
+                            //DrawAtPos(closestPosA.x, closestPosA.y, '.', 32);
+                            //DrawAtPos(closestPosB.x, closestPosB.y, '.', 32);
+                        //}
+
                         shortestDistance = distanceBetweenRooms;
                         connectionFound = true;
                         closestPosA = pointA;
                         closestPosB = pointB;
                         closestRoomA = roomA;
                         closestRoomB = roomB;
+
+                        //DrawAtPos(closestPosA.x, closestPosA.y, 'A');
+                        //DrawAtPos(closestPosB.x, closestPosB.y, 'B');
                     }
 
                 }
             }
+
+            DrawAtPos(closestPosA.x, closestPosA.y, 'A');
+            DrawAtPos(closestPosB.x, closestPosB.y, 'B');
+            HighlightRoom(roomB, 36);
 
         } // end of loop B
 
         // if connection was found create a passage between the 2 shortest points
         // and we are not forcing access from the main room
         // create a passage
-        if (connectionFound && !forceAccess)
+        if (connectionFound && forceAccess)
         {
+            // create a passage between the 2 shortest points
             CreatePassage(closestRoomA, closestRoomB, closestPosA, closestPosB);
+
+            // runs another iteration of this function recursively
+            ConnectClosestRooms(allRooms, true);
         }
+
+        HighlightRoom(roomA, 36);
 
     } // end of loop A
 
@@ -410,16 +451,28 @@ void CaveGenerator::ConnectClosestRooms(vector<Room*> *allRooms, bool forceAcces
 
 void CaveGenerator::CreatePassage(Room* roomA, Room* roomB, Coord tileA, Coord tileB)
 {
+    HighlightRoom(roomA, 31);
+    HighlightRoom(roomB, 32);
+
     Room::ConnectRooms(roomA, roomB);
 
     // gets the line connecting the two coordinates
     vector<Coord> path = CreateLine(tileA, tileB);
+
+    DrawAtPos(tileA.x, tileA.y, 'A');
+    DrawAtPos(tileB.x, tileB.y, 'B');
 
     // carve a path in each position in the line
     for(Coord coord : path)
     {
         CreateCircle(coord, m_passageWidth);
     }
+
+    DrawAtPos(tileA.x, tileA.y, '.', 36);
+    DrawAtPos(tileB.x, tileB.y, '.', 36);
+
+    HighlightRoom(roomA, 36);
+    HighlightRoom(roomB, 36);
 }
 
 void CaveGenerator::CreateCircle(Coord coordinate, int radius)
@@ -438,7 +491,10 @@ void CaveGenerator::CreateCircle(Coord coordinate, int radius)
                 // if the position is inside the boundary of the cave
                 // set the position to a vacent space
                 if (IsInMapRange(gridX, gridY))
+                {
                     m_map->set(gridX, gridY, 0);
+                    DrawAtPos(gridX, gridY, '.', 36);
+                }
             }
         }
 
