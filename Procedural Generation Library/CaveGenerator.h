@@ -12,11 +12,11 @@ namespace ProceduralGeneration
 class CaveGenerator
 {
     // variable declartaion
-    int m_width;
-    int m_height;
+    int m_width; // the width of the cave in tile spaces
+    int m_height; // the height of the cave in tile spaces
 
-    int m_seed;
-    bool m_useRandomSeed;
+    int m_seed; // the seed to use when generate
+    bool m_useRandomSeed; // makes the seed random everytime this class is instantiated
 
     int m_randomFillPercent;
     int m_smoothingIterations;
@@ -29,13 +29,15 @@ class CaveGenerator
     bool m_forceAccessToMain; // ensures that all rooms are connected to the main room
 
     Array2D<int>* m_map; // a series of on and off values of either 1 or 0
+    Array2D<int>* m_borderedMap; // the same map with a border around it
+
     SquareGrid* m_squareGrid; // marching squares build from map
 
     vector<Room*> m_rooms; // the rooms in the cave to be connected by paths
 
     PseudoRandom* m_randomGenerator;
 
-    bool debugDraw = true;
+    bool debugDraw = false;
 
 public:
 
@@ -44,16 +46,7 @@ public:
         int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool forceAccessToMain = true,
         bool useRandomSeed = true, int seed = 0);
 
-    ~CaveGenerator() {
-        delete m_map; 
-        delete m_squareGrid;
-
-        for (Room* room : m_rooms)
-            delete room;
-        m_rooms.clear();
-
-        delete m_randomGenerator;
-    }
+    ~CaveGenerator();
 
     /// <summary>
     /// Generates a new random cave from the value passed to the constructor
@@ -67,6 +60,15 @@ public:
     Array2D<int>* GetMap()
     {
         return m_map;
+    }
+
+    /// <summary>
+    /// Gets the generated cave with border from the cave generator
+    /// </summary>
+    /// <returns>A 2d array of integer values</returns>
+    Array2D<int>* GetBorderedMap()
+    {
+        return m_borderedMap;
     }
 
     SquareGrid* GetSquareGrid() { return m_squareGrid; }
@@ -83,9 +85,9 @@ private:
     void ProcessMap();
 
     /// <summary>
-    /// 
+    /// recreates the original map but with a border around it to make outside walls thicker
     /// </summary>
-    Array2D<int> CreateBorderedMap();
+    void CreateBorderedMap();
 
     /// <summary>
     /// Gets a list of all of the regions containing a specified tile type

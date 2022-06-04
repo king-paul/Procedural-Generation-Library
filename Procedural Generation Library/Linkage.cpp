@@ -50,12 +50,30 @@ void GenerateDungeon(DungeonGenerator* dungeonPtr)
  ******************/
 extern "C" __declspec(dllexport)
 CaveGenerator* GenerateCave(int width, int height, int fillPercent, int smoothingIterations, int borderSize,
-	int wallThresholdSize, int roomThresholdSize, int passageWidth)//, bool useRandomSeed, BSTR seed = (BSTR) rand())
+	int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain, bool useRandomSeed, int seed)
 {
-	CaveGenerator* cave = new CaveGenerator(width, height, fillPercent, smoothingIterations, borderSize,
-											wallThresholdSize, roomThresholdSize, passageWidth, true);
+	CaveGenerator* cave = new CaveGenerator(width, height, fillPercent, smoothingIterations, borderSize, 
+		wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain, useRandomSeed, seed);
+
 	cave->GenerateMap();
 	return cave;
+}
+
+extern "C" __declspec(dllexport)
+bool IsWall(int x, int y, CaveGenerator* cave)
+{
+	auto map = cave->GetBorderedMap();
+	
+	if (map->get(x, y) == 1)
+		return true;
+	else
+		return false;
+}
+
+extern "C" __declspec(dllexport)
+int GetMarchingSquareValue(int x, int y, CaveGenerator * cave)
+{
+	return cave->GetSquareGrid()->GetSquares()->at(x, y).configuration;
 }
 
 extern "C" __declspec(dllexport)

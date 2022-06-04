@@ -22,7 +22,7 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     else
         m_seed = seed;
 
-    m_borderSize = 1;
+    m_borderSize = borderSize;
     m_wallThresholdSize = 50;
     m_roomThresholdSize = 50;
     m_passageWidth = passageWidth;
@@ -33,6 +33,18 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_randomGenerator = new PseudoRandom(0, 100, m_seed);
 }
 
+CaveGenerator::~CaveGenerator() {
+    delete m_map;
+    delete m_borderedMap;
+    delete m_squareGrid;
+
+    for (Room* room : m_rooms)
+        delete room;
+    m_rooms.clear();
+
+    delete m_randomGenerator;
+}
+
 void CaveGenerator::GenerateMap()
 {   
     m_map->clear();
@@ -41,7 +53,7 @@ void CaveGenerator::GenerateMap()
     m_rooms.clear();
 
     RandomFillMap();
-
+    
     // smooth iterations
     for (int i = 0; i < m_smoothingIterations; i++)
     {
@@ -50,8 +62,9 @@ void CaveGenerator::GenerateMap()
 
     ProcessMap();
 
-    //Array2D<int> borderedMap(m_width + m_borderSize * 2, m_height + m_borderSize * 2);
-    //m_squareGrid = new SquareGrid(&borderedMap, 1);
+    CreateBorderedMap();
+
+    m_squareGrid = new SquareGrid(m_borderedMap, 1);
 }
 
 void CaveGenerator::ProcessMap()
@@ -118,12 +131,12 @@ void CaveGenerator::ProcessMap()
     
 }
 
-Array2D<int> CaveGenerator::CreateBorderedMap()
+void CaveGenerator::CreateBorderedMap()
 {
     int newWidth = m_width + m_borderSize * 2;
     int newHeight = m_height + m_borderSize * 2;
 
-    Array2D<int> newMap(newWidth, newHeight);
+    m_borderedMap = new Array2D<int>(newWidth, newHeight);
 
     // iterate through the bordered map array
     for (int x = 0; x < newWidth; x++)
@@ -133,16 +146,15 @@ Array2D<int> CaveGenerator::CreateBorderedMap()
             // if we are inside the borders then retrieve the values from the map at that position
             if (x >= m_borderSize && x < m_width + m_borderSize && y >= m_borderSize && y < m_height + m_borderSize)
             {
-                newMap.at(x, y) = m_map->at(x - m_borderSize, y - m_borderSize);
+                m_borderedMap->at(x, y) = m_map->at(x - m_borderSize, y - m_borderSize);
             }
             else // if we are outside the map set the value to a wall
             {
-                newMap.at(x, y) = 1;
+                m_borderedMap->at(x, y) = 1;
             }
         }
     }
 
-    return newMap;
 }
 
 vector<vector<Coord>> CaveGenerator::GetAllRegions(int type)
@@ -280,7 +292,7 @@ void CaveGenerator::SmoothMap()
 {
     for (int y = 0; y < m_height; y++)    
     {
-        this_thread::sleep_for(1ms);
+        //this_thread::sleep_for(1ms);
 
         for (int x = 0; x < m_width; x++)
         {
