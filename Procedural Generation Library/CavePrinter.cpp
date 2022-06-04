@@ -15,6 +15,8 @@ void CaveGenerator::PrintCave()
         {
             int value = m_map->at(x, y);
 
+            //std::this_thread::sleep_for(10ms);
+
             if (value == 0)
             {
                 //cout << "\u001b[42m";
@@ -273,7 +275,9 @@ void CaveGenerator::DrawCheckedPositions(Array2D<int>* flags)
     }
 }
 
-void CaveGenerator::DrawAtPos(int x, int y, char character, unsigned int color, bool usingGrid)
+template< class Rep, class Period>
+void CaveGenerator::DrawAtPos(int x, int y, char character, unsigned int color, const std::chrono::duration<Rep, Period>& duration,
+    bool usingGrid)
 {
     if (!debugDraw)
         return;
@@ -289,7 +293,8 @@ void CaveGenerator::DrawAtPos(int x, int y, char character, unsigned int color, 
         cursorPos.X = (short)x;
         cursorPos.Y = (short)y;
     }
-
+    
+    this_thread::sleep_for(duration);
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPos);
     cout << "\033[0;" << color << "m";
     cout << character;
@@ -303,5 +308,5 @@ void CaveGenerator::HighlightRoom(Room* room, unsigned int color)
     auto roomCoords = room->GetTiles();
 
     for (Coord tile : roomCoords)
-        DrawAtPos(tile.x, tile.y, '.', color);
+        DrawAtPos(tile.x, tile.y, '.', color, 0ms);
 }

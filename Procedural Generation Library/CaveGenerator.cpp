@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 using namespace std;
 using namespace ProceduralGeneration;
@@ -39,7 +40,7 @@ void CaveGenerator::GenerateMap()
         delete room;
     m_rooms.clear();
 
-    RandomFillMap();  
+    RandomFillMap();
 
     // smooth iterations
     for (int i = 0; i < m_smoothingIterations; i++)
@@ -63,12 +64,12 @@ void CaveGenerator::ProcessMap()
         if (isolatedWall.size() < m_wallThresholdSize)
         {
             for (Coord tile : isolatedWall)
-                DrawAtPos(tile.x, tile.y, '*', RED);
+                DrawAtPos(tile.x, tile.y, '*', RED, 5ms);
 
             for(Coord tile : isolatedWall)
             {
                 m_map->at(tile.x, tile.y) = 0;
-                DrawAtPos(tile.x, tile.y, '.', CYAN);
+                DrawAtPos(tile.x, tile.y, '.', CYAN, 5ms);
             }
         }
     }
@@ -85,12 +86,12 @@ void CaveGenerator::ProcessMap()
         if (room.size() < m_roomThresholdSize)
         {
             for (Coord tile : room)
-                DrawAtPos(tile.x, tile.y, '.', RED);
+                DrawAtPos(tile.x, tile.y, '.', RED, 5ms);
 
             for(Coord tile : room)
             {
                 m_map->set(tile.x, tile.y, 1);
-                DrawAtPos(tile.x, tile.y, '*', BROWN);
+                DrawAtPos(tile.x, tile.y, '*', BROWN, 5ms);
             }            
 
         } // otherwise add a new room
@@ -253,7 +254,7 @@ void CaveGenerator::RandomFillMap()
             if (x == 0 || x == m_width - 1 || y == 0 || y == m_height - 1)
             {
                 m_map->set(x, y, 1);
-                DrawAtPos(x, y, '*', BROWN);
+                DrawAtPos(x, y, '*', BROWN, 0ms);
             }
             else
             {
@@ -261,11 +262,11 @@ void CaveGenerator::RandomFillMap()
 
                 if (randomValue < m_randomFillPercent) {
                     m_map->set(x, y, 1);// ? 1 : 0;
-                    DrawAtPos(x, y, '*', BROWN);
+                    DrawAtPos(x, y, '*', BROWN, 0ms);
                 }
                 else {
                     m_map->set(x, y, 0);
-                    DrawAtPos(x, y, '.', CYAN);
+                    DrawAtPos(x, y, '.', CYAN, 0ms);
                 }
 
             }
@@ -279,20 +280,27 @@ void CaveGenerator::SmoothMap()
 {
     for (int y = 0; y < m_height; y++)    
     {
+        this_thread::sleep_for(1ms);
+
         for (int x = 0; x < m_width; x++)
         {
             int neighboutWallTiles = GetSurroundingWallCount(x, y);
 
+            // if there are more then 4 sorounding walls then set to wall
             if (neighboutWallTiles > 4)
             {
                 m_map->at(x, y) = 1;                
-                DrawAtPos(x, y, '*', BROWN);
+                DrawAtPos(x, y, '*', BROWN, 0ms);
             }
+            // if there are less than 4 sorounding walls then set to floor
             else if (neighboutWallTiles < 4)
             {
                 m_map->at(x, y) = 0;                
-                DrawAtPos(x, y, '.', CYAN);
+                DrawAtPos(x, y, '.', CYAN, 0ms);
             }
+
+            // if there are exactly 4 keeps the tile as whatever it is
+
         }
         
     }
@@ -390,8 +398,8 @@ void CaveGenerator::ConnectClosestRooms(vector<Room*> *allRooms, bool forceAcces
 
             if (connectionFound)
             {
-                DrawAtPos(closestPosA.x, closestPosA.y, '.', 36);
-                DrawAtPos(closestPosB.x, closestPosB.y, '.', 36);
+                DrawAtPos(closestPosA.x, closestPosA.y, '.', 36, 5ms);
+                DrawAtPos(closestPosB.x, closestPosB.y, '.', 36, 5ms);
             }
 
             HighlightRoom(roomB, 32);
@@ -434,8 +442,8 @@ void CaveGenerator::ConnectClosestRooms(vector<Room*> *allRooms, bool forceAcces
                 }
             }
 
-            DrawAtPos(closestPosA.x, closestPosA.y, 'A');
-            DrawAtPos(closestPosB.x, closestPosB.y, 'B');
+            DrawAtPos(closestPosA.x, closestPosA.y, 'A', 0, 100ms);
+            DrawAtPos(closestPosB.x, closestPosB.y, 'B', 0, 100ms);
             HighlightRoom(roomB, 36);
 
         } // end of loop B
@@ -475,8 +483,8 @@ void CaveGenerator::CreatePassage(Room* roomA, Room* roomB, Coord tileA, Coord t
     // gets the line connecting the two coordinates
     vector<Coord> path = CreateLine(tileA, tileB);
 
-    DrawAtPos(tileA.x, tileA.y, 'A');
-    DrawAtPos(tileB.x, tileB.y, 'B');
+    DrawAtPos(tileA.x, tileA.y, 'A', 0, 100ms);
+    DrawAtPos(tileB.x, tileB.y, 'B', 0, 100ms);
 
     // carve a path in each position in the line
     for(Coord coord : path)
@@ -484,8 +492,8 @@ void CaveGenerator::CreatePassage(Room* roomA, Room* roomB, Coord tileA, Coord t
         CreateCircle(coord, m_passageWidth);
     }
 
-    DrawAtPos(tileA.x, tileA.y, '.', 36);
-    DrawAtPos(tileB.x, tileB.y, '.', 36);
+    DrawAtPos(tileA.x, tileA.y, '.', 36, 5ms);
+    DrawAtPos(tileB.x, tileB.y, '.', 36, 5ms);
 
     HighlightRoom(roomA, 36);
     HighlightRoom(roomB, 36);
@@ -509,7 +517,7 @@ void CaveGenerator::CreateCircle(Coord coordinate, int radius)
                 if (IsInMapRange(gridX, gridY))
                 {
                     m_map->set(gridX, gridY, 0);
-                    DrawAtPos(gridX, gridY, '.', 36);
+                    DrawAtPos(gridX, gridY, '.', 36, 5ms);
                 }
             }
         }

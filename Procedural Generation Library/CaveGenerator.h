@@ -4,6 +4,8 @@
 #include "Uitls.h"
 #include "SquareGrid.h"
 
+#include <thread>
+
 namespace ProceduralGeneration
 {
 
@@ -33,7 +35,7 @@ class CaveGenerator
 
     PseudoRandom* m_randomGenerator;
 
-    bool debugDraw = false;
+    bool debugDraw = true;
 
 public:
 
@@ -140,7 +142,9 @@ private:
     void PrintCaveWithGrid(vector<Coord> allTiles, Coord currenTile, int x, int y);
     void PrintRoomOnMap(vector<Coord> coords);
     void DrawCheckedPositions(Array2D<int>* flags);
-    void DrawAtPos(int x, int y, char character, unsigned int color = 0, bool usingGrid = false);
+    template< class Rep, class Period >
+    void DrawAtPos(int x, int y, char character, unsigned int color = 0,
+        const std::chrono::duration<Rep, Period>& duration = 0ms, bool usingGrid = false);
     void HighlightRoom(Room* room, unsigned int color);
 };
 
