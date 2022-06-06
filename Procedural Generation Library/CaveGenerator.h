@@ -57,27 +57,27 @@ public:
     /// Gets the generated cave from the cave generator
     /// </summary>
     /// <returns>A 2d array of integer values</returns>
-    Array2D<int>* GetMap()
-    {
-        return m_map;
-    }
+    Array2D<int>* GetMap() { return m_map; }
 
     /// <summary>
     /// Gets the generated cave with border from the cave generator
     /// </summary>
     /// <returns>A 2d array of integer values</returns>
-    Array2D<int>* GetBorderedMap()
-    {
-        return m_borderedMap;
-    }
+    Array2D<int>* GetBorderedMap() { return m_borderedMap; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     SquareGrid* GetSquareGrid() { return m_squareGrid; }
 
     // Drawing Functions
 
     // print contents of generated map array to the console
     void PrintCave();
-    void PrintCaveWithGrid();      
+    void PrintCaveWithGrid();
+    void PrintMarchingSquareValues();
+    void PrintMarchingSquaresWithGrid();
 
 private:
 

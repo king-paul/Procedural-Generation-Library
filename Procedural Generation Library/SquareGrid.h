@@ -101,6 +101,47 @@ namespace ProceduralGeneration
 			if (bottomLeft.active)
 				configuration += 1; // turns on the fourth bit			
 		}
+
+		void Draw()
+		{
+			//bool controlNodes[4];
+			//char characters[4];
+
+			//controlNodes[0] = topLeft.active;
+			//controlNodes[1] = topRight.active;
+			//controlNodes[2] = bottomLeft.active;
+			//controlNodes[3] = bottomRight.active;			
+
+			if (topLeft.active)
+				cout<< '+';
+			else
+				cout << 'o';
+
+			cout << "--.--";
+
+			if (topRight.active)
+				cout << '+';
+			else
+				cout << 'o';
+
+			cout << endl;
+			cout << "|     |" << endl
+				 << ".     ." << endl
+				 << "|     |" << endl;
+
+			if (bottomLeft.active)
+				cout << '+';
+			else
+				cout << 'o';
+
+			cout << "--.--";
+
+			if (bottomRight.active)
+				cout << '+';
+			else
+				cout << 'o';
+		}
+
 	};
 
     /// <summary>
@@ -109,7 +150,7 @@ namespace ProceduralGeneration
     class SquareGrid
     {
         Array2D<Square>* squares;
-		int m_nodeCountX, m_nodeCountY;
+		int m_squareCountX, m_squareCountY;
         
     public:
         /// <summary>

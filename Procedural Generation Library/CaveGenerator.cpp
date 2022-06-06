@@ -18,7 +18,7 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_useRandomSeed = useRandomSeed;
 
     if (m_useRandomSeed)
-        m_seed = chrono::steady_clock::now().time_since_epoch().count();
+        m_seed = (int) chrono::steady_clock::now().time_since_epoch().count();
     else
         m_seed = seed;
 

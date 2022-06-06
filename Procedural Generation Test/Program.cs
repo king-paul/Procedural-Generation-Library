@@ -13,7 +13,7 @@ namespace ProceduralGeneration
 			//var map = dungeon.GetMap();
 			//PrintDungeon(map);
 
-			CaveGenerator cave = new CaveGenerator(70, 40, 45);
+			CaveGenerator cave = new CaveGenerator(128, 72, 53);
 
 			PrintCave(cave.MAP);
 			Console.ReadKey();
@@ -100,20 +100,15 @@ namespace ProceduralGeneration
 				{
 					if (squares[y, x] == 0)
 					{
-						Console.Write("    ");
+						Console.Write(" ");
 					}
 					else if (squares[y, x] == 15)
                     {
-						Console.Write("[**]");
+						Console.Write("*");
 					}
                     else
                     {
-						Console.Write("[" + squares[y, x]);
-
-						if (squares[y, x] < 10)
-							Console.Write(" ");
-
-						Console.Write("]");
+						Console.Write(squares[y, x].ToString("X"));						
 					}
 					
 				}

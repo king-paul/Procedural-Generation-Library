@@ -4,24 +4,24 @@ using namespace ProceduralGeneration;
 
 SquareGrid::SquareGrid(Array2D<int>* map, float squareSize)
 {
-    m_nodeCountX = map->getSize(0); // Total number of colums in the grid
-    m_nodeCountY = map->getSize(1); // Total number of rows in the grid
+    m_squareCountX = map->getSize(1); // Total number of colums in the grid
+    m_squareCountY = map->getSize(0); // Total number of rows in the grid
 
     // width and height based on the number of rows and columns and the size of each square
-    float mapWidth = m_nodeCountX * squareSize;
-    float mapHeight = m_nodeCountY * squareSize;
+    float mapWidth = m_squareCountX * squareSize;
+    float mapHeight = m_squareCountY * squareSize;
 
     // 2d array of controls nodes to be placed on the square
-    Array2D<ControlNode> controlNodes(m_nodeCountX, m_nodeCountY);
+    Array2D<ControlNode> controlNodes(m_squareCountX, m_squareCountY);
 
     // iterates through the grid
-    for (int x = 0; x < m_nodeCountX; x++)
+    for (int x = 0; x < m_squareCountX; x++)
     {
-        for (int y = 0; y < m_nodeCountY; y++)
+        for (int y = 0; y < m_squareCountY; y++)
         {
             // gets the position of next control node  
-            Vector2 pos = Vector2(-mapWidth / 2 + x * squareSize + squareSize / 2,
-                -mapHeight / 2 + y * squareSize + squareSize / 2);
+            Vector2 pos = Vector2(-mapWidth  / 2 + x * squareSize + squareSize / 2,
+                                  -mapHeight / 2 + y * squareSize + squareSize / 2);
 
             // add a new control node to the array based the position, whether the value in the array is a wall
             // and the size of the square
@@ -30,17 +30,21 @@ SquareGrid::SquareGrid(Array2D<int>* map, float squareSize)
     }
 
     // defines the sise of the square array and fills it with square objects
-    squares = new Array2D<Square>(m_nodeCountX - 1, m_nodeCountY - 1);
+    squares = new Array2D<Square>(m_squareCountX - 1, m_squareCountY - 1);
     // iterates through the squares array
-    for (int x = 0; x < m_nodeCountX - 1; x++)
+    for (int x = 0; x < m_squareCountX - 1; x++)
     {
-        for (int y = 0; y < m_nodeCountY - 1; y++)
+        for (int y = 0; y < m_squareCountY - 1; y++)
         {
             // creates a new square and defines the 4 control nodes on it
-            Square nextSquare(controlNodes.get(x, y + 1), // top left
-                              controlNodes.get(x + 1, y + 1), // top right
-                              controlNodes.get(x + 1, y), // bottom right
-                              controlNodes.get(x, y)); // bootom left
+            Square nextSquare(controlNodes.at(x, y + 1), // top left
+                              controlNodes.at(x + 1, y + 1), // top right
+                              controlNodes.at(x + 1, y), // bottom right
+                              controlNodes.at(x, y)); // bootom left
+
+            //system("cls");
+            //cout << "Square x:" << x << ", y:" << y << endl;
+            //nextSquare.Draw();
 
             // connnect nodes based on configuration
             squares->set(x, y, nextSquare);
@@ -139,9 +143,9 @@ void SquareGrid::TriangulateSquare(Square& square)
 
 void SquareGrid::PrintConfigurations()
 {
-    for (int x = 0; x < m_nodeCountX; x++)
+    for (int x = 0; x < m_squareCountX; x++)
     {
-        for (int y = 0; y < m_nodeCountY; y++)
+        for (int y = 0; y < m_squareCountY; y++)
         {
             cout << squares->get(x, y).configuration << ',';
         }
