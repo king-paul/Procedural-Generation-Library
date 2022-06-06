@@ -3,6 +3,7 @@
 #include "Room.h"
 #include "Uitls.h"
 #include "SquareGrid.h"
+#include "MeshGenerator.h"
 
 #include <thread>
 
@@ -29,11 +30,12 @@ class CaveGenerator
     bool m_forceAccessToMain; // ensures that all rooms are connected to the main room
 
     Array2D<int>* m_map; // a series of on and off values of either 1 or 0
-    Array2D<int>* m_borderedMap; // the same map with a border around it
-
-    SquareGrid* m_squareGrid; // marching squares build from map
+    Array2D<int>* m_borderedMap; // the same map with a border around it    
 
     vector<Room*> m_rooms; // the rooms in the cave to be connected by paths
+
+    SquareGrid* m_squareGrid; // marching squares build from map
+    MeshGenerator* m_mesh;
 
     PseudoRandom* m_randomGenerator;
 
@@ -41,10 +43,10 @@ class CaveGenerator
 
 public:
 
-    // Creates a new instance of the caver generator
+    // Creates a new instance of the cave generator
     CaveGenerator(int width = 70, int height = 40, int fillPercent = 50, int smoothingIterations = 5, int borderSize = 1,
         int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool forceAccessToMain = true,
-        bool useRandomSeed = true, int seed = 0);
+        bool useRandomSeed = true, int seed = 0, bool generateMesh = true, float squareSize = 1, float wallHeight = 5);
 
     ~CaveGenerator();
 
@@ -71,16 +73,15 @@ public:
     /// <returns></returns>
     SquareGrid* GetSquareGrid() { return m_squareGrid; }
 
+    MeshGenerator* GetMesh() { return m_mesh; }
+
     // Drawing Functions
 
     // print contents of generated map array to the console
     void PrintCave();
-    void PrintCaveWithGrid();
-    void PrintMarchingSquareValues();
-    void PrintMarchingSquaresWithGrid();
+    void PrintCaveWithGrid();    
 
 private:
-
     // Finds all walls and all rooms in detected regions and removes them from the map
     void ProcessMap();
 
@@ -143,6 +144,7 @@ private:
     void PrintCaveWithGrid(queue<Coord> coords);
     void PrintCaveWithGrid(vector<Coord> allTiles, Coord currenTile, int x, int y);
     void PrintRoomOnMap(vector<Coord> coords);
+
     void DrawCheckedPositions(Array2D<int>* flags);
     template< class Rep, class Period >
     void DrawAtPos(int x, int y, char character, unsigned int color = 0,

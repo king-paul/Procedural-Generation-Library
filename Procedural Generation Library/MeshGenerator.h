@@ -13,7 +13,8 @@ class MeshGenerator
 
 	// The grid to generate the mesh inside
 	SquareGrid* m_grid;
-	float m_wallHeight;
+	float m_squareSize;
+	float m_wallHeight;	
 
 	vector<Vector3>* m_vertices;
 	vector<int>* m_triangles;
@@ -26,7 +27,7 @@ class MeshGenerator
 	std::map<int, vector<Triangle>>* m_triangleMap;
 
 public:
-	MeshGenerator();
+	MeshGenerator(float squareSize, float wallHeight);
 	~MeshGenerator();
 
 	/// <summary>
@@ -34,7 +35,7 @@ public:
 	/// </summary>
 	/// <param name="map">2D array of numbers for the procedully generated map</param>
 	/// <param name="squareSize">The scale of the space taken up by each square on the grid</param>
-	void GenerateMesh(Array2D<int>* map, float squareSize, float wallHeight);
+	void GenerateMesh(Array2D<int>* map);
 
 	/// <summary>
 	/// Produces different triangular shapes from a square based on the value passed in
@@ -59,7 +60,7 @@ public:
 	// Creates the walls of the caves based on generated layout
 	void CreateWallMesh();
 	// 
-	void AddTriangleToDictionary(int vertexIndexKey, Triangle triangle);
+	void AddTriangleToMap(int vertexIndexKey, Triangle triangle);
 	// 
 	void CalculateMeshOutlines();
 	// 

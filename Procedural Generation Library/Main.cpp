@@ -40,38 +40,41 @@ void GenerateCave()
 	bool forceAccessToMain = false;
 	bool useRandomSeed = false;
 	int seed = 0;
+	bool generateMesh = true;
+	float squareSize = 1;
+	float wallHeight = 5;
 
 	ProceduralGeneration::CaveGenerator* caveGenerator = new ProceduralGeneration::CaveGenerator(
 		width, height, fillPercent, smoothingIterations, borderSize, wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain,
-		useRandomSeed, seed);
+		useRandomSeed, seed, generateMesh, squareSize, wallHeight);
 
 	//for (int i = 0; i < 10; i++)
 	//{
 		caveGenerator->GenerateMap();
-		caveGenerator->PrintCave();
-		system("Pause");
-
-		caveGenerator->PrintMarchingSquareValues();
+		//caveGenerator->PrintCave();
+		//system("Pause");
+		
 	//}
 
 	//caveGenerator->PrintCaveWithGrid();
 	//caveGenerator->GetSquareGrid()->PrintConfigurations();
-
-	//ProceduralGeneration::MeshGenerator* meshGenerator = new ProceduralGeneration::MeshGenerator();
-	//meshGenerator->GenerateMesh(caveGenerator->GetMap(), 1, 5);
+	//caveGenerator->GetSquareGrid()->PrintConfigurationsWithGrid();
 	
-	//vector<int>* baseTriangles = meshGenerator->GetBaseTriangles();
+	/*
+	ProceduralGeneration::MeshGenerator* meshGenerator = caveGenerator->GetMesh();
+	vector<int>* baseTriangles = meshGenerator->GetBaseTriangles();
+	vector<int>* wallTriangles = meshGenerator->GetWallTriangles();
+
 	//vector<Vector3>* baseVertices = meshGenerator->GetBaseVertices();
 	//meshGenerator->GetWallTriangles();
 	//meshGenerator->GetWallVertices();
-
-	/*
+	
 	cout << "Printing triangle data:" << endl;
-	for (int triangle : *baseTriangles)
+	for (int triangle : *wallTriangles)
 	{
 		cout << triangle << ", ";
 	}
-	cout << endl;*/
+	cout << endl;
 
 	/*
 	cout << "Printing vertex data:" << endl;

@@ -143,14 +143,80 @@ void SquareGrid::TriangulateSquare(Square& square)
 
 void SquareGrid::PrintConfigurations()
 {
-    for (int x = 0; x < m_squareCountX; x++)
+    Array2D<Square>* grid = GetSquares();
+
+    system("cls");
+
+    for (int y = 0; y < grid->getSize(0); y++)
     {
-        for (int y = 0; y < m_squareCountY; y++)
+        for (int x = 0; x < grid->getSize(1); x++)
         {
-            cout << squares->get(x, y).configuration << ',';
+            cout << std::hex << grid->at(x, y).configuration;
         }
 
         cout << endl;
     }
 
+}
+
+void ProceduralGeneration::SquareGrid::PrintConfigurationsWithGrid()
+{
+    Array2D<Square>* grid = GetSquares();
+
+    //system("cls");
+    cout << endl << endl;
+
+    // print column numbers
+    cout << "  ";
+
+    for (int x = 0; x < grid->getSize(1); x++)
+    {
+        cout << "|" << x;
+
+        if (x < 10)
+            cout << ' ';
+    }
+    cout << endl;
+
+    cout << "--";
+    for (int x = 0; x < grid->getSize(1); x++)
+        cout << "---";
+    cout << endl;
+
+    // iterate through grid and print data
+    for (int y = 0; y < grid->getSize(0); y++)
+    {
+        cout << y;
+
+        if (y < 10)
+            cout << ' ';
+
+        for (int x = 0; x < grid->getSize(1); x++)
+        {
+            if (grid->at(x, y).configuration == 0) {
+                cout << "|  ";
+            }
+            else if (grid->at(x, y).configuration == 15) {
+                cout << "|**";
+            }
+            else
+            {
+                int value = grid->at(x, y).configuration;
+
+                cout << "|" << value;
+
+                if (value < 10)
+                    cout << " ";
+            }
+        }
+
+        // print grid outline
+        cout << "|" << endl;
+
+        cout << "--";
+        for (int x = 0; x < grid->getSize(1); x++)
+            cout << "---";
+
+        cout << endl;
+    }
 }

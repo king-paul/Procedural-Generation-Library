@@ -7,9 +7,9 @@
 using namespace std;
 using namespace ProceduralGeneration;
 
-CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations, 
+CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations,
     int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain,
-    bool useRandomSeed, int seed)
+    bool useRandomSeed, int seed, bool generateMesh, float squareSize, float wallHeight)
 {
     m_width = width;
     m_height = height;
@@ -18,7 +18,7 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_useRandomSeed = useRandomSeed;
 
     if (m_useRandomSeed)
-        m_seed = (int) chrono::steady_clock::now().time_since_epoch().count();
+        m_seed = (int)chrono::steady_clock::now().time_since_epoch().count();
     else
         m_seed = seed;
 
@@ -29,8 +29,12 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_forceAccessToMain = forceAccessToMain;
 
     m_map = new Array2D<int>(m_width, m_height);
-
     m_randomGenerator = new PseudoRandom(0, 100, m_seed);
+
+    if (generateMesh)
+        m_mesh = new MeshGenerator(squareSize, wallHeight);
+    else
+        m_mesh = nullptr;
 }
 
 CaveGenerator::~CaveGenerator() {
@@ -43,6 +47,9 @@ CaveGenerator::~CaveGenerator() {
     m_rooms.clear();
 
     delete m_randomGenerator;
+
+    if (m_mesh != nullptr)
+        delete m_mesh;
 }
 
 void CaveGenerator::GenerateMap()
@@ -65,6 +72,9 @@ void CaveGenerator::GenerateMap()
     CreateBorderedMap();
 
     m_squareGrid = new SquareGrid(m_borderedMap, 1);
+    
+    if(m_mesh != nullptr)
+        m_mesh->GenerateMesh(m_map);
 }
 
 void CaveGenerator::ProcessMap()

@@ -2,7 +2,7 @@
 
 using namespace ProceduralGeneration;
 
-MeshGenerator::MeshGenerator()
+MeshGenerator::MeshGenerator(float squareSize, float wallHeight)
 {
     m_vertices = new vector<Vector3>();
     m_triangles = new vector<int>();
@@ -14,6 +14,9 @@ MeshGenerator::MeshGenerator()
     m_triangleMap = new map<int, vector<Triangle>>();
 
     m_grid = nullptr;
+
+    m_squareSize = squareSize;
+    m_wallHeight = wallHeight;
 }
 
 MeshGenerator::~MeshGenerator()
@@ -42,20 +45,21 @@ MeshGenerator::~MeshGenerator()
     delete m_triangleMap;
 }
 
-void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map, float squareSize, float wallHeight)
+void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map)
 {
-    m_grid = new SquareGrid(map, squareSize);
+    m_grid = new SquareGrid(map, m_squareSize);
     Array2D<Square>* squares = m_grid->GetSquares();
-    m_wallHeight = wallHeight;
 
-    for (int x = 0; x < squares->getSize(0); x++)
+    for (int x = 0; x < squares->getSize(1); x++)
     {
-        for (int y = 0; y < squares->getSize(1); y++)
+        for (int y = 0; y < squares->getSize(0); y++)
         {
             TriangulateSquare(squares->at(x, y));
         }
 
     }
+
+    CreateWallMesh();
 }
 
 void ProceduralGeneration::MeshGenerator::TriangulateSquare(Square& square)
@@ -188,9 +192,16 @@ void ProceduralGeneration::MeshGenerator::AssignVertices(std::vector<Node>* poin
 
 void ProceduralGeneration::MeshGenerator::CreateTriangle(Node a, Node b, Node c)
 {
+    // Add triangle indices to list
     m_triangles->Add(a.vertexIndex);
     m_triangles->Add(b.vertexIndex);
     m_triangles->Add(c.vertexIndex);
+
+    // add triangle vertecies to map
+    Triangle triangle(a.vertexIndex, b.vertexIndex, c.vertexIndex);
+    AddTriangleToMap(triangle.vertexIndexA, triangle);
+    AddTriangleToMap(triangle.vertexIndexB, triangle);
+    AddTriangleToMap(triangle.vertexIndexC, triangle);
 }
 
 void ProceduralGeneration::MeshGenerator::CreateWallMesh()
@@ -224,7 +235,7 @@ void ProceduralGeneration::MeshGenerator::CreateWallMesh()
     }
 }
 
-void ProceduralGeneration::MeshGenerator::AddTriangleToDictionary(int vertexIndexKey, Triangle triangle)
+void ProceduralGeneration::MeshGenerator::AddTriangleToMap(int vertexIndexKey, Triangle triangle)
 {
     // checks if the triangle already contains the key        
     if (m_triangleMap->find(vertexIndexKey) != m_triangleMap->end())

@@ -161,6 +161,7 @@ namespace ProceduralGeneration
 		SquareGrid(Array2D<int>* map, float squareSize);
 		void TriangulateSquare(Square& square);
 		void PrintConfigurations();		
+		void PrintConfigurationsWithGrid();
 
         Array2D<Square>* GetSquares() { return squares; }
 

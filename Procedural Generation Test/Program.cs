@@ -13,13 +13,42 @@ namespace ProceduralGeneration
 			//var map = dungeon.GetMap();
 			//PrintDungeon(map);
 
-			CaveGenerator cave = new CaveGenerator(128, 72, 53);
+			CaveGenerator cave = new CaveGenerator(70, 40, 50);
 
+			/*
 			PrintCave(cave.MAP);
 			Console.ReadKey();
 			Console.WriteLine();
 			PrintMarchingSquares(cave.MarchingSquares);
-			Console.ReadKey();
+			Console.ReadKey();*/
+
+			//foreach(int index in cave.BaseTriangles)
+			//Console.Write(index + ", ");
+
+			/*
+			Console.WriteLine("Base Triangle Vertices");
+			for(int i=0; i < cave.TotalBaseTriangles; i++)
+            {
+				Console.WriteLine("index " + i + ":(" + 
+					cave.BaseVerticesX[i] + ", " + cave.BaseVerticesY[i] + ", " + cave.BaseVerticesZ[i] + ") ");
+			}*/
+
+			/*
+			Console.WriteLine("Wall Triangle Indices");
+			foreach (int index in cave.WallTriangles)
+			{
+				Console.Write(index + ", ");
+			}
+
+			Console.ReadKey();*/
+
+			Console.WriteLine("Wall Triangle Vertices");
+			for(int i=0; i < cave.TotalWallVertices; i++)
+            {
+				Console.WriteLine("index " + i + ":(" + 
+					cave.WallVerticesX[i] + ", " + cave.WallVerticesY[i] + ", " + cave.WallVerticesZ[i] + ") ");
+			}
+
 		}
 
 		static void PrintDungeon(Tile[,] map)

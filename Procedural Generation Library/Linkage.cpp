@@ -50,12 +50,15 @@ void GenerateDungeon(DungeonGenerator* dungeonPtr)
  ******************/
 extern "C" __declspec(dllexport)
 CaveGenerator* GenerateCave(int width, int height, int fillPercent, int smoothingIterations, int borderSize,
-	int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain, bool useRandomSeed, int seed)
+	int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain, bool useRandomSeed, int seed,
+	bool generateMesh, float squareSize, float wallheight)
 {
-	CaveGenerator* cave = new CaveGenerator(width, height, fillPercent, smoothingIterations, borderSize, 
-		wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain, useRandomSeed, seed);
+	CaveGenerator* cave = new CaveGenerator(width, height, fillPercent, smoothingIterations, borderSize,
+		wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain, useRandomSeed, seed,
+		generateMesh, squareSize, wallheight);
 
-	cave->GenerateMap();
+	cave->GenerateMap();	
+
 	return cave;
 }
 
@@ -77,19 +80,123 @@ int GetMarchingSquareValue(int x, int y, CaveGenerator * cave)
 }
 
 extern "C" __declspec(dllexport)
-MeshGenerator* GenerateMesh(CaveGenerator* cave, float gridSize, float wallHeight)
+MeshGenerator* GenerateMesh(CaveGenerator* cave, float tileSize, float wallHeight)
 {
-	MeshGenerator* mesh = new MeshGenerator();
-	mesh->GenerateMesh(cave->GetMap(), gridSize, wallHeight);
+	MeshGenerator* mesh = new MeshGenerator(tileSize, wallHeight);
+	mesh->GenerateMesh(cave->GetMap());
 
 	return mesh;
 }
 
+/*
 int GetBaseTriangle(MeshGenerator* mesh, int index)
 {
 	return (*mesh->GetBaseTriangles())[index];
+}*/
+
+extern "C" __declspec(dllexport)
+int* GetBaseTriangles(CaveGenerator* cave)
+{
+	std::vector<int> trianglesVector = *(cave->GetMesh()->GetBaseTriangles());
+	int* triangles = new int[trianglesVector.size()];
+
+	for (int i = 0; i < trianglesVector.size(); i++)
+	{
+		triangles[i] = trianglesVector[i];
+	}
+
+	return triangles;
 }
 
+extern "C" __declspec(dllexport)
+float* GetBaseVerticies(CaveGenerator* cave, char component)
+{
+	std::vector<Vector3>* vertexVector = cave->GetMesh()->GetBaseVertices();
+	float* vertices = new float[vertexVector->size()];
+
+	for (int i = 0; i < vertexVector->size(); i++)
+	{
+		switch (component)
+		{
+			case 'x': case 'X': vertices[i] = (*vertexVector)[i].x;
+				break;
+			case 'y': case 'Y': vertices[i] = (*vertexVector)[i].y;
+				break;
+			case 'z': case 'Z': vertices[i] = (*vertexVector)[i].z;
+				break;
+
+			default:
+				return vertices;
+		}
+	}
+
+	return vertices;
+}
+
+extern "C" __declspec(dllexport)
+int GetTotalBaseTriangles(CaveGenerator* cave)
+{
+	return (int) cave->GetMesh()->GetBaseTriangles()->size();
+}
+
+extern "C" __declspec(dllexport)
+int GetTotalWallTriangles(CaveGenerator * cave)
+{
+	return (int) cave->GetMesh()->GetWallTriangles()->size();
+}
+
+extern "C" __declspec(dllexport)
+int GetTotalBaseVertices(CaveGenerator * cave)
+{
+	return (int)cave->GetMesh()->GetBaseVertices()->size();
+}
+
+extern "C" __declspec(dllexport)
+int GetTotalWallVertices(CaveGenerator * cave)
+{
+	return (int)cave->GetMesh()->GetWallVertices()->size();
+}
+
+extern "C" __declspec(dllexport)
+int* GetWallTriangles(CaveGenerator * cave)
+{
+	std::vector<int> trianglesVector = *(cave->GetMesh()->GetWallTriangles());
+	int* triangles = new int[trianglesVector.size()];
+
+	for (int i = 0; i < trianglesVector.size(); i++)
+	{
+		triangles[i] = trianglesVector[i];
+	}
+
+	return triangles;
+}
+
+extern "C" __declspec(dllexport)
+float* GetWallVerticies(CaveGenerator * cave, char component)
+{
+	std::vector<Vector3>* vertexVector = cave->GetMesh()->GetWallVertices();
+	float* vertices = new float[vertexVector->size()];
+
+	for (int i = 0; i < vertexVector->size(); i++)
+	{
+		switch (component)
+		{
+		case 'x': case 'X': vertices[i] = (*vertexVector)[i].x;
+			break;
+		case 'y': case 'Y': vertices[i] = (*vertexVector)[i].y;
+			break;
+		case 'z': case 'Z': vertices[i] = (*vertexVector)[i].z;
+			break;
+
+		default:
+			return vertices;
+		}
+	}
+
+	return vertices;
+}
+
+/*
 float GetBaseVertexX(MeshGenerator* mesh, int index)
 {
 	return (*mesh->GetBaseVertices())[index].x;
@@ -123,4 +230,10 @@ float GetWallVertexY(MeshGenerator* mesh, int index)
 float GetWallVertexZ(MeshGenerator* mesh, int index)
 {
 	return (*mesh->GetWallVertices())[index].z;
+}*/
+
+extern "C" __declspec(dllexport)
+void DeleteCavePointer(CaveGenerator* cave)
+{
+	delete cave;
 }
