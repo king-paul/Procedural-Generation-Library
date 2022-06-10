@@ -15,10 +15,13 @@ CoordList Algorithms::RandomWalk(int dungeonWidth, int dungeonHeight, Coord star
 	{
 		// adds a random position to the pevious position then add sit to the path
 		// then moves to the new position provided that it is not outofBounds
-		do
-		{
+		//do
+		//{
 			newPosition = previousPosition + Direction2D::GetRandomCardinalDirection();
-		} while (isOutOfBounds(dungeonWidth, dungeonHeight, newPosition));		
+		//} while (isOutOfBounds(dungeonWidth, dungeonHeight, newPosition));
+
+		if (isOutOfBounds(dungeonWidth, dungeonHeight, newPosition))
+			continue;
 
 		path.Add(newPosition);
 		previousPosition = newPosition;

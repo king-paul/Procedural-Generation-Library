@@ -80,6 +80,13 @@ int GetMarchingSquareValue(int x, int y, CaveGenerator * cave)
 }
 
 extern "C" __declspec(dllexport)
+int GetSeedValue(CaveGenerator* cave)
+{
+	return cave->GetSeed();
+}
+
+
+extern "C" __declspec(dllexport)
 MeshGenerator* GenerateMesh(CaveGenerator* cave, float tileSize, float wallHeight)
 {
 	MeshGenerator* mesh = new MeshGenerator(tileSize, wallHeight);
@@ -87,12 +94,6 @@ MeshGenerator* GenerateMesh(CaveGenerator* cave, float tileSize, float wallHeigh
 
 	return mesh;
 }
-
-/*
-int GetBaseTriangle(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetBaseTriangles())[index];
-}*/
 
 extern "C" __declspec(dllexport)
 int* GetBaseTriangles(CaveGenerator* cave)
@@ -195,42 +196,6 @@ float* GetWallVerticies(CaveGenerator * cave, char component)
 
 	return vertices;
 }
-
-/*
-float GetBaseVertexX(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetBaseVertices())[index].x;
-}
-
-float GetBaseVertexY(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetBaseVertices())[index].y;
-}
-
-float GetBaseVertexZ(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetBaseVertices())[index].z;
-}
-
-int GetWallTriangle(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetWallTriangles())[index];
-}
-
-float GetWallVertexX(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetWallVertices())[index].x;
-}
-
-float GetWallVertexY(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetWallVertices())[index].y;
-}
-
-float GetWallVertexZ(MeshGenerator* mesh, int index)
-{
-	return (*mesh->GetWallVertices())[index].z;
-}*/
 
 extern "C" __declspec(dllexport)
 void DeleteCavePointer(CaveGenerator* cave)

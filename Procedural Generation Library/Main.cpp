@@ -10,16 +10,27 @@ using namespace std;
 
 void GenerateDungeon()
 {
-	int width = 70;
-	int height = 40;
-	Coord startPos = { width / 2, height / 2 };
-	ProceduralGeneration::RandomWalkParameters randomWalk(15, 50, false);
+	int width = 100;
+	int height = 100;
+	int minRoomWidth = 10;
+	int minRoomHeight = 10;
+	int roomOffset = 3;
+	bool randomWalkRooms = true;
+
+	int iterations = 15;
+	int walkLength = 50;
+	bool startRandomly = false;
+
+	Coord startPos = { 50, 50 };
+	//{ width / 2, height / 2 };
+	ProceduralGeneration::RandomWalkParameters randomWalk(iterations, walkLength, startRandomly);
 
 	ProceduralGeneration::DungeonGenerator* dungeon =
 		//new ProceduralGeneration::RandomWalkGenerator(width, height, startPos, 50, 15, false);
 		//new ProceduralGeneration::CorridorFirstGenerator(width, height, startPos, 30, 10, 0.5f,
 			//{ 15, 50, false });
-		new ProceduralGeneration::RoomFirstGenerator(width, height, { 0, 0 }, 10, 10, 3, true, randomWalk);
+		new ProceduralGeneration::RoomFirstGenerator(width, height, startPos, minRoomWidth, minRoomHeight, roomOffset,
+													 randomWalkRooms, randomWalk);
 
 	dungeon->Generate();
 	dungeon->DrawDungeon();
@@ -91,8 +102,8 @@ int main()
 {
 	//srand((unsigned int) time(NULL));
 
-	//GenerateDungeon();
-	GenerateCave();
+	GenerateDungeon();
+	//GenerateCave();
 
 	return 0;
 }

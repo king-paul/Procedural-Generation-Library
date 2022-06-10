@@ -6,17 +6,18 @@ namespace ProceduralGeneration
     {
         static void Main(string[] args)
         {
-			//DungeonGenerator dungeon = new RoomFirstDungeon(70, 70, 0, 0, 10, 10, 3, true, 50, 15, false);
+			DungeonGenerator dungeon = new RoomFirstDungeon(100, 100, 50, 50, 10, 10, 3, true, 15, 50, false);
 										 //new CorridorFirstDungeon(200, 200, 100, 100, 30, 10, 0.5f);
 			//RandomWalkRoom();
 
-			//var map = dungeon.GetMap();
-			//PrintDungeon(map);
+			var map = dungeon.GetMap();
+			PrintDungeon(map);
 
-			CaveGenerator cave = new CaveGenerator(70, 40, 50);
+			//CaveGenerator cave = new CaveGenerator(70, 40, 50);
+			//Console.WriteLine("Seed used: " + cave.Seed);
+			//PrintCave(cave.Map);
 
 			/*
-			PrintCave(cave.MAP);
 			Console.ReadKey();
 			Console.WriteLine();
 			PrintMarchingSquares(cave.MarchingSquares);
@@ -42,12 +43,13 @@ namespace ProceduralGeneration
 
 			Console.ReadKey();*/
 
+			/*
 			Console.WriteLine("Wall Triangle Vertices");
 			for(int i=0; i < cave.TotalWallVertices; i++)
             {
 				Console.WriteLine("index " + i + ":(" + 
 					cave.WallVerticesX[i] + ", " + cave.WallVerticesY[i] + ", " + cave.WallVerticesZ[i] + ") ");
-			}
+			}*/
 
 		}
 
