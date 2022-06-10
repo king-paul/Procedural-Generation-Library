@@ -79,12 +79,24 @@ CoordList RoomFirstGenerator::CreateRandomWalkRooms(vector<Boundary> rooms)
     CoordList floor;
     for (int i = 0; i < rooms.size(); i++)
     {
+        //if (i == 16)
+            //cout << "i = 16";
+
         var roomBounds = rooms[i]; // the boundary area of the next room
         var roomCenter = Coord(roomBounds.Center().x, roomBounds.Center().y);
         var roomFloor = RunRandomWalk(roomCenter);
 
-        for(var position : roomFloor)
+        //for(var position : roomFloor)
+        for(int j=0; j < roomFloor.size(); j++)
         {
+            /*
+            if (i == 15 && j == 187)
+            {
+                cout << "i = 15, j = 187";
+            }*/
+
+            var position = roomFloor[j];
+
             // checks that the position is inside the boundary and if it is adds it to the floors
             if (position.x >= (roomBounds.min.x + m_offset) && position.x <= (roomBounds.max.x - m_offset) &&
                 position.y >= (roomBounds.min.y - m_offset) && position.y <= (roomBounds.max.y - m_offset))

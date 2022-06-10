@@ -2,9 +2,24 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <map>
+#include <random>
+#include <iostream>
+
+#include "Vector.h"
 
 #define Add push_back
 #define var auto
+
+// console colors
+#define BLACK 30
+#define RED 31
+#define GREEN 32
+#define BROWN 33
+#define BLUE 34
+#define MAGENTA 35
+#define CYAN 36
+#define WHITE 37
 
 using namespace std;
 
@@ -26,9 +41,162 @@ enum class TileType
 	DiagonalCornerUpRight // 13
 };
 
-/***********
- * Structs *
- ***********/
+template <class T>
+class Array2D
+{
+	T* data;
+
+	unsigned int rows = 0;
+	unsigned int cols = 0;
+
+public:
+	Array2D(unsigned int cols, unsigned int rows)
+	{
+		data = new T[rows * cols];
+
+		this->rows = rows;
+		this->cols = cols;
+	}
+
+	Array2D(unsigned int cols, unsigned int rows, T value)
+	{
+		data = new T[rows * cols];
+
+		this->rows = rows;
+		this->cols = cols;
+
+		for (unsigned int i = 0; i < (rows * cols); i++)
+		{
+			data[i] = value;
+		}
+	}
+
+	// copy constructor
+	Array2D(const Array2D& ref)
+	{
+		rows = ref.rows;
+		cols = ref.cols;
+
+		data = new T[rows * cols];
+		
+		for (unsigned int i = 0; i < rows * cols; i++)
+		{
+			data[i] = ref.data[i];
+		}
+
+	}
+
+	// assignment operator
+	Array2D& operator =(const Array2D& ref)
+	{
+		if (this == &ref)
+		{
+			return;
+		}
+
+		delete[] data;
+
+		rows = ref.rows;
+		cols = ref.cols;
+
+		data = new T[rows * cols];
+
+		for (int i = 0; i < rows * cols; i++)
+		{
+			data[i] = ref.data[i];
+		}
+	}
+
+	~Array2D()
+	{
+		delete[] data;
+	}
+
+	T& at(unsigned int col, unsigned int row)
+	{
+		return data[IndexOf(row, col)];
+	}
+
+	T get(unsigned int col, unsigned int row)
+	{
+		return data[IndexOf(row, col)];
+	}
+
+	void set(unsigned int col, unsigned int row, T value)
+	{
+		data[IndexOf(row, col)] = value;
+	}
+
+	int getSize(int dimention)
+	{
+		if (dimention == 0)
+			return rows;
+		if (dimention == 1)
+			return cols;
+
+		return 0;
+	}
+
+	void clear()
+	{
+		for (int i = 0; i < (int) (rows * cols); i++)
+		{
+			data[i] = NULL;
+		}
+	}
+
+private:
+	int IndexOf(unsigned int row, unsigned int col)
+	{
+		return col + row * cols;
+	}
+};
+
+//template<class T>
+class PseudoRandom
+{
+	std::default_random_engine theEngine;
+	std::uniform_real_distribution<float>* distribution;
+
+	float m_min, m_max;
+
+public:
+	PseudoRandom(float min, float max)
+	{		
+		m_min = min;
+		m_max = max;
+		//theEngine = std::default_random_engine();
+
+		//std::normal_distribution<float> normalDist(10, 1.0f);		
+	}
+
+	PseudoRandom(float min, float max, unsigned int m_seed)
+	{
+		m_min = min;
+		m_max = max;
+		theEngine = std::default_random_engine(m_seed);
+
+		//std::normal_distribution<float> normalDist(10, 1.0f);		
+	}
+
+	~PseudoRandom()
+	{
+		delete distribution;
+	}
+
+	float GetValue() 
+	{
+		std::uniform_real_distribution<float> distribution(m_min, m_max);
+		return distribution(theEngine);
+		//return randomValue;
+		//float normallyDistributedNumber = normalDist(theEngine);
+	}
+
+};
+
+/******************************
+ * Dungeon Generation Structs *
+ ******************************/
 struct Coord
 {
 	int x;
@@ -81,20 +249,17 @@ struct Coord
 		return false;
 	}
 
+
+	bool operator !=(Coord rhs)
+	{
+		if (x == rhs.x && y == rhs.y)
+			return false;
+
+		return true;
+	}
+
 	static float DistanceBetween(Coord a, Coord b)
 	{
-		/*
-		Coord difference;
-		float aMagnitude = sqrt(a.x * a.x + a.y * a.y);
-		float bMagnitude = sqrt(b.x * b.x + b.y * b.y);
-
-		if (aMagnitude >= bMagnitude)
-			difference = a - b;
-		else
-			difference = b - a;
-
-		return sqrt(difference.x * difference.x + difference.y * difference.y);*/
-
 		float num = (float) (a.x - b.x);
 		float num2 = (float) (a.y - b.y);
 		return (float)sqrt(num * num + num2 * num2);
@@ -159,79 +324,39 @@ static bool CoordInList(CoordList* list, Coord position)
 	return false;
 }
 
-// classes
-class Direction2D
+
+// triangle structure to build mesh with that hold 3 integers for the vertex indicies
+struct Triangle
 {
-public:
+	int vertexIndexA;
+	int vertexIndexB;
+	int vertexIndexC;
+	int vertices[3];
 
-	static Coord Up() { return { 0, 1 }; }
-	static Coord Down() { return { 0, -1 }; }
-	static Coord Left() { return { -1, 0 }; }
-	static Coord Right() { return { 1, 0 }; }
-
-	static CoordList CardinalDirections()
+	Triangle(int a, int b, int c)
 	{
-		return {
-			{0, 1 }, // UP
-			{1, 0 }, // RIGHT
-			{0, -1}, // DOWN
-			{-1, 0} //LEFT
-		};
+		vertexIndexA = a;
+		vertexIndexB = b;
+		vertexIndexC = c;
+
+		vertices[0] = a;
+		vertices[1] = b;
+		vertices[2] = c;
 	}
 
-	static CoordList DiagonalDirections()
+	// determins what value to return when object is used like an array
+	int get(int i) {
+
+		return vertices[i];
+	}
+
+	/// <summary>
+	/// Checkes whether a vertex is in a tiangle
+	/// </summary>
+	/// <param name="vertexIndex">The index to check</param>
+	/// <returns>return a true or false based on wehter the vertex is found</returns>
+	bool Contains(int vertexIndex)
 	{
-		return {
-			{1, 1}, // UP-RIGHT
-			{1, -1}, // RIGHT-DOWN
-			{-1, -1}, // DOWN-LEFT
-			{-1, 1} // LEFT-UP
-		};
+		return vertexIndex == vertexIndexA || vertexIndex == vertexIndexB || vertexIndex == vertexIndexC;
 	}
-
-	static CoordList AllDirections()
-	{
-		return {
-			{0, 1 }, // UP
-			{1, 1}, // UP-RIGHT
-			{1, 0 }, // RIGHT
-			{1, -1}, // RIGHT-DOWN
-			{0, -1}, // DOWN						
-			{-1, -1}, // DOWN-LEFT
-			{-1, 0}, //LEFT	
-			{-1, 1} // LEFT-UP
-		};
-	}
-
-	static Coord GetRandomCardinalDirection()
-	{
-		CoordList cardinalDirections = CardinalDirections();
-
-		return cardinalDirections[rand() % cardinalDirections.size()];
-	}
-
-	static Coord GetRandomTurnDirection(Coord direction)
-	{		
-		Coord possibleDirections[2];
-
-		// Vertical directions
-		if (direction == Coord(0, 1) || direction == Coord(0, -1)) { 
-
-			// Left and right
-			possibleDirections[0] = { -1, 0 };
-			possibleDirections[1] = {1, 0}; 
-		}
-
-		// Horizontal directions
-		else if (direction == Coord(-1, 0) || direction == Coord(1, 0))
-		{
-			// Up and down
-			possibleDirections[0] = { 0, 1 };
-			possibleDirections[1] = { 0, -1 };
-		}
-
-		// randomly select one of the two possible directions and return the value
-		return possibleDirections[rand() % 2];
-	}
-
 };

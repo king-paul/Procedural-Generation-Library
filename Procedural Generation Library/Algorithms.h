@@ -1,5 +1,6 @@
 #pragma once
 #include "Types.h"
+#include "Direction2D.h"
 
 namespace ProceduralGeneration
 {

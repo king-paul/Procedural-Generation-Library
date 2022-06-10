@@ -20,7 +20,10 @@ CoordList Algorithms::RandomWalk(int dungeonWidth, int dungeonHeight, Coord star
 		//do
 		//{
 			newPosition = previousPosition + Direction2D::GetRandomCardinalDirection();
-		//} while (isOutOfBounds(dungeonWidth, dungeonHeight, newPosition));		
+		//} while (isOutOfBounds(dungeonWidth, dungeonHeight, newPosition));
+
+		if (isOutOfBounds(dungeonWidth, dungeonHeight, newPosition))
+			continue;
 
 		path.Add(newPosition);
 		previousPosition = newPosition;
