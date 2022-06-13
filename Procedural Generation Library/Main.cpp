@@ -15,13 +15,13 @@ void GenerateDungeon()
 	int minRoomWidth = 10;
 	int minRoomHeight = 10;
 	int roomOffset = 3;
-	bool randomWalkRooms = true;
+	bool randomWalkRooms = false;
 
-	int iterations = 15;
-	int walkLength = 50;
+	int iterations = 50;
+	int walkLength = 15;
 	bool startRandomly = false;
 
-	Coord startPos = { 50, 50 };
+	Coord startPos = { 0, 0 };
 	//{ width / 2, height / 2 };
 	ProceduralGeneration::RandomWalkParameters randomWalk(iterations, walkLength, startRandomly);
 

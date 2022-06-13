@@ -10,8 +10,6 @@ CoordList Algorithms::RandomWalk(int dungeonWidth, int dungeonHeight, Coord star
 	var previousPosition = startPosition;
 	var newPosition = previousPosition;
 
-
-
 	// for each step in the walk
 	for (int i = 0; i < walkLength; i++)
 	{
@@ -71,6 +69,8 @@ vector<Boundary> Algorithms::BinarySpacePartitioning(Boundary spaceToSplit, int 
 
 	roomsQueue.push(spaceToSplit); // remove the item from the front of the queue
 
+	//cout << "Min Width: " << minWidth << ", Min Height: " << minHeight << endl;
+
 	while (roomsQueue.size() > 0)
 	{
 		var room = roomsQueue.front();
@@ -81,6 +81,9 @@ vector<Boundary> Algorithms::BinarySpacePartitioning(Boundary spaceToSplit, int 
 		{
 			// generates a random value between 0 and 1
 			float value = ((float)rand() / (RAND_MAX));
+
+			//cout << "Room Size x:" << room.Size().x << " y:" << room.Size().y;
+			//cout << "    Random value: " << value << endl;			
 
 			// if the random value is less than 0 split the room horizontally
 			if (value < 0.5f)
@@ -133,7 +136,7 @@ vector<Boundary> Algorithms::BinarySpacePartitioning(Boundary spaceToSplit, int 
 void ProceduralGeneration::Algorithms::SplitVertically(int minWidth, queue<Boundary> &roomsQueue, Boundary room)
 {
 	// generate a random number between 1 and the width of the room
-	int xSplit = room.Size().x / 2; //(rand() % room.Size().x) + 1;
+	int xSplit = (rand() % room.Size().x) + 1;
 
 	// creates the first room by passing in the start position and the size
 	Boundary room1(room.min, Coord(xSplit, room.Size().y));
@@ -149,8 +152,7 @@ void ProceduralGeneration::Algorithms::SplitVertically(int minWidth, queue<Bound
 void Algorithms::SplitHorizontally(int minHeight, queue<Boundary> &roomsQueue, Boundary room)
 {
 	// generate a random number between 1 and the height of the room
-	int ySplit = room.Size().y / 2; // (rand() % room.Size().y) + 1;
-	//(minHeight, room.Size().y - minHeight) : splits evenly to fit 2 rooms together
+	int ySplit = (rand() % room.Size().y) + 1;	
 
 	Boundary room1(room.min, Coord(room.Size().x, ySplit));
 	Boundary room2(Coord(room.min.x, room.min.y + ySplit),

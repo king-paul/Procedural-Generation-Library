@@ -8,6 +8,8 @@ DungeonGenerator::DungeonGenerator(int width, int height, Coord startPosition)
 	m_height = height;
 	m_startPosition = startPosition;
 
+	srand(time(NULL));
+
 	//m_map = new int*[m_size];	
 
 	//for(int i=0; i< size; i++)
