@@ -50,11 +50,11 @@ void GenerateDungeon(DungeonGenerator* dungeonPtr)
  ******************/
 extern "C" __declspec(dllexport)
 CaveGenerator* GenerateCave(int width, int height, int fillPercent, int smoothingIterations, int borderSize,
-	int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain, bool useRandomSeed, int seed,
+	int wallThresholdSize, int roomThresholdSize, int passageWidth, bool useRandomSeed, int seed,
 	bool generateMesh, float squareSize, float wallheight)
 {
 	CaveGenerator* cave = new CaveGenerator(width, height, fillPercent, smoothingIterations, borderSize,
-		wallThresholdSize, roomThresholdSize, passageWidth, forceAccessToMain, useRandomSeed, seed,
+		wallThresholdSize, roomThresholdSize, passageWidth, useRandomSeed, seed,
 		generateMesh, squareSize, wallheight);
 
 	cave->GenerateMap();	

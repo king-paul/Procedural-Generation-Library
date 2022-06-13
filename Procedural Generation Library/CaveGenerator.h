@@ -45,8 +45,8 @@ public:
 
     // Creates a new instance of the cave generator
     CaveGenerator(int width = 70, int height = 40, int fillPercent = 50, int smoothingIterations = 5, int borderSize = 1,
-        int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool forceAccessToMain = true,
-        bool useRandomSeed = true, int seed = 0, bool generateMesh = true, float squareSize = 1, float wallHeight = 5);
+        int wallThresholdSize = 50, int roomThresholdSize = 50, int passageWidth = 1, bool useRandomSeed = true, int seed = 0, 
+        bool generateMesh = true, float squareSize = 1, float wallHeight = 5);
 
     ~CaveGenerator();
 

@@ -6,22 +6,19 @@ namespace ProceduralGeneration
     {
         static void Main(string[] args)
         {
-			DungeonGenerator dungeon = new RoomFirstDungeon(100, 100, 50, 50, 10, 10, 3, true, 15, 50, false);
-										 //new CorridorFirstDungeon(200, 200, 100, 100, 30, 10, 0.5f);
+			//DungeonGenerator dungeon = new RoomFirstDungeon(100, 100, 50, 50, 10, 10, 3, true, 15, 50, false);
+			//new CorridorFirstDungeon(200, 200, 100, 100, 30, 10, 0.5f);
 			//RandomWalkRoom();
 
-			var map = dungeon.GetMap();
-			PrintDungeon(map);
+			//var map = dungeon.GetMap();
+			//PrintDungeon(map);
 
-			//CaveGenerator cave = new CaveGenerator(70, 40, 50);
+			CaveGenerator cave = new CaveGenerator(70, 40, 50);
 			//Console.WriteLine("Seed used: " + cave.Seed);
-			//PrintCave(cave.Map);
-
-			/*
-			Console.ReadKey();
-			Console.WriteLine();
-			PrintMarchingSquares(cave.MarchingSquares);
-			Console.ReadKey();*/
+			//PrintCave(cave.Map);			
+			
+			//Console.WriteLine();
+			PrintMarchingSquares(cave.MarchingSquares);			
 
 			//foreach(int index in cave.BaseTriangles)
 			//Console.Write(index + ", ");
@@ -123,7 +120,7 @@ namespace ProceduralGeneration
 			}
         }
 
-		static void PrintMarchingSquares(int[,] squares)
+		static void PrintMarchingSquares(byte[,] squares)
 		{
 			for (int y = 0; y < squares.GetLength(0); y++)
 			{

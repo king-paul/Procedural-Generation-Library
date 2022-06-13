@@ -7,7 +7,7 @@ using namespace std;
 using namespace ProceduralGeneration;
 
 CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothingIterations,
-    int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth, bool forceAccessToMain,
+    int borderSize, int wallThresholdSize, int roomThresholdSize, int passageWidth,
     bool useRandomSeed, int seed, bool generateMesh, float squareSize, float wallHeight)
 {
     m_width = width;
@@ -25,7 +25,6 @@ CaveGenerator::CaveGenerator(int width, int height, int fillPercent, int smoothi
     m_wallThresholdSize = 50;
     m_roomThresholdSize = 50;
     m_passageWidth = passageWidth;
-    m_forceAccessToMain = forceAccessToMain;
 
     m_map = new Array2D<int>(m_width, m_height);
     m_randomGenerator = new PseudoRandom(0, 100, m_seed);
@@ -70,7 +69,8 @@ void CaveGenerator::GenerateMap()
 
     CreateBorderedMap();
 
-    m_squareGrid = new SquareGrid(m_borderedMap, 1);
+    m_squareGrid = new SquareGrid(m_borderedMap, m_borderSize);
+    //m_squareGrid->PrintConfigurationsWithGrid();
     
     if(m_mesh != nullptr)
         m_mesh->GenerateMesh(m_map);
@@ -142,8 +142,8 @@ void CaveGenerator::ProcessMap()
 
 void CaveGenerator::CreateBorderedMap()
 {
-    int newWidth = m_width + m_borderSize * 2;
-    int newHeight = m_height + m_borderSize * 2;
+    int newWidth = m_width + (m_borderSize * 2);
+    int newHeight = m_height + (m_borderSize * 2);
 
     m_borderedMap = new Array2D<int>(newWidth, newHeight);
 

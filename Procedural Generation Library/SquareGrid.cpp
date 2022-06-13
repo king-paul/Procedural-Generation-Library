@@ -61,43 +61,36 @@ void SquareGrid::TriangulateSquare(Square& square)
 
         // 1 point selections
     case 1: // 0001
-        square.nodesUsed = { &square.centreBottom, &square.bottomLeft, &square.centreLeft };
+        square.nodesUsed = { &square.centreLeft, &square.centreBottom, &square.bottomLeft };
         break;
 
     case 2: // 0010
-        square.nodesUsed ={ &square.centreRight, &square.bottomRight, &square.centreBottom };
-        
+        square.nodesUsed ={ &square.bottomRight, &square.centreBottom, &square.centreRight };        
         break;
 
     case 4: // 0100
-        square.nodesUsed ={ &square.centreTop, &square.topRight, &square.centreRight };
-        
+        square.nodesUsed ={ &square.topRight, &square.centreRight, &square.centreTop };        
         break;
 
     case 8: // 1000
-        square.nodesUsed ={ &square.topLeft, &square.centreTop, &square.centreLeft };
-        
+        square.nodesUsed ={ &square.topLeft, &square.centreTop, &square.centreLeft };        
         break;
 
         // 2 point selections
     case 3: // 0011
-        square.nodesUsed ={ &square.centreRight, &square.bottomRight, &square.bottomLeft, &square.centreLeft };
-        
+        square.nodesUsed ={ &square.centreRight, &square.bottomRight, &square.bottomLeft, &square.centreLeft };        
         break;
 
     case 6: // 0110
-        square.nodesUsed ={ &square.centreTop, &square.topRight, &square.bottomRight, &square.centreBottom };
-        
+        square.nodesUsed ={ &square.centreTop, &square.topRight, &square.bottomRight, &square.centreBottom };        
         break;
 
     case 9: // 1001
-        square.nodesUsed ={ &square.topLeft, &square.centreTop, &square.centreBottom, &square.bottomLeft };
-        
+        square.nodesUsed ={ &square.topLeft, &square.centreTop, &square.centreBottom, &square.bottomLeft };        
         break;
 
     case 12: // 1100
-        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.centreRight, &square.centreLeft };
-        
+        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.centreRight, &square.centreLeft };        
         break;
 
     case 5: // 0101
@@ -107,36 +100,30 @@ void SquareGrid::TriangulateSquare(Square& square)
         break;
 
     case 10: // 1010
-        square.nodesUsed ={ &square.topLeft, &square.centreTop, &square.centreRight, &square.bottomRight,
-            &square.centreBottom, &square.centreLeft };
-        
+        square.nodesUsed ={ &square.centreTop, &square.topRight, &square.centreRight, &square.centreBottom,
+            &square.bottomLeft, &square.centreLeft };
         break;
 
         // 3 point selections
     case 7: // 0111
-        square.nodesUsed ={ &square.centreTop, &square.topRight, &square.bottomRight, &square.bottomLeft, &square.centreLeft };
-        
+        square.nodesUsed ={ &square.centreTop, &square.topRight, &square.bottomRight, &square.bottomLeft, &square.centreLeft };        
         break;
 
     case 11: // 1011
-        square.nodesUsed ={ &square.topLeft, &square.centreTop, &square.centreRight, &square.bottomRight, &square.bottomLeft };
-        
+        square.nodesUsed ={ &square.topLeft, &square.centreTop, &square.centreRight, &square.bottomRight, &square.bottomLeft };        
         break;
 
     case 13: // 1101
-        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.centreRight, &square.centreBottom, &square.bottomLeft };
-        
+        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.centreRight, &square.centreBottom, &square.bottomLeft };        
         break;
 
     case 14: // 1110
-        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.bottomRight, &square.centreBottom, &square.centreLeft };
-        
+        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.bottomRight, &square.centreBottom, &square.centreLeft };        
         break;
 
         // 4 point selection:
     case 15: // 1111
-        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.bottomRight, &square.bottomLeft };
-        
+        square.nodesUsed ={ &square.topLeft, &square.topRight, &square.bottomRight, &square.bottomLeft };        
         break;
     }
 }

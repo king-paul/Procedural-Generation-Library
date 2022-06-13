@@ -59,7 +59,7 @@ void ProceduralGeneration::MeshGenerator::GenerateMesh(Array2D<int>* map)
 
     }
 
-    CreateWallMesh();
+    //CreateWallMesh();
 }
 
 void ProceduralGeneration::MeshGenerator::TriangulateSquare(Square& square)
