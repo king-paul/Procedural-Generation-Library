@@ -7,9 +7,6 @@
 
 namespace ProceduralGeneration
 {
-
-extern "C" {
-
 	class DungeonGenerator
 	{
 	protected:
@@ -18,6 +15,8 @@ extern "C" {
 		std::vector<vector<TileType>> m_map;
 		int m_width, m_height;
 		Coord m_startPosition;
+		int m_seed;
+		PseudoRandom m_random;
 
 		// functions
 		DungeonGenerator(int width, int height, Coord startPosition);
@@ -111,6 +110,5 @@ extern "C" {
 		CoordList CreateSimpleRooms(std::vector<Boundary> rooms);
 		CoordList CreateRandomWalkRooms(std::vector<Boundary> roomsList);
 	};
-}
 
 }

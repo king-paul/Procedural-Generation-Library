@@ -2,7 +2,6 @@
 
 using namespace ProceduralGeneration;
 
-
 CorridorFirstGenerator::CorridorFirstGenerator(int dungeonWidth, int dungeonHeight, Coord startPosition, 
 	int corridorLength, int totalCorridors, float roomPercent, RandomWalkParameters parameters)
 	: RandomWalkGenerator(dungeonWidth, dungeonHeight, startPosition, 
@@ -59,8 +58,8 @@ void CorridorFirstGenerator::CreateCorridors(CoordList& floorPositions, CoordLis
     {
         // generates a corridor using the procedural algorithms and adds it to the floor positions
         // and the end of the corridor to the potential room positions
-        var corridor = Algorithms::RandomWalkCorridor(m_width, m_height,
-                                                             currentPosition, m_corridorLength);
+        var corridor = Algorithms::RandomWalkCorridor(m_width, m_height, currentPosition, 
+                                                      m_corridorLength, m_random);
 
         currentPosition = corridor[corridor.size() - 1]; // moves to the end of the corridor
 

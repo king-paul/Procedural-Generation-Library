@@ -16,7 +16,7 @@ void RoomFirstGenerator::Generate()
 {
     // creates a new list of bounding boxes by running the binary space partitioning algorithm
     var roomsList = Algorithms::BinarySpacePartitioning(Boundary(m_startPosition, { m_width, m_height }),
-        m_minRoomWidth, m_minRoomHeight);
+        m_minRoomWidth, m_minRoomHeight, m_random);
 
     // creates an empty list for coordinates for the floor then creates rooms
     CoordList floorPositions;
@@ -116,8 +116,10 @@ CoordList RoomFirstGenerator::ConnectRooms(CoordList roomCenters)
 	CoordList corridors;
     CoordList::iterator it;
 
+    PseudoRandom random(0, (int) roomCenters.size() - 1, m_seed);
+
     // randomly select a room centre from the list then remove it form the list
-    int randomIndex = rand() % roomCenters.size();
+    int randomIndex = random.GetIntValue();
     
     var currentRoomCenter = roomCenters[randomIndex];
     roomCenters.erase(roomCenters.begin() + randomIndex);

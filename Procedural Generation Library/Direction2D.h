@@ -46,11 +46,12 @@ public:
 		};
 	}
 
-	static Coord GetRandomCardinalDirection()
+	static Coord GetRandomCardinalDirection(PseudoRandom& generator)
 	{
 		CoordList cardinalDirections = CardinalDirections();
+		generator.SetRangeInt(0, (int) cardinalDirections.size());
 
-		return cardinalDirections[rand() % cardinalDirections.size()];
+		return cardinalDirections[generator.GetIntValue()];
 	}
 
 	static Coord GetRandomTurnDirection(Coord direction)
@@ -73,8 +74,10 @@ public:
 			possibleDirections[1] = { 0, -1 };
 		}
 
+		PseudoRandom randomInt(0, 1);
+
 		// randomly select one of the two possible directions and return the value
-		return possibleDirections[rand() % 2];
+		return possibleDirections[(int) randomInt.GetValue()];
 	}
 
 };

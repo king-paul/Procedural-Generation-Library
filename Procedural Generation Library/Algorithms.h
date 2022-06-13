@@ -5,7 +5,7 @@
 namespace ProceduralGeneration
 {
 	class Algorithms
-	{
+	{	
 		
 	public:
 		/// <summary>
@@ -14,7 +14,7 @@ namespace ProceduralGeneration
 		/// <param name="startPosition">The starting coordinate the algorithm will run from</param>
 		/// <param name="walkLength">How many steps will be walked before stopping</param>
 		/// <returns>Generated path</returns>
-		static CoordList RandomWalk(int dungeonWidth, int dungeonHeight, Coord startPosition, int walkLength);
+		static CoordList RandomWalk(int dungeonWidth, int dungeonHeight, Coord startPosition, int walkLength, PseudoRandom& generator);
 
 		/// <summary>
 		/// Builds series of corridors in the dungeon based on the parameters provided
@@ -24,7 +24,7 @@ namespace ProceduralGeneration
 		/// <param name="startPosition:">The location where the first step in the algorithm takes place</param>
 		/// <param name="corridorLength:">The number of steps in a corridor before changing direction</param>
 		/// <returns>A list of x and y corrdinates for the floor spaces within the corridor</returns>
-		static CoordList RandomWalkCorridor(int dungeonWidth, int dungeonHeight, Coord starttPosition, int corridorLength);
+		static CoordList RandomWalkCorridor(int dungeonWidth, int dungeonHeight, Coord starttPosition, int corridorLength, PseudoRandom& generator);
 
 		/// <summary>
 		/// Splits a section of the dungeon into smaller sections using the binary space partitioning algorithm
@@ -32,8 +32,9 @@ namespace ProceduralGeneration
 		/// <param name="spaceToSplit">The bounding box to be split into two boxes</param>
 		/// <param name="minWidth">The minimum width of the rooms to create</param>
 		/// <param name="minHeight">The minimum height of the rooms to create</param>
+		/// <param name=""></param>
 		/// <returns>A list of bounding boxes using Boundary struct</returns>
-		static vector<Boundary> BinarySpacePartitioning(Boundary spaceToSplit, int minWidth, int minHeight);
+		static vector<Boundary> BinarySpacePartitioning(Boundary spaceToSplit, int minWidth, int minHeight, PseudoRandom& generator);
 		
 		/// <summary>
 		/// Creates wall tiles using the tilemap visualizer by passing the floor positions
@@ -53,7 +54,8 @@ namespace ProceduralGeneration
 	    /// <param name="minWidth">Not currently used</param>
 	    /// <param name="roomsQueue">The queue of bounding boxes to be split</param>
 	    /// <param name="room">The room to be split</param>
-		static void SplitVertically(int minWidth, queue<Boundary> &roomsQueue, Boundary room);
+		/// <param name="generator">Reference of the random number genrator ojec</param>
+		static void SplitVertically(int minWidth, queue<Boundary> &roomsQueue, Boundary room, PseudoRandom& generator);
 
 		/// <summary>
 		///  splits a rooom across the middle into two rooms above and below
@@ -61,7 +63,8 @@ namespace ProceduralGeneration
 		/// <param name="minHeight">Not currently used</param>
 		/// <param name="roomsQueue">The queue of bounding boxes to be split</param>
 		/// <param name="room">The room to be split</param>
-		static void SplitHorizontally(int minHeight, queue<Boundary> &roomsQueue, Boundary room);
+		/// <param name="generator">Reference of the random number genrator oject</param>
+		static void SplitHorizontally(int minHeight, queue<Boundary> &roomsQueue, Boundary room, PseudoRandom& generator);
 
 		/// <summary>
 		/// Find all adjacent walls in specified directions

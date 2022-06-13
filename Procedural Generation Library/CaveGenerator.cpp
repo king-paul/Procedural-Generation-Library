@@ -1,7 +1,6 @@
 #include "CaveGenerator.h"
 
 #include <iostream>
-#include <chrono>
 #include <thread>
 
 using namespace std;
@@ -280,7 +279,7 @@ void CaveGenerator::RandomFillMap()
             }
             else
             {
-                float randomValue = m_randomGenerator->GetValue(); //rand() % 100;
+                float randomValue = m_randomGenerator->GetValue();
 
                 if (randomValue < m_randomFillPercent) {
                     m_map->set(x, y, 1);// ? 1 : 0;

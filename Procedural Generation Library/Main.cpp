@@ -15,7 +15,7 @@ void GenerateDungeon()
 	int minRoomWidth = 10;
 	int minRoomHeight = 10;
 	int roomOffset = 3;
-	bool randomWalkRooms = false;
+	bool randomWalkRooms = true;
 
 	int iterations = 50;
 	int walkLength = 15;

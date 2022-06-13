@@ -16,10 +16,6 @@ vector<Wall> Algorithms::GetWalls(CoordList& floorPositions, Coord boundary)
 
 	vector<Wall> walls = GetWallTiles(floorPositions, sideWallPositions, cornerWallPositions);
 
-	// join the two vectors together
-	//allPositions.insert(wallPositions.begin(), sideWallPositions.begin(), sideWallPositions.end());
-	//wallPositions.insert(wallPositions.begin(), cornerWallPositions.begin(), cornerWallPositions.end());
-
 	return walls;
 }
 

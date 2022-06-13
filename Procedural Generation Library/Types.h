@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <random>
+#include <chrono>
 #include <iostream>
 
 #include "Vector.h"
@@ -152,44 +153,63 @@ private:
 	}
 };
 
-//template<class T>
 class PseudoRandom
 {
 	std::default_random_engine theEngine;
-	std::uniform_real_distribution<float>* distribution;
-
-	float m_min, m_max;
+	std::uniform_real_distribution<float> distribution;
 
 public:
+	PseudoRandom()
+	{
+		distribution = std::uniform_real_distribution<float>();
+	}
+
+	PseudoRandom(unsigned int seed)
+	{
+		theEngine = std::default_random_engine(seed);
+		distribution = std::uniform_real_distribution<float>();
+	}
+
 	PseudoRandom(float min, float max)
 	{		
-		m_min = min;
-		m_max = max;
-		//theEngine = std::default_random_engine();
-
-		//std::normal_distribution<float> normalDist(10, 1.0f);		
+		distribution = std::uniform_real_distribution<float>(min, max);
 	}
 
-	PseudoRandom(float min, float max, unsigned int m_seed)
+	PseudoRandom(int min, int max)
 	{
-		m_min = min;
-		m_max = max;
-		theEngine = std::default_random_engine(m_seed);
-
-		//std::normal_distribution<float> normalDist(10, 1.0f);		
+		distribution = std::uniform_real_distribution<float>((float) min, (float)max);
 	}
 
-	~PseudoRandom()
+	PseudoRandom(float min, float max, unsigned int seed)
 	{
-		delete distribution;
+		theEngine = std::default_random_engine(seed);
+		distribution = std::uniform_real_distribution<float>((float) min, (float) max);
+	}
+
+	PseudoRandom(int min, int max, unsigned int seed)
+	{
+		theEngine = std::default_random_engine(seed);
+		distribution = std::uniform_real_distribution<float>((float) min, (float) max);
+	}
+
+	void SetRange(float min, float max)
+	{
+		distribution = std::uniform_real_distribution<float>(min, max);
+	}
+
+	void SetRangeInt(int min, int max)
+	{
+		distribution = std::uniform_real_distribution<float>((float) min, (float) max);
 	}
 
 	float GetValue() 
 	{
-		std::uniform_real_distribution<float> distribution(m_min, m_max);
 		return distribution(theEngine);
-		//return randomValue;
-		//float normallyDistributedNumber = normalDist(theEngine);
+	}
+
+	int GetIntValue()
+	{
+		return (int) distribution(theEngine);
 	}
 
 };

@@ -8,7 +8,9 @@ DungeonGenerator::DungeonGenerator(int width, int height, Coord startPosition)
 	m_height = height;
 	m_startPosition = startPosition;
 
-	srand(time(NULL));
+	//srand((unsigned int) time(NULL));
+	m_seed = (int) chrono::steady_clock::now().time_since_epoch().count();
+	m_random = PseudoRandom(m_seed);
 
 	//m_map = new int*[m_size];	
 

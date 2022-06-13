@@ -42,7 +42,7 @@ CoordList RandomWalkGenerator::RunRandomWalk(Coord startPosition)
     for (int i = 0; i < m_iterations; i++)
     {
         // calls function recursively
-        CoordList walkedPositions = Algorithms::RandomWalk(m_width, m_height, currentPosition, m_walkLength);
+        CoordList walkedPositions = Algorithms::RandomWalk(m_width, m_height, currentPosition, m_walkLength, m_random);
 
         for (Coord position : walkedPositions)
         {
@@ -53,7 +53,10 @@ CoordList RandomWalkGenerator::RunRandomWalk(Coord startPosition)
 
         // starts new path at a random point on the existing one if this option is turned on
         if (m_startRandomly)
-            currentPosition = floorPositions[rand() % floorPositions.size()];
+        {
+            PseudoRandom random(0, (int) floorPositions.size() - 1, m_seed);
+            currentPosition = floorPositions[random.GetIntValue()];
+        }
     }
 
     return floorPositions;
