@@ -301,7 +301,8 @@ int ProceduralGeneration::MeshGenerator::GetConnectedOutlineVertex(int vertexInd
     for (int i = 0; i < trianglesContainingVertex.size(); i++) {
         Triangle triangle = trianglesContainingVertex[i];
 
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 3; j++)
+        {
             int vertexB = triangle.get(j);
 
             if (vertexB != vertexIndex && !IsInSet(m_checkedVertices, vertexB))

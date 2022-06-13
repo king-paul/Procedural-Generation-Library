@@ -43,12 +43,12 @@ void GenerateCave()
 	int width = 128;
 	int height = 72;
 	int smoothingIterations = 5;
-	int borderSize = 1;
-	int fillPercent = 50;
+	int borderSize = 3;
+	int fillPercent = 53;
 	int wallThresholdSize = 50;
 	int roomThresholdSize = 50;
 	int passageWidth = 1;
-	bool forceAccessToMain = false;
+	bool forceAccessToMain = true;
 	bool useRandomSeed = false;
 	int seed = 0;
 	bool generateMesh = true;
@@ -62,7 +62,7 @@ void GenerateCave()
 	//for (int i = 0; i < 10; i++)
 	//{
 		caveGenerator->GenerateMap();
-		//caveGenerator->PrintCave();
+		caveGenerator->PrintCave();
 		//system("Pause");
 		
 	//}
